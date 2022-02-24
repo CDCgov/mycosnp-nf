@@ -8,10 +8,9 @@ include { NUCMER }                          from '../../modules/nf-core/modules/
 // include { SHOW_COORDS }                     from '../../modules/local/showcoords.nf'
 // include { COORDSTOBED }                     from '../../modules/local/coordstobed.nf'
 // include { BEDTOOLS_MASKFASTA }              from '../../modules/nf-core/modules/bedtools/maskfasta/'
-include { BWA_INDEX }                       from '../../modules/nf-core/modules/bwa/index/'
-include { PICARD_CREATESEQUENCEDICTIONARY } from '../../modules/nf-core/modules/picard/createsequencedictionary/'
-include { SAMTOOLS_FAIDX }                  from '../../modules/nf-core/modules/samtools/faidx/'
-
+include { BWA_INDEX }                       from '../../modules/nf-core/modules/bwa/index/main'
+include { PICARD_CREATESEQUENCEDICTIONARY } from '../../modules/nf-core/modules/picard/createsequencedictionary/main'
+include { SAMTOOLS_FAIDX }                  from '../../modules/nf-core/modules/samtools/faidx/main'
 
 process INPUT_PROC {
 
@@ -39,26 +38,33 @@ workflow BWA_REFERENCE {
     fasta
 
     main:
+    ch_versions = Channel.empty()
+
     INPUT_PROC(fasta)
-    INPUT_PROC.out.view()
     NUCMER( INPUT_PROC.out )
+    
+    // TODO: Add masking and use that for BWA_INDEX, SAMTOOLS, PICARD
+    // SHOW_COORDS()
+    // COORDSTOBED()
+    // BEDTOOLS_MASKFASTA()
+
     BWA_INDEX(fasta)
     SAMTOOLS_FAIDX(INPUT_PROC.out.map{meta, fa1, fa2->[meta, fa1] })
     PICARD_CREATESEQUENCEDICTIONARY(INPUT_PROC.out.map{meta, fa1, fa2->[meta, fa1] })
-/*
-    SHOW_COORDS()
-    COORDSTOBED()
-    BEDTOOLS_MASKFASTA()
-*/
+
+    // Collect versions information
+    ch_versions = ch_versions.mix(  NUCMER.out.versions, 
+                                    BWA_INDEX.out.versions, 
+                                    SAMTOOLS_FAIDX.out.versions, 
+                                    PICARD_CREATESEQUENCEDICTIONARY.out.versions
+                                )
+    
+
     emit:
-    INPUT_PROC.out
-    coords = NUCMER.out.coords
-    delta = NUCMER.out.delta
-/*
-    samtools_index = SAMTOOLS_FAIDX.out
-    bwa_index = BWA_INDEX.out
-    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
-*/
+    samtools_index = SAMTOOLS_FAIDX.out.fai
+    bwa_index = BWA_INDEX.out.index
+    dict = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
+    versions = ch_versions // channel: [ versions.yml ]
 }
 
 /*
