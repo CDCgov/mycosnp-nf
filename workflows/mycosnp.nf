@@ -75,15 +75,22 @@ workflow MYCOSNP {
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     // SUBWORKFLOW: Run BWA_REFERENCE
+    //emit:
+    //fasta = masked_fasta
+    //samtools_index = SAMTOOLS_FAIDX.out.fai
+    //bwa_index = BWA_INDEX.out.index
+    //dict = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
+    //versions = ch_versions // channel: [ versions.yml ]
+
     BWA_REFERENCE(ch_fasta)
 
     // SUBWORKFLOW: Run BWA_PRE_PROCESS
     // take:
     // tuple reference_fasta, samtools_faidx, bwa_index
     // tuple meta, fastq
+    
 
-
-    // BWA_PRE_PROCESS(BWA_REFERENCE.out, reads)
+    BWA_PRE_PROCESS(BWA_REFERENCE.out.map{ }, reads)
     //ch_versions = ch_versions.mix(BWA_PRE_PROCESS.out.versions)
 
     // SUBWORKFLOW: Run GATK_VARIANTS

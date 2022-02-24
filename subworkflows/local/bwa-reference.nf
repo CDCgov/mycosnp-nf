@@ -61,11 +61,13 @@ workflow BWA_REFERENCE {
     
 
     emit:
+    fasta = masked_fasta
     samtools_index = SAMTOOLS_FAIDX.out.fai
     bwa_index = BWA_INDEX.out.index
     dict = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
     versions = ch_versions // channel: [ versions.yml ]
 }
+
 
 /*
 ## Step 1: Mask Repeats
