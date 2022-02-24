@@ -5,59 +5,72 @@
 */
 
 
-include { GATK4_HAPLOTYPECALLER } from '../../modules/nf-core/modules/gatk4/haplotypecaller/'
-include { GATK4_COMBINEGVCFS } from '../../modules/nf-core/modules/gatk4/combinegvcfs/'
-include { GATK4_GENOTYPEGVCFS } from '../../modules/nf-core/modules/gatk4/genotypegvcfs/'
-include { GATK4_VARIANTFILTRATION } from '../../modules/nf-core/modules/gatk4/variantfiltration/'
+include { GATK4_HAPLOTYPECALLER } from '../../modules/nf-core/modules/gatk4/haplotypecaller/main'
+include { GATK4_COMBINEGVCFS } from '../../modules/nf-core/modules/gatk4/combinegvcfs/main'
+include { GATK4_GENOTYPEGVCFS } from '../../modules/nf-core/modules/gatk4/genotypegvcfs/main'
+include { GATK4_VARIANTFILTRATION } from '../../modules/nf-core/modules/gatk4/variantfiltration/main'
 
 // TODO: broad vcf filter local module
 //include { BROAD_VCFFILTER } from '../../modules/local/broad_vcffilter.nf'
 
 // TODO: broad split vcf local module ? (uses bcftools view, bcftools index, and shell commands)
-include { BCFTOOLS_VIEW } from '../../modules/nf-core/modules/bcftools/view/'
-include { BCFTOOLS_QUERY } from '../../modules/nf-core/modules/bcftools/query/'
+include { BCFTOOLS_VIEW } from '../../modules/nf-core/modules/bcftools/view/main'
+include { BCFTOOLS_QUERY } from '../../modules/nf-core/modules/bcftools/query/main'
 
-include { GATK4_SELECTVARIANTS } from '../../modules/nf-core/modules/gatk4/selectvariants/'
+include { GATK4_SELECTVARIANTS } from '../../modules/nf-core/modules/gatk4/selectvariants/main'
 
 // TODO : vcf2fasta local module  --> HS: renamed from snp2fasta ==> vcf2fasta
-//include { VCFTOFASTA } from '..../../modules/local/vcftofasta.nf'
-include { BCFTOOLS_CONSENSUS } from '../../modules/nf-core/modules/bcftools/consensus/'
+//include { VCFTOFASTA } from '../../modules/local/vcftofasta.nf'
+include { BCFTOOLS_CONSENSUS } from '../../modules/nf-core/modules/bcftools/consensus/main'
 // TODO: vcf qc report local module
-//include { VCF_QCREPORT } from '..../../modules/local/vcfqcreport.nf'
+//include { VCF_QCREPORT } from '../../modules/local/vcfqcreport.nf'
 
 
 workflow GATK_VARIANTS {
 
     take:
-    tuple reference_fasta, samtools_faidx, bwa_index
-    tuple meta, alignment, aligment_index
+    // tuple reference_fasta, samtools_faidx, bwa_index
+    reference
+    // tuple meta, alignment, aligment_index
+    alignments
+    
 
     main:
-    GATK4_HAPLOTYPECALLER()
-    GATK4_COMBINEGVCFS()
-    GATK4_GENOTYPEGVCFS()
-    GATK4_VARIANTFILTRATION()
-    //BROAD_VCFFILTER()
-    //SPLITVCF() split-vcf-broad --> uses bcftools view, bcftools index, and shell commands
-    BCFTOOLS_VIEW()
-    BCFTOOLS_QUERY()
+    ch_versions = Channel.empty()
+    //GATK4_HAPLOTYPECALLER()
+    //GATK4_COMBINEGVCFS()
+    //GATK4_GENOTYPEGVCFS()
+    //GATK4_VARIANTFILTRATION()
+    // TODO //BROAD_VCFFILTER() 
+    // TODO //SPLITVCF() split-vcf-broad --> uses bcftools view, bcftools index, and shell commands
+    //BCFTOOLS_VIEW()
+    //BCFTOOLS_QUERY()
     //GATK4_SELECTVARIANTS()
-    //SPLITVCF() split-vcf-selectvariants --> also uses bcftools view, bcftools index, and shell commands + the GATK4 output
-    BCFTOOLS_VIEW()
-    BCFTOOLS_QUERY()
-    //VCFTOFASTA()
-    BCFTOOLS_CONSENSUS()
-    //VCF_QCREPORT()
+    // TODO //SPLITVCF() split-vcf-selectvariants --> also uses bcftools view, bcftools index, and shell commands + the GATK4 output
+    //BCFTOOLS_VIEW()
+    //BCFTOOLS_QUERY()
+    // TODO //VCFTOFASTA()
+    //BCFTOOLS_CONSENSUS()
+    // TODO //VCF_QCREPORT()
 
+// Collect versions information
+/*
+    ch_versions = ch_versions.mix(  NUCMER.out.versions, 
+                                    BWA_INDEX.out.versions, 
+                                    SAMTOOLS_FAIDX.out.versions, 
+                                    PICARD_CREATESEQUENCEDICTIONARY.out.versions
+                                )
+*/                                
+                                
     emit:
     //filtered_vcf = BROAD_VCFFILTER.out
     //split_vcf_broad = SPLITVCF.out        --> the broad vcf file
-    variants = GATK4_SELECTVARIANTS.out
+    // variants = GATK4_SELECTVARIANTS.out
     //split_vcf_gatk4 = SPLITVCF.out        --> the gatk4 vcf file
     //snps_fasta = VCFTOFASTA.out
-    consensus_fasta = BCFTOOLS_CONSENSUS.out
+    // consensus_fasta = BCFTOOLS_CONSENSUS.out
     //qc_report = VCF_QCREPORT.out
-    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
+    //versions = ch_versions // channel: [ versions.yml ]
 
 }
 

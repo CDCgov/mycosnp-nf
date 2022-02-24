@@ -43,21 +43,20 @@ workflow BWA_PREPROCESS {
     // CLEAN_SAM()
     // FIXMATEINFORMATION()
     // ADDORREPLACEGROUPS()
-    // BAM_INDEX()
+    SAMTOOLS_INDEX(BWA_MEM.out.bam)
     FASTQC(reads)
     // QUALIMAP()
     // MULTIQC()
 
-    // ch_versions = ch_versions.mix(  NUCMER.out.versions, 
-    //                                 BWA_INDEX.out.versions, 
-    //                                 SAMTOOLS_FAIDX.out.versions, 
-    //                                 PICARD_CREATESEQUENCEDICTIONARY.out.versions
-    //                             )
+    ch_versions = ch_versions.mix(  BWA_MEM.out.versions, 
+                                    SAMTOOLS_INDEX.out.versions, 
+                                    FASTQC.out.versions
+                                 )
 
     emit:
-   // metaout = meta
     //alignment = ADDORREPLACEGROUPS.out
-    //alignment_index = BAM_INDEX.out
+    alignment = BWA_MEM.out.bam
+    alignment_index = SAMTOOLS_INDEX.out.bai
     versions = ch_versions // channel: [ versions.yml ]
 
 }

@@ -65,6 +65,7 @@ def multiqc_report = []
 workflow MYCOSNP {
 
     ch_versions = Channel.empty()
+    ch_gatk_in = Channel.empty()
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -101,13 +102,26 @@ workflow MYCOSNP {
     // alignment_index = BAM_INDEX.out (meta, bam_index)
     // versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 
-    /*
-    ch_gatk_in = BWA_PRE_PROCESS.out.map{ metaout, alignment, align_index} ->
-
-        [ metaout, alignment[1], align_index[1]  ]
-    }.collect
-    */
-    // GATK_VARIANTS( BWA_REFERENCE.out, ch_gatk_in )
+    //ch_gatk_in = ch_gatk_in.mix(BWA_PREPROCESS.out.alignment)
+    //ch_gatk_in = ch_gatk_in.mix(BWA_PREPROCESS.out.alignment_index)
+    //ch_grouped = Channel.empty()
+    //ch_grouped = ch_gatk_in.groupTuple()  
+    //ch_gatk_in.view()
+    //ch_grouped.view()
+    ch_aln = Channel.empty()
+    ch_aln = BWA_PREPROCESS.out.alignment.collect()
+    ch_aln_idx = Channel.empty()
+    ch_aln_idx = BWA_PREPROCESS.out.alignment_index.collect()
+    ch_mixed = Channel.empty()
+    
+    ch_mixed = ch_mixed.mix(ch_aln)
+    ch_mixed = ch_mixed.mix(ch_aln_idx)
+    
+    ch_grouped = Channel.empty()
+    ch_grouped = ch_mixed.groupTuple()
+    //ch_mixed.view()
+    ch_grouped.view()
+    //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], ch_gatk_in )
 
     /*
     //
