@@ -1,0 +1,4 @@
+sample_id,fastq_1,fastq_2
+SRR2584863,$baseDir/assets/sample_data/SRR2584863_1.fastq.gz,$baseDir/assets/sample_data/SRR2584863_2.fastq.gz
+SRR2584866,$baseDir/assets/sample_data/SRR2584866_1.fastq.gz,$baseDir/assets/sample_data/SRR2584866_2.fastq.gz
+SRR2589044,$baseDir/assets/sample_data/SRR2589044_1.fastq.gz,$baseDir/assets/sample_data/SRR2589044_2.fastq.gz

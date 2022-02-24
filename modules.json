@@ -1,0 +1,92 @@
+{
+    "name": "nf-core/mycosnp",
+    "homePage": "https://github.com/nf-core/mycosnp",
+    "repos": {
+        "nf-core/modules": {
+            "bcftools/consensus": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "bcftools/index": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "bcftools/query": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "bcftools/view": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "bedtools/maskfasta": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "bwa/index": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "custom/dumpsoftwareversions": {
+                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+            },
+            "faqcs": {
+                "git_sha": "f144171ddc9c1053ba720b01d9b499e43ab364d7"
+            },
+            "fastqc": {
+                "git_sha": "9d0cad583b9a71a6509b754fdf589cbfbed08961"
+            },
+            "gatk4/combinegvcfs": {
+                "git_sha": "a25423dbb974e2e69268b5cdbc12e5bc1558e053"
+            },
+            "gatk4/genotypegvcfs": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "gatk4/haplotypecaller": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "gatk4/selectvariants": {
+                "git_sha": "640031762334fd1d534d667c2e1a982c5513a7aa"
+            },
+            "gatk4/variantfiltration": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "multiqc": {
+                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+            },
+            "mummer": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "nucmer": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "picard/cleansam": {
+                "git_sha": "927dbfed048469e945f93236d213011e45672fba"
+            },
+            "picard/createsequencedictionary": {
+                "git_sha": "62e5d1f0b38367d628e6b4c32b45d462f2c0b325"
+            },
+            "picard/fixmateinformation": {
+                "git_sha": "f655e5dea2e25f403e23fb6dfdc33cc538666769"
+            },
+            "picard/markduplicates": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "qualimap/bamqc": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "samtools/faidx": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "samtools/index": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "seqkit/pair": {
+                "git_sha": "4c59984d7bcc772598ba44fb8289051352c7a6c6"
+            },
+            "seqtk/rename": {
+                "git_sha": "a69faefee8ff63565629a2b6dfc40e08f4690b80"
+            },
+            "seqtk/sample": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "seqtk/seq": {
+                "git_sha": "1016c9bd1a7b23e31b8215b8c33095e733080735"
+            }
+        }
+    }
+}
