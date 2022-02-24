@@ -4,53 +4,61 @@
 ========================================================================================
 */
 
-include { SEQKIT_PAIR }              from '../../modules/nf-core/modules/seqkit/pair/'
-include { SEQTK_SAMPLE }              from '../../modules/nf-core/modules/seqtk/sample/'
-include { FAQCS }                     from '../../modules/nf-core/modules/faqcs/'
+include { SEQKIT_PAIR }                   from '../../modules/nf-core/modules/seqkit/pair/main'
+include { SEQTK_SAMPLE }                  from '../../modules/nf-core/modules/seqtk/sample/main'
+include { FAQCS }                         from '../../modules/nf-core/modules/faqcs/main'
 // TODO: QC report local module
-include { BWA_INDEX }                 from '../../modules/nf-core/modules/bwa/index/'
-include { BWA_MEM }                   from '../../modules/nf-core/modules/bwa/mem/'
-include { SAMTOOLS_SORT }             from '../../modules/nf-core/modules/samtools/sort/'
-include { PICARD_MARKDUPLICATES }     from '../../modules/nf-core/modules/picard/markduplicates/'
-include { PICARD_CLEANSAM }           from '../../modules/nf-core/modules/picard/cleansam/'
-include { PICARD_FIXMATEINFORMATION } from '../../modules/nf-core/modules/picard/fixmateinformation/'
-include { PICARD_ADDORREPLACEGROUPS } from '../../modules/nf-core/modules/picard/addorreplacegroups/'
-include { SAMTOOLS_INDEX }            from '../../modules/nf-core/modules/samtools/index/'
-include { FASTQC }                    from '../modules/nf-core/modules/fastqc/main'
-include { MULTIQC }                   from '../modules/nf-core/modules/multiqc/main'
-include { QUALIMAP_BAMQC }            from '../modules/nf-core/modules/qualimap/bamqc/'
+include { BWA_INDEX }                     from '../../modules/nf-core/modules/bwa/index/main'
+include { BWA_MEM }                       from '../../modules/nf-core/modules/bwa/mem/main'
+include { SAMTOOLS_SORT }                 from '../../modules/nf-core/modules/samtools/sort/main'
+include { PICARD_MARKDUPLICATES }         from '../../modules/nf-core/modules/picard/markduplicates/main'
+include { PICARD_CLEANSAM }               from '../../modules/nf-core/modules/picard/cleansam/main'
+include { PICARD_FIXMATEINFORMATION }     from '../../modules/nf-core/modules/picard/fixmateinformation/main'
+include { PICARD_ADDORREPLACEREADGROUPS } from '../../modules/nf-core/modules/picard/addorreplacereadgroups/main'
+include { SAMTOOLS_INDEX }                from '../../modules/nf-core/modules/samtools/index/main'
+include { FASTQC }                        from '../../modules/nf-core/modules/fastqc/main'
+include { MULTIQC }                       from '../../modules/nf-core/modules/multiqc/main'
+include { QUALIMAP_BAMQC }                from '../../modules/nf-core/modules/qualimap/bamqc/main'
 
 
 
 workflow BWA_PREPROCESS {
 
-    take:
-    tuple reference_fasta, samtools_faidx, bwa_index
-    tuple meta, fastq
+    take:   
+    reference //channel: tuple reference_fasta, samtools_faidx, bwa_index
+    reads // channel: [ val(meta), [ fastq ] ]
 
     main:
-    // CONCAT_FASTQ_LANES()
-    // FASTQ_PAIR()
-    DOWNSAMPLE()
-    FAQCS(DOWNSAMPLE.out)
-    QC()
-    BWA_ALIGN()
-    BWA_SORT()
-    MARK_DUPLICATES()
-    CLEAN_SAM()
-    FIXMATEINFORMATION()
-    ADDORREPLACEGROUPS()
-    BAM_INDEX()
-    FASTQC()
-    QUALIMAP()
-    MULTIQC()
+    ch_versions = Channel.empty()
 
+
+    // CONCAT_FASTQ_LANES()
+    // SEQKIT_PAIR()
+    // SEQTK_SAMPLE()
+    // FAQCS(DOWNSAMPLE.out)
+    // QC()
+    BWA_MEM(reads, reference[2], true)
+    // BWA_SORT()
+    // MARK_DUPLICATES()
+    // CLEAN_SAM()
+    // FIXMATEINFORMATION()
+    // ADDORREPLACEGROUPS()
+    // BAM_INDEX()
+    FASTQC(reads)
+    // QUALIMAP()
+    // MULTIQC()
+
+    // ch_versions = ch_versions.mix(  NUCMER.out.versions, 
+    //                                 BWA_INDEX.out.versions, 
+    //                                 SAMTOOLS_FAIDX.out.versions, 
+    //                                 PICARD_CREATESEQUENCEDICTIONARY.out.versions
+    //                             )
 
     emit:
-    metaout = meta
-    alignment = ADDORREPLACEGROUPS.out
-    alignment_index = BAM_INDEX.out
-    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
+   // metaout = meta
+    //alignment = ADDORREPLACEGROUPS.out
+    //alignment_index = BAM_INDEX.out
+    versions = ch_versions // channel: [ versions.yml ]
 
 }
 

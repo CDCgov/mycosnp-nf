@@ -21,6 +21,9 @@
             "bwa/index": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             },
+            "bwa/mem": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
             "custom/dumpsoftwareversions": {
                 "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
             },
@@ -54,6 +57,9 @@
             "nucmer": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             },
+            "picard/addorreplacereadgroups": {
+                "git_sha": "a0d91e4a93daab335e8dbae31b345188c120e0a0"
+            },
             "picard/cleansam": {
                 "git_sha": "927dbfed048469e945f93236d213011e45672fba"
             },
@@ -74,6 +80,9 @@
             },
             "samtools/index": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "samtools/sort": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "seqkit/pair": {
                 "git_sha": "4c59984d7bcc772598ba44fb8289051352c7a6c6"

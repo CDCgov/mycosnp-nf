@@ -37,7 +37,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
-//include { BWA_PRE_PROCESS } from '../subworkflows/local/bwa-pre-process'
+include { BWA_PREPROCESS } from '../subworkflows/local/bwa-pre-process'
 include { BWA_REFERENCE } from '../subworkflows/local/bwa-reference'
 //include { GATK_VARIANTS } from '../subworkflows/local/gatk-variants'
 /*
@@ -89,8 +89,8 @@ workflow MYCOSNP {
     // tuple reference_fasta, samtools_faidx, bwa_index
     // tuple meta, fastq
     
-
-    BWA_PRE_PROCESS(BWA_REFERENCE.out.map{ }, reads)
+    BWA_PREPROCESS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], INPUT_CHECK.out.reads)
+    //BWA_PRE_PROCESS(BWA_REFERENCE.out.map{masked_fasta, samtools_index, bwa_index, dict, versions->[masked_fasta, samtools_index, bwa_index] }, INPUT_CHECK.out.reads)
     //ch_versions = ch_versions.mix(BWA_PRE_PROCESS.out.versions)
 
     // SUBWORKFLOW: Run GATK_VARIANTS

@@ -53,11 +53,13 @@ If the module doesn't exist on nf-core/modules:
 
 ```bash
 nf-core modules install bwa/index
+nf-core modules install bwa/mem
 nf-core modules install mummer
 nf-core modules install nucmer
 nf-core modules install bedtools/maskfasta
 nf-core modules install samtools/faidx
 nf-core modules install samtools/index
+nf-core modules install samtools/sort
 nf-core modules install gatk4/haplotypecaller
 nf-core modules install gatk4/genotypegvcfs
 nf-core modules install gatk4/variantfiltration
@@ -75,7 +77,7 @@ nf-core modules install gatk4/combinegvcfs
 nf-core modules install picard/createsequencedictionary
 nf-core modules install picard/cleansam
 nf-core modules install picard/fixmateinformation
-nf-core modules install picard/addOrreplacereadgroups
+nf-core modules install picard/addorreplacereadgroups
 nf-core modules install seqtk/seq
 nf-core modules install seqtk/rename
 nf-core modules install faqcs

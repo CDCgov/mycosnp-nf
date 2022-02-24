@@ -61,7 +61,8 @@ workflow BWA_REFERENCE {
     
 
     emit:
-    fasta = masked_fasta
+    //fasta = masked_fasta
+    masked_fasta = fasta
     samtools_index = SAMTOOLS_FAIDX.out.fai
     bwa_index = BWA_INDEX.out.index
     dict = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
