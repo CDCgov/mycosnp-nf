@@ -13,7 +13,7 @@ include { BWA_MEM }                       from '../../modules/nf-core/modules/bw
 include { SAMTOOLS_SORT }                 from '../../modules/nf-core/modules/samtools/sort/main'
 include { PICARD_MARKDUPLICATES }         from '../../modules/nf-core/modules/picard/markduplicates/main'
 include { PICARD_CLEANSAM }               from '../../modules/nf-core/modules/picard/cleansam/main'
-include { SAMTOOLS_VIEW }                 from '../../modules/nf-core/modules/samtools/view/main'
+include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM}                 from '../../modules/nf-core/modules/samtools/view/main'
 include { PICARD_FIXMATEINFORMATION }     from '../../modules/nf-core/modules/picard/fixmateinformation/main'
 include { PICARD_ADDORREPLACEREADGROUPS } from '../../modules/nf-core/modules/picard/addorreplacereadgroups/main'
 include { SAMTOOLS_INDEX }                from '../../modules/nf-core/modules/samtools/index/main'
@@ -44,8 +44,13 @@ workflow BWA_PREPROCESS {
     FAQCS(SEQTK_SAMPLE.out.reads)
     // QC() // Local qc report
     BWA_MEM(FAQCS.out.reads, reference[2], true) // This already sorts the bam file
-    //PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
-    //PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.sam)
+
+      // validation_stringency: LENIENT
+      // remove_duplicates: 'true'
+      // assume_sorted: 'true'
+      // output: ${1}
+    PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
+    PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam)
     // PICARD_FIXMATEINFORMATION()
     // PICARD_ADDORREPLACEREADGROUPS()
     SAMTOOLS_INDEX(BWA_MEM.out.bam)
