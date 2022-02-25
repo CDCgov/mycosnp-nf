@@ -46,7 +46,6 @@ workflow BWA_REFERENCE {
     ch_dict               = Channel.empty()
     ch_reference_combined = Channel.empty()
     ch_versions           = Channel.empty()
-    ch_combined           = Channel.empty()
 
     INPUT_PROC(fasta)
     NUCMER( INPUT_PROC.out )
@@ -64,7 +63,7 @@ workflow BWA_REFERENCE {
     // reference_fasta, samtools_faidx, bwa_index, dict
     INPUT_PROC.out.combine(SAMTOOLS_FAIDX.out.fai).combine(BWA_INDEX.out.index).combine(PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict)
       .map{meta, fa1, fa2, meta2, fai, bai, meta4, dict -> [meta, fa1, fai, bai, dict] }
-      .set{ch_combined}
+      .set{ch_reference_combined}
       
     // ch_combined.view()
 
@@ -78,7 +77,6 @@ workflow BWA_REFERENCE {
     ch_samtools_index     = SAMTOOLS_FAIDX.out.fai 
     ch_bwa_index          = BWA_INDEX.out.index 
     ch_dict               = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
-    ch_reference_combined = ch_combined
 
     emit:
     masked_fasta       = ch_masked_fasta        // channel: [ val(meta), [ fai ] ]

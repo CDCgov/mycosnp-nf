@@ -90,6 +90,9 @@
             "samtools/sort": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
+            "samtools/view": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
             "seqkit/pair": {
                 "git_sha": "4c59984d7bcc772598ba44fb8289051352c7a6c6"
             },

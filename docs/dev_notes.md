@@ -75,6 +75,7 @@ nf-core modules install bcftools/view
 nf-core modules install gatk4/selectvariants
 nf-core modules install gatk4/combinegvcfs
 nf-core modules install picard/createsequencedictionary
+nf-core modules install samtools/view
 nf-core modules install picard/cleansam
 nf-core modules install picard/fixmateinformation
 nf-core modules install picard/addorreplacereadgroups
@@ -82,4 +83,7 @@ nf-core modules install seqtk/seq
 nf-core modules install seqtk/rename
 nf-core modules install faqcs
 nf-core modules install seqkit/pair
+nf-core modules install rapidnj
+nf-core modules install raxmlng
+nf-core modules install samtools/view
 ```

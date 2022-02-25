@@ -13,6 +13,7 @@ include { BWA_MEM }                       from '../../modules/nf-core/modules/bw
 include { SAMTOOLS_SORT }                 from '../../modules/nf-core/modules/samtools/sort/main'
 include { PICARD_MARKDUPLICATES }         from '../../modules/nf-core/modules/picard/markduplicates/main'
 include { PICARD_CLEANSAM }               from '../../modules/nf-core/modules/picard/cleansam/main'
+include { SAMTOOLS_VIEW }                 from '../../modules/nf-core/modules/samtools/view/main'
 include { PICARD_FIXMATEINFORMATION }     from '../../modules/nf-core/modules/picard/fixmateinformation/main'
 include { PICARD_ADDORREPLACEREADGROUPS } from '../../modules/nf-core/modules/picard/addorreplacereadgroups/main'
 include { SAMTOOLS_INDEX }                from '../../modules/nf-core/modules/samtools/index/main'
@@ -29,7 +30,11 @@ workflow BWA_PREPROCESS {
     reads // channel: [ val(meta), [ fastq ] ]
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions           = Channel.empty()
+    ch_alignment          = Channel.empty()
+    ch_alignment_index    = Channel.empty()
+    ch_alignment_combined = Channel.empty()
+    
 
     // Going to skip this one for now and add multilane support within the read_csv
     // CONCAT_FASTQ_LANES()
@@ -39,8 +44,8 @@ workflow BWA_PREPROCESS {
     FAQCS(SEQTK_SAMPLE.out.reads)
     // QC() // Local qc report
     BWA_MEM(FAQCS.out.reads, reference[2], true) // This already sorts the bam file
-    // PICARD_MARKDUPLICATES()
-    // PICARD_CLEANSAM()
+    //PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
+    //PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.sam)
     // PICARD_FIXMATEINFORMATION()
     // PICARD_ADDORREPLACEREADGROUPS()
     SAMTOOLS_INDEX(BWA_MEM.out.bam)
@@ -48,20 +53,32 @@ workflow BWA_PREPROCESS {
     // QUALIMAP_BAMQC()
     // MULTIQC()
 
-    ch_combined = Channel.empty()
-    BWA_MEM.out.bam.combine(SAMTOOLS_INDEX.out.bai).map{meta1, bam, meta2, bai -> [meta1, bam, bai] }.set{ch_combined}
+    
+    BWA_MEM.out.bam.combine(SAMTOOLS_INDEX.out.bai).map{meta1, bam, meta2, bai -> [meta1, bam, bai] }.set{ch_alignment_combined} 
 
-    ch_versions = ch_versions.mix(  BWA_MEM.out.versions, 
-                                    SAMTOOLS_INDEX.out.versions, 
-                                    FASTQC.out.versions
-                                 )
+    ch_versions            = ch_versions.mix(  SEQKIT_PAIR.out.versions, 
+                                               SEQTK_SAMPLE.out.versions, 
+                                               FAQCS.out.versions,
+                                               BWA_MEM.out.versions,
+                                               //PICARD_MARKDUPLICATES.out.versions,
+                                               //PICARD_CLEANSAM.out.versions,
+                                               //PICARD_FIXMATEINFORMATION.out.versions,
+                                               //PICARD_ADDORREPLACEREADGROUPS.out.versions,
+                                               SAMTOOLS_INDEX.out.versions,
+                                               FASTQC.out.versions
+                                               //,
+                                               //QUALIMAP_BAMQC.out.versions,
+                                               //MULTIQC.out.versions
+                                            )
+    ch_alignment          = BWA_MEM.out.bam
+    ch_alignment_index    = SAMTOOLS_INDEX.out.bai
+
 
     emit:
-    //alignment        = ADDORREPLACEGROUPS.out // channel: [ val(meta), [ vcf ] ]
-    alignment          = BWA_MEM.out.bam        // channel: [ val(meta), [ bam ] ]
-    alignment_index    = SAMTOOLS_INDEX.out.bai // channel: [ val(meta), [ bai ] ]
-    alignment_combined = ch_combined            // channel: [ val(meta), [ vcf ] ]
-    versions           = ch_versions            // channel: [ ch_versions ]
+    alignment          = ch_alignment          // channel: [ val(meta), [ bam ] ]
+    alignment_index    = ch_alignment_index    // channel: [ val(meta), [ bai ] ]
+    alignment_combined = ch_alignment_combined // channel: [ val(meta), [ vcf ] ]
+    versions              = ch_versions        // channel: [ ch_versions ]
 }
 
 /*
