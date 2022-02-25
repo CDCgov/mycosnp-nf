@@ -6,7 +6,7 @@
 
 include { NUCMER }                          from '../../modules/nf-core/modules/nucmer/main'
 // include { SHOW_COORDS }                     from '../../modules/local/showcoords.nf'
-// include { COORDSTOBED }                     from '../../modules/local/coordstobed.nf'
+include { COORDSTOBED }                     from '../../modules/local/coordstobed.nf'
 // include { BEDTOOLS_MASKFASTA }              from '../../modules/nf-core/modules/bedtools/maskfasta/'
 include { BWA_INDEX }                       from '../../modules/nf-core/modules/bwa/index/main'
 include { PICARD_CREATESEQUENCEDICTIONARY } from '../../modules/nf-core/modules/picard/createsequencedictionary/main'
@@ -49,7 +49,9 @@ workflow BWA_REFERENCE {
 
     INPUT_PROC(fasta)
     NUCMER( INPUT_PROC.out )
-    
+    // NUCMER.out.coords
+    // NUCMER.out.delta
+
     // TODO: Add masking and use that for BWA_INDEX, SAMTOOLS, PICARD
     // SHOW_COORDS()
     // COORDSTOBED()
