@@ -52,6 +52,15 @@ workflow BWA_REFERENCE {
     SAMTOOLS_FAIDX(INPUT_PROC.out.map{meta, fa1, fa2->[meta, fa1] })
     PICARD_CREATESEQUENCEDICTIONARY(INPUT_PROC.out.map{meta, fa1, fa2->[meta, fa1] })
 
+    ch_combined = Channel.empty()
+    // reference_fasta, samtools_faidx, bwa_index, dict
+    INPUT_PROC.out.combine(SAMTOOLS_FAIDX.out.fai).combine(BWA_INDEX.out.index).combine(PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict)
+      .map{meta, fa1, fa2, meta2, fai, bai, meta4, dict -> [meta, fa1, fai, bai, dict] }
+      .set{ch_combined}
+      
+    ch_combined.view()
+
+
     // Collect versions information
     ch_versions = ch_versions.mix(  NUCMER.out.versions, 
                                     BWA_INDEX.out.versions, 
@@ -66,6 +75,7 @@ workflow BWA_REFERENCE {
     samtools_index = SAMTOOLS_FAIDX.out.fai
     bwa_index = BWA_INDEX.out.index
     dict = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
+    reference_combined = ch_combined
     versions = ch_versions // channel: [ versions.yml ]
 }
 
