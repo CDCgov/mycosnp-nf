@@ -2,7 +2,7 @@
 
 ## Create Conda ENV with Nextflow & NF-Core
 ```
-mamba env create -n nextflow -c bioconda -c conda-forge nf-core nextflow git graphviz yamllint
+mamba create -n nextflow -c bioconda -c conda-forge nf-core nextflow git graphviz yamllint
 conda activate nextflow
 ```
 
