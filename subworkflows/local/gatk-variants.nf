@@ -35,15 +35,40 @@ workflow GATK_VARIANTS {
 
     main:
     ch_versions = Channel.empty()
+
+    ch_vcf = Channel.empty()
+    //alignments.collate(3, false)
+    //ch_vcf = alignments.collate(3)
+    //ch_vcf.view()
+
+    // https://gitlab.com/geneflow/apps/gatk-haplotypecaller-gf2.git
+    // gatk  HaplotypeCaller --input "/data1/SRR13710812/SRR13710812.bam" 
+    //    --sample-ploidy "1" 
+    //    --emit-ref-confidence "GVCF" 
+    //    --native-pair-hmm-threads "4" 
+    //    --reference "/data5/indexed_reference/indexed_reference.fasta" 
+    //    --output "/data7/SRR13710812/SRR13710812.g.vcf
+    /*
+        tuple val(meta), path(input), path(input_index), path(intervals)
+    path fasta
+    path fai
+    path dict
+    path dbsnp
+    path dbsnp_tbi
+    */
     //GATK4_HAPLOTYPECALLER()
     //GATK4_COMBINEGVCFS()
+    
     //GATK4_GENOTYPEGVCFS()
     //GATK4_VARIANTFILTRATION()
     // TODO //BROAD_VCFFILTER() 
     // TODO //SPLITVCF() split-vcf-broad --> uses bcftools view, bcftools index, and shell commands
     //BCFTOOLS_VIEW()
     //BCFTOOLS_QUERY()
+
+    // gatk  SelectVariants --variant "/data1/vcf-filter.vcf" --reference "/data2/indexed_reference/indexed_reference.fasta" --select-type-to-include "SNP" --output "/data4/gatk-selectvariants/gatk-selectvariants.vcf" 
     //GATK4_SELECTVARIANTS()
+
     // TODO //SPLITVCF() split-vcf-selectvariants --> also uses bcftools view, bcftools index, and shell commands + the GATK4 output
     //BCFTOOLS_VIEW()
     //BCFTOOLS_QUERY()

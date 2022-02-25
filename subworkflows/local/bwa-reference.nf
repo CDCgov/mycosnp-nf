@@ -18,7 +18,7 @@ process INPUT_PROC {
     path(fasta)
 
     output:
-    tuple val(meta), path(fasta, includeInputs: true), path("*.copy.fasta")
+    tuple val(meta), path("reference.fasta", includeInputs: true), path("reference.copy.fasta")
 
     script:
     meta = [
@@ -27,7 +27,8 @@ process INPUT_PROC {
 
     """
     echo ${meta.id}
-    cp ${fasta} ${fasta}.copy.fasta
+    mv ${fasta} reference.fasta
+    cp reference.fasta reference.copy.fasta
     """
 
 }
@@ -48,7 +49,7 @@ workflow BWA_REFERENCE {
     // COORDSTOBED()
     // BEDTOOLS_MASKFASTA()
 
-    BWA_INDEX(fasta)
+    BWA_INDEX(INPUT_PROC.out.map{meta, fa1, fa2 -> fa1})
     SAMTOOLS_FAIDX(INPUT_PROC.out.map{meta, fa1, fa2->[meta, fa1] })
     PICARD_CREATESEQUENCEDICTIONARY(INPUT_PROC.out.map{meta, fa1, fa2->[meta, fa1] })
 
@@ -58,7 +59,7 @@ workflow BWA_REFERENCE {
       .map{meta, fa1, fa2, meta2, fai, bai, meta4, dict -> [meta, fa1, fai, bai, dict] }
       .set{ch_combined}
       
-    ch_combined.view()
+    // ch_combined.view()
 
 
     // Collect versions information

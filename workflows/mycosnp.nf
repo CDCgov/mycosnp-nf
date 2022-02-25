@@ -52,6 +52,7 @@ include { GATK_VARIANTS } from '../subworkflows/local/gatk-variants'
 //include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
 //include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { GATK4_HAPLOTYPECALLER }       from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
 
 /*
 ========================================================================================
@@ -102,12 +103,42 @@ workflow MYCOSNP {
     // alignment_index = BAM_INDEX.out (meta, bam_index)
     // versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 
-    // Collect all alignments
-    ch_all_aln = Channel.empty()
-    ch_all_aln = BWA_PREPROCESS.out.alignment_combined.collect()
-    ch_all_aln.view()
+ 
+    // https://gitlab.com/geneflow/apps/gatk-haplotypecaller-gf2.git
+    // gatk  HaplotypeCaller --input "/data1/SRR13710812/SRR13710812.bam" 
+    //    --sample-ploidy "1" 
+    //    --emit-ref-confidence "GVCF" 
+    //    --native-pair-hmm-threads "4" 
+    //    --reference "/data5/indexed_reference/indexed_reference.fasta" 
+    //    --output "/data7/SRR13710812/SRR13710812.g.vcf
+    /*
+        tuple val(meta), path(input), path(input_index), path(intervals)
+    path fasta
+    path fai
+    path dict
+    path dbsnp
+    path dbsnp_tbi
+    output:
+    tuple val(meta), path("*.vcf.gz"), emit: vcf
+    tuple val(meta), path("*.tbi")   , emit: tbi
+    path "versions.yml"              , emit: versions
+    */
+    // This works but BAM files are not currect format yet until bwa-pre-process is completed
+    /*
+    GATK4_HAPLOTYPECALLER(  BWA_PREPROCESS.out.alignment_combined.map{meta, bam, bai            -> [ meta, bam, bai, [] ] },
+                            BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fa1 ]},
+                            BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fai ]},
+                            BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ dict ]},
+                            [],
+                            []
+     )
+    */
+    //ch_all_vcf = Channel.empty()
+    //ch_all_vcf = GATK4_HAPLOTYPECALLER.out.vcf
+    //GATK4_COMBINEGVCFS()
 
-    GATK_VARIANTS( BWA_REFERENCE.out.reference_combined, ch_all_aln )
+    //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], GATK4_COMBINEGVCFS.out.combined_gvcf )
+    //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], ch_all_aln )
     //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], ch_all_aln )
     //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], ch_gatk_in )
 
