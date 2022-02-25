@@ -53,6 +53,7 @@ include { GATK_VARIANTS } from '../subworkflows/local/gatk-variants'
 //include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 include { GATK4_HAPLOTYPECALLER }       from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
+include { GATK4_COMBINEGVCFS }          from '../modules/nf-core/modules/gatk4/combinegvcfs/main'
 
 /*
 ========================================================================================
@@ -89,6 +90,7 @@ workflow MYCOSNP {
     fai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fai ]}.first()
     bai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ bai ]}.first()
     dict_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ dict ]}.first()
+    meta_val = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ meta1 ]}.first()
 
     // SUBWORKFLOW: Run BWA_PRE_PROCESS
     // take:
@@ -107,11 +109,24 @@ workflow MYCOSNP {
                             [],
                             []
      )
+     
 
-    ch_all_vcf = Channel.empty()
-    ch_all_vcf = GATK4_HAPLOTYPECALLER.out.vcf.collect()
-    // ch_all_vcf.view()
-    //GATK4_COMBINEGVCFS()
+    
+    ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
+    
+    ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
+
+  /*
+    GATK4_COMBINEGVCFS( tuple( [ id:'test', single_end:false ], 
+                          GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }, 
+                          GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  } )
+                        , 
+                        fas_file, 
+                        fai_file, 
+                        dict_file )
+    */
+    //GATK4_COMBINEGVCFS([ [ id:'test', single_end:false ], ch_vcf, ch_vcf_idx] , fas_file, fai_file, dict_file )
+    //GATK4_COMBINEGVCFS(inputvcf , fas_file, fai_file, dict_file )
     //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], GATK4_COMBINEGVCFS.out.combined_gvcf )
 
 
