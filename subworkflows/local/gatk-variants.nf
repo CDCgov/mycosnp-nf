@@ -29,7 +29,7 @@ include { BCFTOOLS_CONSENSUS } from '../../modules/nf-core/modules/bcftools/cons
 workflow GATK_VARIANTS {
 
     take:
-    // tuple reference_fasta, samtools_faidx, bwa_index
+    // tuple meta, reference_fasta, fai, bai, dict
     reference
     // tuple meta, alignment, aligment_index
     alignments

@@ -24,7 +24,7 @@ include { QUALIMAP_BAMQC }                from '../../modules/nf-core/modules/qu
 
 workflow BWA_PREPROCESS {
 
-    take:   
+    take:
     reference //channel: tuple reference_fasta, samtools_faidx, bwa_index
     reads // channel: [ val(meta), [ fastq ] ]
 
@@ -47,6 +47,7 @@ workflow BWA_PREPROCESS {
     FASTQC(reads)
     // QUALIMAP()
     // MULTIQC()
+
     ch_combined = Channel.empty()
     BWA_MEM.out.bam.combine(SAMTOOLS_INDEX.out.bai).map{meta1, bam, meta2, bai -> [meta1, bam, bai] }.set{ch_combined}
 
