@@ -1,3 +1,12 @@
+[![Open nf-core/mycosnp in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CDCgov/mycosnp-nf)
+
+Once the pod launches, it will present a VS-Code interface and comes with Nextflow, Conda and Docker pre-installed
+
+* To run the pipeline with test data
+```bash
+nextflow run main.nf -profile docker,test
+```
+
 # ![nf-core/mycosnp](docs/images/nf-core-mycosnp_logo_light.png#gh-light-mode-only) ![nf-core/mycosnp](docs/images/nf-core-mycosnp_logo_dark.png#gh-dark-mode-only)
 
 [![GitHub Actions CI Status](https://github.com/nf-core/mycosnp/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/mycosnp/actions?query=workflow%3A%22nf-core+CI%22)
