@@ -94,7 +94,6 @@ workflow GATK_VARIANTS {
     // consensus_fasta = BCFTOOLS_CONSENSUS.out
     //qc_report = VCF_QCREPORT.out
     versions = ch_versions // channel: [ versions.yml ]
-
 }
 
 /*

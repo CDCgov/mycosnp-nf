@@ -36,10 +36,17 @@ process INPUT_PROC {
 workflow BWA_REFERENCE {
 
     take:
-    fasta
+    fasta // channel: [ val(meta), [ fastq ] ]
 
     main:
-    ch_versions = Channel.empty()
+    
+    ch_masked_fasta       = Channel.empty()
+    ch_samtools_index     = Channel.empty()
+    ch_bwa_index          = Channel.empty()
+    ch_dict               = Channel.empty()
+    ch_reference_combined = Channel.empty()
+    ch_versions           = Channel.empty()
+    ch_combined           = Channel.empty()
 
     INPUT_PROC(fasta)
     NUCMER( INPUT_PROC.out )
@@ -53,7 +60,7 @@ workflow BWA_REFERENCE {
     SAMTOOLS_FAIDX(INPUT_PROC.out.map{meta, fa1, fa2->[meta, fa1] })
     PICARD_CREATESEQUENCEDICTIONARY(INPUT_PROC.out.map{meta, fa1, fa2->[meta, fa1] })
 
-    ch_combined = Channel.empty()
+    
     // reference_fasta, samtools_faidx, bwa_index, dict
     INPUT_PROC.out.combine(SAMTOOLS_FAIDX.out.fai).combine(BWA_INDEX.out.index).combine(PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict)
       .map{meta, fa1, fa2, meta2, fai, bai, meta4, dict -> [meta, fa1, fai, bai, dict] }
@@ -63,21 +70,23 @@ workflow BWA_REFERENCE {
 
 
     // Collect versions information
-    ch_versions = ch_versions.mix(  NUCMER.out.versions, 
-                                    BWA_INDEX.out.versions, 
-                                    SAMTOOLS_FAIDX.out.versions, 
-                                    PICARD_CREATESEQUENCEDICTIONARY.out.versions
-                                )
-    
+    ch_versions           = ch_versions.mix( NUCMER.out.versions, 
+                                             BWA_INDEX.out.versions, 
+                                             SAMTOOLS_FAIDX.out.versions, 
+                                             PICARD_CREATESEQUENCEDICTIONARY.out.versions )
+    ch_masked_fasta       = fasta
+    ch_samtools_index     = SAMTOOLS_FAIDX.out.fai 
+    ch_bwa_index          = BWA_INDEX.out.index 
+    ch_dict               = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
+    ch_reference_combined = ch_combined
 
     emit:
-    //fasta = masked_fasta
-    masked_fasta = fasta
-    samtools_index = SAMTOOLS_FAIDX.out.fai
-    bwa_index = BWA_INDEX.out.index
-    dict = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
-    reference_combined = ch_combined
-    versions = ch_versions // channel: [ versions.yml ]
+    masked_fasta       = ch_masked_fasta        // channel: [ val(meta), [ fai ] ]
+    samtools_index     = ch_samtools_index      // channel: [ val(meta), [ fai ] ]
+    bwa_index          = ch_bwa_index           // channel: [ val(meta), [ index ] ]
+    dict               = ch_dict                // channel: [ val(meta), [ dict ] ]
+    reference_combined = ch_reference_combined  // channel: [ val(meta), [ vcf ] ]
+    versions           = ch_versions            // channel: [ ch_versions ]
 }
 
 

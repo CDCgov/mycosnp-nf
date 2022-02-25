@@ -33,11 +33,11 @@ WorkflowMain.initialise(workflow, params, log)
 ========================================================================================
 */
 
-include { MYCOSNP } from './workflows/mycosnp'
-include { INPUT_CHECK } from './subworkflows/local/input_check'
+include { MYCOSNP        } from './workflows/mycosnp'
+include { INPUT_CHECK    } from './subworkflows/local/input_check'
 include { BWA_PREPROCESS } from './subworkflows/local/bwa-pre-process'
-include { BWA_REFERENCE } from './subworkflows/local/bwa-reference'
-include { GATK_VARIANTS } from './subworkflows/local/gatk-variants'
+include { BWA_REFERENCE  } from './subworkflows/local/bwa-reference'
+include { GATK_VARIANTS  } from './subworkflows/local/gatk-variants'
 
 //
 // WORKFLOW: Run main nf-core/mycosnp analysis pipeline
@@ -46,14 +46,23 @@ workflow NFCORE_MYCOSNP {
     MYCOSNP ()
 }
 
+//
+// SUB-WORKFLOW: Run bwa-reference sub-workflow of nf-core/mycosnp analysis pipeline
+//
 workflow PREPARE_REFERENCE {
     BWA_REFERENCE ()
 }
 
+//
+// SUB-WORKFLOW: Run bwa-preprocess sub-workflow of nf-core/mycosnp analysis pipeline
+//
 workflow PREPROCESS {
     BWA_PREPROCESS ()
 }
 
+//
+// SUB-WORKFLOW: Run gatk-variants sub-workflow of nf-core/mycosnp analysis pipeline
+//
 workflow FIND_VARIANTS {
     GATK_VARIANTS ()
 }

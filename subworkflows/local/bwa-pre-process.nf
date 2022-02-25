@@ -31,21 +31,21 @@ workflow BWA_PREPROCESS {
     main:
     ch_versions = Channel.empty()
 
-
+    // Going to skip this one for now and add multilane support within the read_csv
     // CONCAT_FASTQ_LANES()
-    // SEQKIT_PAIR()
-    // SEQTK_SAMPLE()
-    // FAQCS(DOWNSAMPLE.out)
-    // QC()
-    BWA_MEM(reads, reference[2], true)
-    // BWA_SORT()
-    // MARK_DUPLICATES()
-    // CLEAN_SAM()
-    // FIXMATEINFORMATION()
-    // ADDORREPLACEGROUPS()
+    
+    SEQKIT_PAIR(reads)
+    SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, params.coverage)
+    FAQCS(SEQTK_SAMPLE.out.reads)
+    // QC() // Local qc report
+    BWA_MEM(FAQCS.out.reads, reference[2], true) // This already sorts the bam file
+    // PICARD_MARKDUPLICATES()
+    // PICARD_CLEANSAM()
+    // PICARD_FIXMATEINFORMATION()
+    // PICARD_ADDORREPLACEREADGROUPS()
     SAMTOOLS_INDEX(BWA_MEM.out.bam)
     FASTQC(reads)
-    // QUALIMAP()
+    // QUALIMAP_BAMQC()
     // MULTIQC()
 
     ch_combined = Channel.empty()
@@ -57,12 +57,11 @@ workflow BWA_PREPROCESS {
                                  )
 
     emit:
-    //alignment = ADDORREPLACEGROUPS.out
-    alignment = BWA_MEM.out.bam
-    alignment_index = SAMTOOLS_INDEX.out.bai
-    alignment_combined = ch_combined
-    versions = ch_versions // channel: [ versions.yml ]
-
+    //alignment        = ADDORREPLACEGROUPS.out // channel: [ val(meta), [ vcf ] ]
+    alignment          = BWA_MEM.out.bam        // channel: [ val(meta), [ bam ] ]
+    alignment_index    = SAMTOOLS_INDEX.out.bai // channel: [ val(meta), [ bai ] ]
+    alignment_combined = ch_combined            // channel: [ val(meta), [ vcf ] ]
+    versions           = ch_versions            // channel: [ ch_versions ]
 }
 
 /*
