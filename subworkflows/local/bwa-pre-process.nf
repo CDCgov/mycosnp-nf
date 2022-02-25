@@ -25,7 +25,7 @@ include { QUALIMAP_BAMQC }                from '../../modules/nf-core/modules/qu
 workflow BWA_PREPROCESS {
 
     take:
-    reference //channel: tuple reference_fasta, samtools_faidx, bwa_index
+    reference //channel: [ tuple reference_fasta, samtools_faidx, bwa_index ]
     reads // channel: [ val(meta), [ fastq ] ]
 
     main:
