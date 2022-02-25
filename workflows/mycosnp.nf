@@ -85,62 +85,35 @@ workflow MYCOSNP {
     //versions = ch_versions // channel: [ versions.yml ]
 
     BWA_REFERENCE(ch_fasta)
+    fas_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fa1 ]}.first()
+    fai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fai ]}.first()
+    bai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ bai ]}.first()
+    dict_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ dict ]}.first()
 
     // SUBWORKFLOW: Run BWA_PRE_PROCESS
     // take:
     // tuple reference_fasta, samtools_faidx, bwa_index
     // tuple meta, fastq
     
-    BWA_PREPROCESS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], INPUT_CHECK.out.reads)
-    //BWA_PRE_PROCESS(BWA_REFERENCE.out.map{masked_fasta, samtools_index, bwa_index, dict, versions->[masked_fasta, samtools_index, bwa_index] }, INPUT_CHECK.out.reads)
+    BWA_PREPROCESS( [fas_file, fai_file, bai_file ], INPUT_CHECK.out.reads)
     //ch_versions = ch_versions.mix(BWA_PRE_PROCESS.out.versions)
 
-    // SUBWORKFLOW: Run GATK_VARIANTS
-    // tuple reference_fasta, samtools_faidx, bwa_index
-    // tuple meta, alignment, aligment_index
-    // emit:
-    // alignment = ADDORREPLACEGROUPS.out  -> (meta, bam)
-    // alignment_index = BAM_INDEX.out (meta, bam_index)
-    // versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
+    // SUBWORKFLOW: Run GATK And GATK_VARIANTS
 
- 
-    // https://gitlab.com/geneflow/apps/gatk-haplotypecaller-gf2.git
-    // gatk  HaplotypeCaller --input "/data1/SRR13710812/SRR13710812.bam" 
-    //    --sample-ploidy "1" 
-    //    --emit-ref-confidence "GVCF" 
-    //    --native-pair-hmm-threads "4" 
-    //    --reference "/data5/indexed_reference/indexed_reference.fasta" 
-    //    --output "/data7/SRR13710812/SRR13710812.g.vcf
-    /*
-        tuple val(meta), path(input), path(input_index), path(intervals)
-    path fasta
-    path fai
-    path dict
-    path dbsnp
-    path dbsnp_tbi
-    output:
-    tuple val(meta), path("*.vcf.gz"), emit: vcf
-    tuple val(meta), path("*.tbi")   , emit: tbi
-    path "versions.yml"              , emit: versions
-    */
-    // This works but BAM files are not currect format yet until bwa-pre-process is completed
-    /*
     GATK4_HAPLOTYPECALLER(  BWA_PREPROCESS.out.alignment_combined.map{meta, bam, bai            -> [ meta, bam, bai, [] ] },
-                            BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fa1 ]},
-                            BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fai ]},
-                            BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ dict ]},
+                            fas_file,
+                            fai_file,
+                            dict_file,
                             [],
                             []
      )
-    */
-    //ch_all_vcf = Channel.empty()
-    //ch_all_vcf = GATK4_HAPLOTYPECALLER.out.vcf
-    //GATK4_COMBINEGVCFS()
 
-    //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], GATK4_COMBINEGVCFS.out.combined_gvcf )
-    //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], ch_all_aln )
-    //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], ch_all_aln )
-    //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], ch_gatk_in )
+    ch_all_vcf = Channel.empty()
+    ch_all_vcf = GATK4_HAPLOTYPECALLER.out.vcf.collect()
+    // ch_all_vcf.view()
+    //GATK4_COMBINEGVCFS()
+    //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], GATK4_COMBINEGVCFS.out.combined_gvcf )
+
 
     /*
     //

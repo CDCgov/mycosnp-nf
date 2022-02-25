@@ -53,17 +53,17 @@ workflow BWA_PREPROCESS {
     // QUALIMAP_BAMQC()
     // MULTIQC()
 
+    ch_alignment_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam.join(SAMTOOLS_INDEX.out.bai)
     
-    PICARD_ADDORREPLACEREADGROUPS.out.bam.combine(SAMTOOLS_INDEX.out.bai).map{meta1, bam, meta2, bai -> [meta1, bam, bai] }.set{ch_alignment_combined} 
-
+  
     ch_versions            = ch_versions.mix(  SEQKIT_PAIR.out.versions, 
                                                SEQTK_SAMPLE.out.versions, 
                                                FAQCS.out.versions,
                                                BWA_MEM.out.versions,
-                                               //PICARD_MARKDUPLICATES.out.versions,
-                                               //PICARD_CLEANSAM.out.versions,
-                                               //PICARD_FIXMATEINFORMATION.out.versions,
-                                               //PICARD_ADDORREPLACEREADGROUPS.out.versions,
+                                               PICARD_MARKDUPLICATES.out.versions,
+                                               PICARD_CLEANSAM.out.versions,
+                                               PICARD_FIXMATEINFORMATION.out.versions,
+                                               PICARD_ADDORREPLACEREADGROUPS.out.versions,
                                                SAMTOOLS_INDEX.out.versions,
                                                FASTQC.out.versions
                                                //,

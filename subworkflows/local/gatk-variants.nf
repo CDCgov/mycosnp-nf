@@ -29,36 +29,16 @@ include { BCFTOOLS_CONSENSUS } from '../../modules/nf-core/modules/bcftools/cons
 workflow GATK_VARIANTS {
 
     take:
-    reference // channel: [ tuple meta, reference_fasta, fai, bai, dict ]
-    alignments // channel: [ tuple meta, alignment, aligment_index ]
+    reference // channel: [ tuple reference_fasta, fai, bai, dict ]
+    combined_cvf // channel: combined_vcf_file
     
 
     main:
     ch_versions = Channel.empty()
 
-    ch_vcf = Channel.empty()
-    //alignments.collate(3, false)
-    //ch_vcf = alignments.collate(3)
-    //ch_vcf.view()
-
-    // https://gitlab.com/geneflow/apps/gatk-haplotypecaller-gf2.git
-    // gatk  HaplotypeCaller --input "/data1/SRR13710812/SRR13710812.bam" 
-    //    --sample-ploidy "1" 
-    //    --emit-ref-confidence "GVCF" 
-    //    --native-pair-hmm-threads "4" 
-    //    --reference "/data5/indexed_reference/indexed_reference.fasta" 
-    //    --output "/data7/SRR13710812/SRR13710812.g.vcf
-    /*
-        tuple val(meta), path(input), path(input_index), path(intervals)
-    path fasta
-    path fai
-    path dict
-    path dbsnp
-    path dbsnp_tbi
-    */
     //GATK4_HAPLOTYPECALLER()
     //GATK4_COMBINEGVCFS()
-    
+
     //GATK4_GENOTYPEGVCFS()
     //GATK4_VARIANTFILTRATION()
     // TODO //BROAD_VCFFILTER() 
