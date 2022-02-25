@@ -39,7 +39,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { BWA_PREPROCESS } from '../subworkflows/local/bwa-pre-process'
 include { BWA_REFERENCE } from '../subworkflows/local/bwa-reference'
-//include { GATK_VARIANTS } from '../subworkflows/local/gatk-variants'
+include { GATK_VARIANTS } from '../subworkflows/local/gatk-variants'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -108,19 +108,25 @@ workflow MYCOSNP {
     //ch_grouped = ch_gatk_in.groupTuple()  
     //ch_gatk_in.view()
     //ch_grouped.view()
-    ch_aln = Channel.empty()
-    ch_aln = BWA_PREPROCESS.out.alignment.collect()
-    ch_aln_idx = Channel.empty()
-    ch_aln_idx = BWA_PREPROCESS.out.alignment_index.collect()
-    ch_mixed = Channel.empty()
+    //ch_aln = Channel.empty()
+    //ch_aln = BWA_PREPROCESS.out.alignment.collect()
+    //ch_aln_idx = Channel.empty()
+    //ch_aln_idx = BWA_PREPROCESS.out.alignment_index.collect()
+    //ch_mixed = Channel.empty()
     
-    ch_mixed = ch_mixed.mix(ch_aln)
-    ch_mixed = ch_mixed.mix(ch_aln_idx)
+    //ch_mixed = ch_mixed.mix(ch_aln)
+    //ch_mixed = ch_mixed.mix(ch_aln_idx)
     
-    ch_grouped = Channel.empty()
-    ch_grouped = ch_mixed.groupTuple()
+    //ch_grouped = Channel.empty()
+    //ch_grouped = ch_mixed.groupTuple()
     //ch_mixed.view()
-    ch_grouped.view()
+    // ch_grouped.view()
+
+    ch_all_aln = Channel.empty()
+    ch_all_aln = BWA_PREPROCESS.out.alignment_combined.collect()
+    ch_all_aln.view()
+
+    GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], ch_all_aln )
     //GATK_VARIANTS( [BWA_REFERENCE.out.masked_fasta, BWA_REFERENCE.out.samtools_index, BWA_REFERENCE.out.bwa_index ], ch_gatk_in )
 
     /*

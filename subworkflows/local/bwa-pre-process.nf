@@ -47,6 +47,8 @@ workflow BWA_PREPROCESS {
     FASTQC(reads)
     // QUALIMAP()
     // MULTIQC()
+    ch_combined = Channel.empty()
+    BWA_MEM.out.bam.combine(SAMTOOLS_INDEX.out.bai).map{meta1, bam, meta2, bai -> [meta1, bam, bai] }.set{ch_combined}
 
     ch_versions = ch_versions.mix(  BWA_MEM.out.versions, 
                                     SAMTOOLS_INDEX.out.versions, 
@@ -57,6 +59,7 @@ workflow BWA_PREPROCESS {
     //alignment = ADDORREPLACEGROUPS.out
     alignment = BWA_MEM.out.bam
     alignment_index = SAMTOOLS_INDEX.out.bai
+    alignment_combined = ch_combined
     versions = ch_versions // channel: [ versions.yml ]
 
 }
