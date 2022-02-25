@@ -44,22 +44,17 @@ workflow BWA_PREPROCESS {
     FAQCS(SEQTK_SAMPLE.out.reads)
     // QC() // Local qc report
     BWA_MEM(FAQCS.out.reads, reference[2], true) // This already sorts the bam file
-
-      // validation_stringency: LENIENT
-      // remove_duplicates: 'true'
-      // assume_sorted: 'true'
-      // output: ${1}
     PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
     PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam)
-    // PICARD_FIXMATEINFORMATION()
-    // PICARD_ADDORREPLACEREADGROUPS()
-    SAMTOOLS_INDEX(BWA_MEM.out.bam)
+    PICARD_FIXMATEINFORMATION(PICARD_CLEANSAM.out.bam)
+    PICARD_ADDORREPLACEREADGROUPS(PICARD_FIXMATEINFORMATION.out.bam)
+    SAMTOOLS_INDEX(PICARD_ADDORREPLACEREADGROUPS.out.bam)
     FASTQC(reads)
     // QUALIMAP_BAMQC()
     // MULTIQC()
 
     
-    BWA_MEM.out.bam.combine(SAMTOOLS_INDEX.out.bai).map{meta1, bam, meta2, bai -> [meta1, bam, bai] }.set{ch_alignment_combined} 
+    PICARD_ADDORREPLACEREADGROUPS.out.bam.combine(SAMTOOLS_INDEX.out.bai).map{meta1, bam, meta2, bai -> [meta1, bam, bai] }.set{ch_alignment_combined} 
 
     ch_versions            = ch_versions.mix(  SEQKIT_PAIR.out.versions, 
                                                SEQTK_SAMPLE.out.versions, 
@@ -75,7 +70,7 @@ workflow BWA_PREPROCESS {
                                                //QUALIMAP_BAMQC.out.versions,
                                                //MULTIQC.out.versions
                                             )
-    ch_alignment          = BWA_MEM.out.bam
+    ch_alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam
     ch_alignment_index    = SAMTOOLS_INDEX.out.bai
 
 
