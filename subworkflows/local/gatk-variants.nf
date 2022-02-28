@@ -18,6 +18,7 @@ include { FILTER_GATK_GENOTYPES } from '../../modules/local/vcftools.nf'
 include { BCFTOOLS_INDEX } from '../../modules/nf-core/modules/bcftools/index/main'
 include { BCFTOOLS_VIEW  as BCFTOOLS_VIEW_CONVERT } from '../../modules/nf-core/modules/bcftools/view/main'
 include { SPLIT_VCF } from '../../modules/local/splitvcf.nf'
+include { VCF_TO_FASTA } from '../../modules/local/vcftofasta.nf'
 //include { BCFTOOLS_VIEW } from '../../modules/nf-core/modules/bcftools/view/main'
 include { BCFTOOLS_QUERY } from '../../modules/nf-core/modules/bcftools/query/main'
 
@@ -46,7 +47,7 @@ workflow GATK_VARIANTS {
         reference[1], 
         reference[3], [], []
         )
-            
+
     GATK4_VARIANTFILTRATION(
                                  GATK4_GENOTYPEGVCFS.out.vcf.combine(GATK4_GENOTYPEGVCFS.out.tbi).map{ meta1, vcf, meta2, tbi->[meta1, vcf, tbi]},
                                 reference[0], 
@@ -59,15 +60,24 @@ workflow GATK_VARIANTS {
                         )
 
     FILTER_GATK_GENOTYPES(GATK4_SELECTVARIANTS.out.vcf)
+    fin_comb_vcf = FILTER_GATK_GENOTYPES.out.vcf.first()
+
     // Convert to bgzip
-    BCFTOOLS_VIEW_CONVERT(FILTER_GATK_GENOTYPES.out.vcf.map{meta, vcf->[ meta, vcf, [] ] }, [], [], []  )
+    BCFTOOLS_VIEW_CONVERT(fin_comb_vcf.map{meta, vcf->[ meta, vcf, [] ] }, [], [], []  )
     BCFTOOLS_INDEX(BCFTOOLS_VIEW_CONVERT.out.vcf)
     SPLIT_VCF(
                      BCFTOOLS_VIEW_CONVERT.out.vcf.combine(BCFTOOLS_INDEX.out.csi).map{meta1, vcf, meta2, csi-> [meta1, vcf, csi] }
              )
-    //SELECTVARIANTS of Split
-    
-    // TODO //VCFTOFASTA()
+
+
+    final_vcf_txt = Channel.empty()
+    fin_comb_vcf.combine(SPLIT_VCF.out.txt).map{meta1, vcf, meta2, txt -> 
+                    [ meta1, vcf, txt, params.max_amb_samples, params.max_perc_amb_samples]}.set{final_vcf_txt}
+
+    VCF_TO_FASTA(final_vcf_txt, reference[0])
+
+
+
     //BCFTOOLS_CONSENSUS()
     // TODO //VCF_QCREPORT()
 
