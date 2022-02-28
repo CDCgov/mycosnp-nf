@@ -19,13 +19,11 @@ include { BCFTOOLS_INDEX } from '../../modules/nf-core/modules/bcftools/index/ma
 include { BCFTOOLS_VIEW  as BCFTOOLS_VIEW_CONVERT } from '../../modules/nf-core/modules/bcftools/view/main'
 include { SPLIT_VCF } from '../../modules/local/splitvcf.nf'
 include { VCF_TO_FASTA } from '../../modules/local/vcftofasta.nf'
-//include { BCFTOOLS_VIEW } from '../../modules/nf-core/modules/bcftools/view/main'
+
 include { BCFTOOLS_QUERY } from '../../modules/nf-core/modules/bcftools/query/main'
+include { VCF_CONSENSUS } from '../../modules/local/vcfconsensus.nf'
+//include { VCF_QCREPORT } from '../../modules/local/vcfqcreport.nf'
 
-
-// TODO : vcf2fasta local module  --> HS: renamed from snp2fasta ==> vcf2fasta
-//include { VCFTOFASTA } from '../../modules/local/vcftofasta.nf'
-include { BCFTOOLS_CONSENSUS } from '../../modules/nf-core/modules/bcftools/consensus/main'
 // TODO: vcf qc report local module
 //include { VCF_QCREPORT } from '../../modules/local/vcfqcreport.nf'
 
@@ -74,11 +72,13 @@ workflow GATK_VARIANTS {
     fin_comb_vcf.combine(SPLIT_VCF.out.txt).map{meta1, vcf, meta2, txt -> 
                     [ meta1, vcf, txt, params.max_amb_samples, params.max_perc_amb_samples]}.set{final_vcf_txt}
 
+    VCF_CONSENSUS(
+        BCFTOOLS_VIEW_CONVERT.out.vcf.combine(BCFTOOLS_INDEX.out.csi).map{meta1, vcf, meta2, csi-> [meta1, vcf, csi] },
+        reference[0]
+    )
+    
     VCF_TO_FASTA(final_vcf_txt, reference[0])
 
-
-
-    //BCFTOOLS_CONSENSUS()
     // TODO //VCF_QCREPORT()
 
 
@@ -90,7 +90,8 @@ workflow GATK_VARIANTS {
                                     //FILTER_GATK_GENOTYPES.out.versions,
                                     BCFTOOLS_VIEW_CONVERT.out.versions,
                                     BCFTOOLS_INDEX.out.versions,
-                                    SPLIT_VCF.out.versions
+                                    SPLIT_VCF.out.versions,
+                                    VCF_CONSENSUS.out.versions
 
                                 )
                                 
