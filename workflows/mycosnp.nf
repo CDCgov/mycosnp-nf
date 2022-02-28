@@ -86,6 +86,7 @@ workflow MYCOSNP {
     //versions = ch_versions // channel: [ versions.yml ]
 
     BWA_REFERENCE(ch_fasta)
+    ch_versions = ch_versions.mix(BWA_REFERENCE.out.versions)
     fas_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fa1 ]}.first()
     fai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fai ]}.first()
     bai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ bai ]}.first()
@@ -98,6 +99,7 @@ workflow MYCOSNP {
     // tuple meta, fastq
     
     BWA_PREPROCESS( [fas_file, fai_file, bai_file ], INPUT_CHECK.out.reads)
+    ch_versions = ch_versions.mix(BWA_PREPROCESS.out.versions)
     //ch_versions = ch_versions.mix(BWA_PRE_PROCESS.out.versions)
 
     // SUBWORKFLOW: Run GATK And GATK_VARIANTS
@@ -109,12 +111,10 @@ workflow MYCOSNP {
                             [],
                             []
      )
+     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
      
-
-    
-    ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
-    
-    ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
+  //  ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
+  //  ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
 
   /*
     GATK4_COMBINEGVCFS( tuple( [ id:'test', single_end:false ], 
@@ -129,6 +129,19 @@ workflow MYCOSNP {
     //GATK4_COMBINEGVCFS(inputvcf , fas_file, fai_file, dict_file )
     //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], GATK4_COMBINEGVCFS.out.combined_gvcf )
 
+
+
+    // These files are temporary until combinegvcfs working - this will allow pipeline to continue with testdata running only
+    gvcftest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf")
+    gvcfidxtest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf.idx")
+    GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], [ [ id:'combined', single_end:false ], gvcftest, gvcfidxtest] )
+    ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
+
+
+
+     CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
     /*
     //
