@@ -24,23 +24,26 @@ include { BCFTOOLS_QUERY } from '../../modules/nf-core/modules/bcftools/query/ma
 include { VCF_CONSENSUS } from '../../modules/local/vcfconsensus.nf'
 //include { VCF_QCREPORT } from '../../modules/local/vcfqcreport.nf'
 
-// TODO: vcf qc report local module
-//include { VCF_QCREPORT } from '../../modules/local/vcfqcreport.nf'
-
 combined_gvcf = Channel.empty()
 
 workflow GATK_VARIANTS {
 
     take:
     reference // channel: [ tuple reference_fasta, fai, bai, dict ]
-    combined_gvcf // channel: combined_vcf_file
+    thismeta
+    vcffile
+    vcfidx
+    //combined_gvcf // channel: combined_vcf_file
     
 
     main:
     ch_versions = Channel.empty()
-    
+    combined_gvcf = Channel.empty()
+    combined_gvcf = thismeta.combine(vcffile).combine(vcfidx)
+
+   
     GATK4_GENOTYPEGVCFS(
-        [ combined_gvcf[0], combined_gvcf[1], combined_gvcf[2], [], [] ],
+        combined_gvcf.map{meta, vcf, idx -> [ meta, vcf, idx, [], [] ]},
         reference[0], 
         reference[1], 
         reference[3], [], []
@@ -76,8 +79,9 @@ workflow GATK_VARIANTS {
         BCFTOOLS_VIEW_CONVERT.out.vcf.combine(BCFTOOLS_INDEX.out.csi).map{meta1, vcf, meta2, csi-> [meta1, vcf, csi] },
         reference[0]
     )
-    
+
     VCF_TO_FASTA(final_vcf_txt, reference[0])
+
 
     // TODO //VCF_QCREPORT()
 
@@ -87,15 +91,14 @@ workflow GATK_VARIANTS {
     ch_versions = ch_versions.mix(  GATK4_GENOTYPEGVCFS.out.versions, 
                                     GATK4_VARIANTFILTRATION.out.versions, 
                                     GATK4_SELECTVARIANTS.out.versions,
-                                    //FILTER_GATK_GENOTYPES.out.versions,
                                     BCFTOOLS_VIEW_CONVERT.out.versions,
                                     BCFTOOLS_INDEX.out.versions,
                                     SPLIT_VCF.out.versions,
                                     VCF_CONSENSUS.out.versions
-
                                 )
                                 
-                                
+ 
+
     emit:
     // filtered_vcf = BROAD_VCFFILTER.out
     // split_vcf_broad = SPLITVCF.out        --> the broad vcf file
