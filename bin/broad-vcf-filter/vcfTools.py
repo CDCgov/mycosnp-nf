@@ -114,8 +114,8 @@ class VcfRecord:
 		genotype = self.genotypes[index]
 		parsed_genotype = genotype.split(':')[0]
 		dip_flag = False
- 		if len(parsed_genotype) == 3:
- 			dip_flag = True
+		if len(parsed_genotype) == 3:
+			dip_flag = True
 		parsed_genotype_list = [parsed_genotype,0,0,0,0]
 		### print(parsed_genotype) ####
 		try:
@@ -470,7 +470,3 @@ class VcfHeader:
 		
 	def get_contigs(self):
 		return self.contigs
-	
-
-
-		

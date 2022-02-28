@@ -9,15 +9,15 @@ include { GATK4_HAPLOTYPECALLER } from '../../modules/nf-core/modules/gatk4/hapl
 include { GATK4_COMBINEGVCFS } from '../../modules/nf-core/modules/gatk4/combinegvcfs/main'
 include { GATK4_GENOTYPEGVCFS } from '../../modules/nf-core/modules/gatk4/genotypegvcfs/main'
 include { GATK4_VARIANTFILTRATION } from '../../modules/nf-core/modules/gatk4/variantfiltration/main'
+include { GATK4_SELECTVARIANTS } from '../../modules/nf-core/modules/gatk4/selectvariants/main'
 
 // TODO: broad vcf filter local module
-//include { BROAD_VCFFILTER } from '../../modules/local/broad_vcffilter.nf'
+include { FILTER_GATK_GENOTYPES } from '../../modules/local/vcftools.nf'
 
 // TODO: broad split vcf local module ? (uses bcftools view, bcftools index, and shell commands)
 include { BCFTOOLS_VIEW } from '../../modules/nf-core/modules/bcftools/view/main'
 include { BCFTOOLS_QUERY } from '../../modules/nf-core/modules/bcftools/query/main'
 
-include { GATK4_SELECTVARIANTS } from '../../modules/nf-core/modules/gatk4/selectvariants/main'
 
 // TODO : vcf2fasta local module  --> HS: renamed from snp2fasta ==> vcf2fasta
 //include { VCFTOFASTA } from '../../modules/local/vcftofasta.nf'
@@ -80,6 +80,7 @@ workflow GATK_VARIANTS {
   //                        --keep_all_ref "/data7/gatk-variantfiltration.vcf" 
   //                         > "vcf-filter.vcf"
     // TODO // BROAD_VCF_FILTER()
+FILTER_GATK_GENOTYPES(GATK4_SELECTVARIANTS.out.vcf)
 
 
 
