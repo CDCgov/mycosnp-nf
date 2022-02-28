@@ -71,8 +71,9 @@ workflow GATK_VARIANTS {
                         )
 // Uses
 //  docker://geneflow/python:2.7.18-scipy python
+// There is a quay.io/biocontainers/scipy
 // Uses library vcftools in assets directory
-  // filterGatkGenotypes.py --min_GQ "50" 
+  // python2 filterGatkGenotypes.py --min_GQ "50" 
   //                        --keep_GQ_0_refs 
   //                        --min_percent_alt_in_AD "0.8" 
   //                        --min_total_DP "10" 
