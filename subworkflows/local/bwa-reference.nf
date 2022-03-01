@@ -6,7 +6,7 @@
 
 include { NUCMER }                          from '../../modules/nf-core/modules/nucmer/main'
 include { COORDSTOBED }                     from '../../modules/local/coordstobed.nf'
-// include { BEDTOOLS_MASKFASTA }              from '../../modules/nf-core/modules/bedtools/maskfasta/'
+include { BEDTOOLS_MASKFASTA }              from '../../modules/nf-core/modules/bedtools/maskfasta/main'
 include { BWA_INDEX }                       from '../../modules/nf-core/modules/bwa/index/main'
 include { PICARD_CREATESEQUENCEDICTIONARY } from '../../modules/nf-core/modules/picard/createsequencedictionary/main'
 include { SAMTOOLS_FAIDX }                  from '../../modules/nf-core/modules/samtools/faidx/main'
@@ -17,7 +17,7 @@ process INPUT_PROC {
     path(fasta)
 
     output:
-    tuple val(meta), path("reference.fasta", includeInputs: true), path("reference.copy.fasta")
+    tuple val(meta), path("reference.fasta", includeInputs: true), path("reference.copy.fasta"), emit: ref_fasta
 
     script:
     meta = [
@@ -53,8 +53,7 @@ workflow BWA_REFERENCE {
 
     // TODO: Add masking and use that for BWA_INDEX, SAMTOOLS, PICARD
     COORDSTOBED(NUCMER.out.delta)
-    // COORDSTOBED()
-    // BEDTOOLS_MASKFASTA()
+    BEDTOOLS_MASKFASTA(COORDSTOBED.out.bed, INPUT_PROC.out.map{ meta, fa, fa2->[ fa]})
 
     BWA_INDEX(INPUT_PROC.out.map{meta, fa1, fa2 -> fa1})
     SAMTOOLS_FAIDX(INPUT_PROC.out.map{meta, fa1, fa2->[meta, fa1] })
