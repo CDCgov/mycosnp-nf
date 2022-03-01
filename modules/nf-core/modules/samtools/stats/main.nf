@@ -20,6 +20,7 @@ process SAMTOOLS_STATS {
 
     script:
     def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def reference = fasta ? "--reference ${fasta}" : ""
     """
     samtools \\
@@ -27,7 +28,7 @@ process SAMTOOLS_STATS {
         --threads ${task.cpus-1} \\
         ${reference} \\
         ${input} \\
-        > ${input}.stats
+        > ${prefix}.stats
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

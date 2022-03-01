@@ -13,12 +13,11 @@ include { BWA_MEM }                       from '../../modules/nf-core/modules/bw
 include { SAMTOOLS_SORT }                 from '../../modules/nf-core/modules/samtools/sort/main'
 include { PICARD_MARKDUPLICATES }         from '../../modules/nf-core/modules/picard/markduplicates/main'
 include { PICARD_CLEANSAM }               from '../../modules/nf-core/modules/picard/cleansam/main'
-include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM}                 from '../../modules/nf-core/modules/samtools/view/main'
+include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM} from '../../modules/nf-core/modules/samtools/view/main'
 include { PICARD_FIXMATEINFORMATION }     from '../../modules/nf-core/modules/picard/fixmateinformation/main'
 include { PICARD_ADDORREPLACEREADGROUPS } from '../../modules/nf-core/modules/picard/addorreplacereadgroups/main'
 include { SAMTOOLS_INDEX }                from '../../modules/nf-core/modules/samtools/index/main'
 include { FASTQC }                        from '../../modules/nf-core/modules/fastqc/main'
-include { MULTIQC }                       from '../../modules/nf-core/modules/multiqc/main'
 include { QUALIMAP_BAMQC }                from '../../modules/nf-core/modules/qualimap/bamqc/main'
 include { DOWNSAMPLE_RATE }               from '../../modules/local/downsample_rate.nf'
 include { SAMTOOLS_STATS    }             from '../../modules/nf-core/modules/samtools/stats/main'
@@ -54,10 +53,8 @@ workflow BWA_PREPROCESS {
     PICARD_FIXMATEINFORMATION(PICARD_CLEANSAM.out.bam)
     PICARD_ADDORREPLACEREADGROUPS(PICARD_FIXMATEINFORMATION.out.bam)
     SAMTOOLS_INDEX(PICARD_ADDORREPLACEREADGROUPS.out.bam)
-    FASTQC(reads)
-    // QUALIMAP_BAMQC()
-    // MULTIQC()
-    
+    FASTQC(FAQCS.out.reads)
+    QUALIMAP_BAMQC(PICARD_ADDORREPLACEREADGROUPS.out.bam, [], false)
 
     ch_alignment_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam.join(SAMTOOLS_INDEX.out.bai)
     
@@ -75,53 +72,20 @@ workflow BWA_PREPROCESS {
                                                PICARD_ADDORREPLACEREADGROUPS.out.versions,
                                                SAMTOOLS_INDEX.out.versions,
                                                FASTQC.out.versions,
-                                               SAMTOOLS_STATS.out.versions
-                                               //,
-                                               //QUALIMAP_BAMQC.out.versions,
-                                               //MULTIQC.out.versions
+                                               SAMTOOLS_STATS.out.versions,
+                                               QUALIMAP_BAMQC.out.versions
                                             )
     ch_alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam
     ch_alignment_index    = SAMTOOLS_INDEX.out.bai
 
 
     emit:
-    alignment          = ch_alignment          // channel: [ val(meta), [ bam ] ]
-    alignment_index    = ch_alignment_index    // channel: [ val(meta), [ bai ] ]
-    alignment_combined = ch_alignment_combined // channel: [ val(meta), [ vcf ] ]
-    stats              = SAMTOOLS_STATS.out.stats            // channel: [ val(meta), [ stats ] ]
-    flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat      // channel: [ val(meta), [ flagstat ] ]
-    idxstats           = SAMTOOLS_IDXSTATS.out.idxstats      // channel: [ val(meta), [ idxstats ] ]
-    versions           = ch_versions        // channel: [ ch_versions ]
+    alignment          = ch_alignment                    // channel: [ val(meta), [ bam ] ]
+    alignment_index    = ch_alignment_index              // channel: [ val(meta), [ bai ] ]
+    alignment_combined = ch_alignment_combined           // channel: [ val(meta), [ vcf ] ]
+    qualimap           = QUALIMAP_BAMQC.out.results      // channel: [ val(meta), [ results ] ]
+    stats              = SAMTOOLS_STATS.out.stats        // channel: [ val(meta), [ stats ] ]
+    flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat  // channel: [ val(meta), [ flagstat ] ]
+    idxstats           = SAMTOOLS_IDXSTATS.out.idxstats  // channel: [ val(meta), [ idxstats ] ]
+    versions           = ch_versions                     // channel: [ ch_versions ]
 }
-
-/*
-
-Workflow Process:
-
-1. Combine FASTQ file lanes if they were provided with multiple lanes.
-2. Filter unpaired reads from FASTQ files using SeqKit 0.16.0.
-seqkit pair -1 R1_FILE -2 R2_FILE
-3. Down sample FASTQ files to a desired coverage or sampling rate using SeqTK 1.3.
-seqt
-4. Trim reads and assess quality using FaQCs 2.10.
-
-5. Generate a QC report by extracting data from FaQCs PDFs.
-custom linux stuff
-6. Align FASTQ reads to a reference using BWA 0.7.17.
-R1/R2 from Step 5
-bwa mem -t THREADS REFERENCE_INDEX R1 R2
-7. Sort BAM files using SAMTools 1.10.
-8. Mark and remove duplicates in the BAM file using Picard 2.22.7.
-9. Clean the BAM file using Picard 2.22.7 "CleanSam".
-10. Fix mate information in the BAM file using Picard 2.22.7 "FixMateInformation".
-
-
-11. Add read groups to the BAM file using Picard 2.22.7 "AddOrReplaceReadGroups".
-
-
-12. Index the BAM file using SAMTools 1.10.
-    cp ${INPUT_FULL} ${OUTPUT_FULL}/${OUTPUT_BASE}.bam
-    samtools index ${OUTPUT} ${OUTPUT_BASE}/${OUTPUT_BASE}.bam
-
-
-*/
