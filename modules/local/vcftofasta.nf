@@ -12,7 +12,7 @@ process VCF_TO_FASTA {
     path(fasta)
 
     output:
-    tuple val(meta), path("*.fasta"), emit: fastas
+    tuple val(meta), path("*.fasta"), emit: fasta
     // path "versions.yml", emit: versions
 
     script:

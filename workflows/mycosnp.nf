@@ -36,10 +36,11 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { INPUT_CHECK }    from '../subworkflows/local/input_check'
 include { BWA_PREPROCESS } from '../subworkflows/local/bwa-pre-process'
-include { BWA_REFERENCE } from '../subworkflows/local/bwa-reference'
-include { GATK_VARIANTS } from '../subworkflows/local/gatk-variants'
+include { BWA_REFERENCE }  from '../subworkflows/local/bwa-reference'
+include { GATK_VARIANTS }  from '../subworkflows/local/gatk-variants'
+include { CREATE_PHYLOGENY }      from '../subworkflows/local/phylogeny'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -49,11 +50,12 @@ include { GATK_VARIANTS } from '../subworkflows/local/gatk-variants'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-//include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
-//include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
+include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
+include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 include { GATK4_HAPLOTYPECALLER }       from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
 include { GATK4_COMBINEGVCFS }          from '../modules/nf-core/modules/gatk4/combinegvcfs/main'
+include { GATK4_LOCALCOMBINEGVCFS }     from '../modules/local/gatk4_localcombinegvcfs.nf'
 
 /*
 ========================================================================================
@@ -63,6 +65,7 @@ include { GATK4_COMBINEGVCFS }          from '../modules/nf-core/modules/gatk4/c
 
 // Info required for completion email and summary
 def multiqc_report = []
+
 
 workflow MYCOSNP {
 
@@ -100,10 +103,8 @@ workflow MYCOSNP {
     
     BWA_PREPROCESS( [fas_file, fai_file, bai_file ], INPUT_CHECK.out.reads)
     ch_versions = ch_versions.mix(BWA_PREPROCESS.out.versions)
-    //ch_versions = ch_versions.mix(BWA_PRE_PROCESS.out.versions)
 
     // SUBWORKFLOW: Run GATK And GATK_VARIANTS
-
     GATK4_HAPLOTYPECALLER(  BWA_PREPROCESS.out.alignment_combined.map{meta, bam, bai            -> [ meta, bam, bai, [] ] },
                             fas_file,
                             fai_file,
@@ -113,37 +114,53 @@ workflow MYCOSNP {
      )
      ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
      
-  //  ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
-  //  ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
 
-  /*
-    GATK4_COMBINEGVCFS( tuple( [ id:'test', single_end:false ], 
-                          GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }, 
-                          GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  } )
-                        , 
-                        fas_file, 
-                        fai_file, 
-                        dict_file )
+    ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
+    ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
+    GATK4_LOCALCOMBINEGVCFS(
+                                [id:'combined', single_end:false],
+                                ch_vcf,
+                                ch_vcf_idx,
+                                fas_file, 
+                                fai_file, 
+                                dict_file)
+
+/*
+    v_out = GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf
+    vcf_meta_file = v_out.map{meta, vcf, idx -> [ meta ]}
+    vcf_vcf_file = v_out.map{meta, vcf, idx -> [ vcf ]}
+    vcf_idx_file = v_out.map{meta, vcf, idx -> [ idx]}
     */
-    //GATK4_COMBINEGVCFS([ [ id:'test', single_end:false ], ch_vcf, ch_vcf_idx] , fas_file, fai_file, dict_file )
-    //GATK4_COMBINEGVCFS(inputvcf , fas_file, fai_file, dict_file )
-    //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], GATK4_COMBINEGVCFS.out.combined_gvcf )
+
+    //GATK_VARIANTS( fas_file, fai_file, bai_file, dict_file, vcf_meta_file, vcf_vcf_file, vcf_idx_file )
+    GATK_VARIANTS( 
+                    fas_file, 
+                    fai_file, 
+                    bai_file, 
+                    dict_file,
+                    GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf.map{meta, vcf, tbi->[ meta ]}, 
+                    GATK4_LOCALCOMBINEGVCFS.out.gvcf, 
+                    GATK4_LOCALCOMBINEGVCFS.out.tbi 
+                )
+    
 
 
-
-    // These files are temporary until combinegvcfs working - this will allow pipeline to continue with testdata running only
-    gvcftest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf")
-    gvcfidxtest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf.idx")
-    GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], [ [ id:'combined', single_end:false ], gvcftest, gvcfidxtest] )
+    // These files are temporary for testing only gatk - this will allow pipeline to continue with testdata running only
+    //gvcftest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf")
+    //gvcfidxtest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf.idx")
+    //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], [ [ id:'combined', single_end:false ], gvcftest, gvcfidxtest] )
     ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
+
+
+    // Phylogeny
+    CREATE_PHYLOGENY(GATK_VARIANTS.out.snps_fasta.map{meta, fas->[fas]}, '')
 
 
      CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
-    /*
     //
     // MODULE: Run FastQC
     //
@@ -151,10 +168,6 @@ workflow MYCOSNP {
         INPUT_CHECK.out.reads
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
-
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
 
     //
     // MODULE: MultiQC
@@ -174,8 +187,6 @@ workflow MYCOSNP {
     )
     multiqc_report = MULTIQC.out.report.toList()
     ch_versions    = ch_versions.mix(MULTIQC.out.versions)
-
-    */
 }
 
 /*

@@ -20,6 +20,7 @@ include { SAMTOOLS_INDEX }                from '../../modules/nf-core/modules/sa
 include { FASTQC }                        from '../../modules/nf-core/modules/fastqc/main'
 include { MULTIQC }                       from '../../modules/nf-core/modules/multiqc/main'
 include { QUALIMAP_BAMQC }                from '../../modules/nf-core/modules/qualimap/bamqc/main'
+include { DOWNSAMPLE_RATE }               from '../../modules/local/downsample_rate.nf'
 
 
 
@@ -40,7 +41,9 @@ workflow BWA_PREPROCESS {
     // CONCAT_FASTQ_LANES()
     
     SEQKIT_PAIR(reads)
-    SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, params.coverage)
+	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
+	DOWNSAMPLE_RATE.out.downsampled_rate.view()
+    SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, DOWNSAMPLE_RATE.out.number_to_sample)
     FAQCS(SEQTK_SAMPLE.out.reads)
     // QC() // Local qc report
     BWA_MEM(FAQCS.out.reads, reference[2], true) // This already sorts the bam file

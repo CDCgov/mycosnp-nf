@@ -33,6 +33,9 @@
             "fastqc": {
                 "git_sha": "9d0cad583b9a71a6509b754fdf589cbfbed08961"
             },
+            "fasttree": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
             "gatk4/combinegvcfs": {
                 "git_sha": "a25423dbb974e2e69268b5cdbc12e5bc1558e053"
             },
@@ -47,6 +50,9 @@
             },
             "gatk4/variantfiltration": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "iqtree": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "multiqc": {
                 "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"

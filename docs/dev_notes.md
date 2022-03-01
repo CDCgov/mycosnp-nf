@@ -85,5 +85,7 @@ nf-core modules install faqcs
 nf-core modules install seqkit/pair
 nf-core modules install rapidnj
 nf-core modules install raxmlng
+nf-core modules install fasttree
+nf-core modules install iqtree
 nf-core modules install samtools/view
 ```
