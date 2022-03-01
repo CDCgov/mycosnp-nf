@@ -49,8 +49,8 @@ include { GATK_VARIANTS } from '../subworkflows/local/gatk-variants'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-//include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
-//include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
+include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
+include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 include { GATK4_HAPLOTYPECALLER }       from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
 include { GATK4_COMBINEGVCFS }          from '../modules/nf-core/modules/gatk4/combinegvcfs/main'
@@ -156,7 +156,6 @@ workflow MYCOSNP {
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
-    /*
     //
     // MODULE: Run FastQC
     //
@@ -164,10 +163,6 @@ workflow MYCOSNP {
         INPUT_CHECK.out.reads
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
-
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
 
     //
     // MODULE: MultiQC
@@ -187,8 +182,6 @@ workflow MYCOSNP {
     )
     multiqc_report = MULTIQC.out.report.toList()
     ch_versions    = ch_versions.mix(MULTIQC.out.versions)
-
-    */
 }
 
 /*
