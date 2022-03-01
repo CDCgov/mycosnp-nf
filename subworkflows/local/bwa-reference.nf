@@ -65,8 +65,6 @@ workflow BWA_REFERENCE {
     INPUT_PROC.out.combine(SAMTOOLS_FAIDX.out.fai).combine(BWA_INDEX.out.index).combine(PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict)
       .map{meta, fa1, fa2, meta2, fai, bai, meta4, dict -> [meta, fa1, fai, bai, dict] }
       .set{ch_reference_combined}
-      
-    // ch_combined.view()
 
 
     // Collect versions information
