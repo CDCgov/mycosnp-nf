@@ -17,6 +17,8 @@ process GATK4_LOCALCOMBINEGVCFS {
 
     output:
     tuple val(meta), path("*.combined.g.vcf.gz"), path("*.combined.g.vcf.gz.tbi"), emit: combined_gvcf
+    path("*.combined.g.vcf.gz"), emit: gvcf
+    path("*.combined.g.vcf.gz.tbi"), emit: tbi
     path "versions.yml"                         , emit: versions
 
     when:

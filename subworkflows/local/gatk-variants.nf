@@ -29,31 +29,35 @@ combined_gvcf = Channel.empty()
 workflow GATK_VARIANTS {
 
     take:
-    reference // channel: [ tuple reference_fasta, fai, bai, dict ]
+    //reference // channel: [ tuple reference_fasta, fai, bai, dict ]
+    fasta
+    fai
+    bai
+    dict
     thismeta
     vcffile
     vcfidx
-    //combined_gvcf // channel: combined_vcf_file
-    
 
     main:
     ch_versions = Channel.empty()
-    combined_gvcf = Channel.empty()
+    //combined_gvcf = Channel.empty()
     combined_gvcf = thismeta.combine(vcffile).combine(vcfidx)
+    combined_gvcf.view()
 
    
     GATK4_GENOTYPEGVCFS(
         combined_gvcf.map{meta, vcf, idx -> [ meta, vcf, idx, [], [] ]},
-        reference[0], 
-        reference[1], 
-        reference[3], [], []
+        fasta, 
+        fai, 
+        dict, [], []
         )
+       // GATK4_GENOTYPEGVCFS.out.vcf.view()
 
     GATK4_VARIANTFILTRATION(
                                  GATK4_GENOTYPEGVCFS.out.vcf.combine(GATK4_GENOTYPEGVCFS.out.tbi).map{ meta1, vcf, meta2, tbi->[meta1, vcf, tbi]},
-                                reference[0], 
-                                reference[1], 
-                                reference[3]  
+                                fasta, 
+                                fai, 
+                                dict
                             )
 
     GATK4_SELECTVARIANTS(
@@ -77,10 +81,10 @@ workflow GATK_VARIANTS {
 
     VCF_CONSENSUS(
         BCFTOOLS_VIEW_CONVERT.out.vcf.combine(BCFTOOLS_INDEX.out.csi).map{meta1, vcf, meta2, csi-> [meta1, vcf, csi] },
-        reference[0]
+        fasta
     )
 
-    VCF_TO_FASTA(final_vcf_txt, reference[0])
+    VCF_TO_FASTA(final_vcf_txt, fasta)
 
 
     // TODO //VCF_QCREPORT()

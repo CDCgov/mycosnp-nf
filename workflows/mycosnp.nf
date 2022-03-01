@@ -124,11 +124,24 @@ workflow MYCOSNP {
                                 fai_file, 
                                 dict_file)
 
+/*
     v_out = GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf
     vcf_meta_file = v_out.map{meta, vcf, idx -> [ meta ]}
     vcf_vcf_file = v_out.map{meta, vcf, idx -> [ vcf ]}
     vcf_idx_file = v_out.map{meta, vcf, idx -> [ idx]}
-    GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], vcf_meta_file, vcf_vcf_file, vcf_idx_file )
+    */
+
+    //GATK_VARIANTS( fas_file, fai_file, bai_file, dict_file, vcf_meta_file, vcf_vcf_file, vcf_idx_file )
+    GATK_VARIANTS( 
+                    fas_file, 
+                    fai_file, 
+                    bai_file, 
+                    dict_file,
+                    GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf.map{meta, vcf, tbi->[ meta ]}, 
+                    GATK4_LOCALCOMBINEGVCFS.out.gvcf, 
+                    GATK4_LOCALCOMBINEGVCFS.out.tbi 
+                )
+    
 
 
     // These files are temporary for testing only gatk - this will allow pipeline to continue with testdata running only
