@@ -88,4 +88,7 @@ nf-core modules install raxmlng
 nf-core modules install fasttree
 nf-core modules install iqtree
 nf-core modules install samtools/view
+nf-core modules install samtools/stats
+nf-core modules install samtools/idxstats
+nf-core modules install samtools/flagstat
 ```

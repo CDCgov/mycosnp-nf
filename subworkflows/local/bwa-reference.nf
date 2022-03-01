@@ -86,39 +86,3 @@ workflow BWA_REFERENCE {
     reference_combined = ch_reference_combined  // channel: [ val(meta), [ vcf ] ]
     versions           = ch_versions            // channel: [ ch_versions ]
 }
-
-
-/*
-## Step 1: Mask Repeats
-  mask-repeats:
-    git: https://gitlab.com/geneflow/apps/mask-repeats-gf2.git
-    version: '0.2'
-nucmer -p ${OUTPUT_BASE} --maxmatch --nosimplify -t $THREADS $REFERENCE_SEQUENCE $REFERENCE_SEQUENCE
-
-## Step 2: Index the masked Reference Sequence with Picard
-
-  index-reference:
-    git: https://gitlab.com/geneflow/apps/index-reference-gf2.git
-    version: '0.1'
-picard CreateSequenceDictionary R=${OUTPUT_BASE}.fasta O=${OUTPUT_BASE}.dict
-
----NOTE: THIS SHOULD BE AN OPTIONAL STEP - NEED OPTION TO SKIP MASKING
-show-coords -r -T $OUTPUT_BASE.delta -H
-awk '{if (\$1 != \$3 && \$2 != \$4) print \$0}'
-awk '{print \$8\"\\t\"\$1\"\\t\"\$2}'
-STDOUT  ->  ${OUTPUT_FULL}/${OUTPUT_BASE}.bed
-bedtools maskfasta -fi $REFERENCE_SEQUENCE -bed $BEDFILE.bed -fo $NEWOUTPUT.fasta
---- END OPTIONAL STEP
-
-## Step 3: Index masked Reference sequence with samtools faidx
-samtools faidx ${OUTPUT_BASE}.fasta
-
-## Step 4: Create BWA index
-  bwa-index:
-    git: https://gitlab.com/geneflow/apps/bwa-index-gf2.git
-    version: '0.7.17-03'
-bwa index -p $OUTPUT_BASE $REFERENCE
-
-*/
-
-
