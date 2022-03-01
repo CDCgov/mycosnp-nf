@@ -21,6 +21,9 @@ include { FASTQC }                        from '../../modules/nf-core/modules/fa
 include { MULTIQC }                       from '../../modules/nf-core/modules/multiqc/main'
 include { QUALIMAP_BAMQC }                from '../../modules/nf-core/modules/qualimap/bamqc/main'
 include { DOWNSAMPLE_RATE }               from '../../modules/local/downsample_rate.nf'
+include { SAMTOOLS_STATS    }             from '../../modules/nf-core/modules/samtools/stats/main'
+include { SAMTOOLS_IDXSTATS }             from '../../modules/nf-core/modules/samtools/idxstats/main'
+include { SAMTOOLS_FLAGSTAT }             from '../../modules/nf-core/modules/samtools/flagstat/main'
 
 
 
@@ -42,7 +45,6 @@ workflow BWA_PREPROCESS {
     
     SEQKIT_PAIR(reads)
 	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
-	DOWNSAMPLE_RATE.out.downsampled_rate.view()
     SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, DOWNSAMPLE_RATE.out.number_to_sample)
     FAQCS(SEQTK_SAMPLE.out.reads)
     // QC() // Local qc report
@@ -55,10 +57,14 @@ workflow BWA_PREPROCESS {
     FASTQC(reads)
     // QUALIMAP_BAMQC()
     // MULTIQC()
+    
 
     ch_alignment_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam.join(SAMTOOLS_INDEX.out.bai)
     
-  
+    SAMTOOLS_STATS    ( ch_alignment_combined, reference[0] )
+    SAMTOOLS_FLAGSTAT ( ch_alignment_combined )
+    SAMTOOLS_IDXSTATS ( ch_alignment_combined )
+
     ch_versions            = ch_versions.mix(  SEQKIT_PAIR.out.versions, 
                                                SEQTK_SAMPLE.out.versions, 
                                                FAQCS.out.versions,
@@ -68,7 +74,8 @@ workflow BWA_PREPROCESS {
                                                PICARD_FIXMATEINFORMATION.out.versions,
                                                PICARD_ADDORREPLACEREADGROUPS.out.versions,
                                                SAMTOOLS_INDEX.out.versions,
-                                               FASTQC.out.versions
+                                               FASTQC.out.versions,
+                                               SAMTOOLS_STATS.out.versions
                                                //,
                                                //QUALIMAP_BAMQC.out.versions,
                                                //MULTIQC.out.versions
@@ -81,7 +88,10 @@ workflow BWA_PREPROCESS {
     alignment          = ch_alignment          // channel: [ val(meta), [ bam ] ]
     alignment_index    = ch_alignment_index    // channel: [ val(meta), [ bai ] ]
     alignment_combined = ch_alignment_combined // channel: [ val(meta), [ vcf ] ]
-    versions              = ch_versions        // channel: [ ch_versions ]
+    stats              = SAMTOOLS_STATS.out.stats            // channel: [ val(meta), [ stats ] ]
+    flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat      // channel: [ val(meta), [ flagstat ] ]
+    idxstats           = SAMTOOLS_IDXSTATS.out.idxstats      // channel: [ val(meta), [ idxstats ] ]
+    versions           = ch_versions        // channel: [ ch_versions ]
 }
 
 /*
