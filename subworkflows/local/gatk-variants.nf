@@ -108,7 +108,7 @@ workflow GATK_VARIANTS {
     // split_vcf_broad = SPLITVCF.out        --> the broad vcf file
     // variants = GATK4_SELECTVARIANTS.out
     // split_vcf_gatk4 = SPLITVCF.out        --> the gatk4 vcf file
-    // snps_fasta = VCFTOFASTA.out
+    snps_fasta = VCF_TO_FASTA.out.fasta
     // consensus_fasta = BCFTOOLS_CONSENSUS.out
     // qc_report = VCF_QCREPORT.out
     versions = ch_versions // channel: [ versions.yml ]

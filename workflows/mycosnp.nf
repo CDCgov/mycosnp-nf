@@ -36,10 +36,11 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { INPUT_CHECK }    from '../subworkflows/local/input_check'
 include { BWA_PREPROCESS } from '../subworkflows/local/bwa-pre-process'
-include { BWA_REFERENCE } from '../subworkflows/local/bwa-reference'
-include { GATK_VARIANTS } from '../subworkflows/local/gatk-variants'
+include { BWA_REFERENCE }  from '../subworkflows/local/bwa-reference'
+include { GATK_VARIANTS }  from '../subworkflows/local/gatk-variants'
+include { CREATE_PHYLOGENY }      from '../subworkflows/local/phylogeny'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -54,7 +55,7 @@ include { MULTIQC                     } from '../modules/nf-core/modules/multiqc
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 include { GATK4_HAPLOTYPECALLER }       from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
 include { GATK4_COMBINEGVCFS }          from '../modules/nf-core/modules/gatk4/combinegvcfs/main'
-include { GATK4_LOCALCOMBINEGVCFS }          from '../modules/local/gatk4_localcombinegvcfs.nf'
+include { GATK4_LOCALCOMBINEGVCFS }     from '../modules/local/gatk4_localcombinegvcfs.nf'
 
 /*
 ========================================================================================
@@ -150,6 +151,10 @@ workflow MYCOSNP {
     //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], [ [ id:'combined', single_end:false ], gvcftest, gvcfidxtest] )
     ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
+
+
+    // Phylogeny
+    CREATE_PHYLOGENY(GATK_VARIANTS.out.snps_fasta.map{meta, fas->[fas]}, '')
 
 
      CUSTOM_DUMPSOFTWAREVERSIONS (
