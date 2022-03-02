@@ -40,7 +40,7 @@ workflow BWA_PREPROCESS {
 
     // Going to skip this one for now and add multilane support within the read_csv
     // CONCAT_FASTQ_LANES()
-    FASTQC_PRE(reads)
+
     SEQKIT_PAIR(reads)
 	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
     SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, DOWNSAMPLE_RATE.out.number_to_sample)
