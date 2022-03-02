@@ -25,7 +25,6 @@ include { SAMTOOLS_IDXSTATS }             from '../../modules/nf-core/modules/sa
 include { SAMTOOLS_FLAGSTAT }             from '../../modules/nf-core/modules/samtools/flagstat/main'
 
 
-
 workflow BWA_PREPROCESS {
 
     take:
@@ -41,7 +40,7 @@ workflow BWA_PREPROCESS {
 
     // Going to skip this one for now and add multilane support within the read_csv
     // CONCAT_FASTQ_LANES()
-    
+    FASTQC_PRE(reads)
     SEQKIT_PAIR(reads)
 	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
     SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, DOWNSAMPLE_RATE.out.number_to_sample)
@@ -80,12 +79,12 @@ workflow BWA_PREPROCESS {
 
 
     emit:
-    alignment          = ch_alignment                    // channel: [ val(meta), [ bam ] ]
-    alignment_index    = ch_alignment_index              // channel: [ val(meta), [ bai ] ]
-    alignment_combined = ch_alignment_combined           // channel: [ val(meta), [ vcf ] ]
-    qualimap           = QUALIMAP_BAMQC.out.results      // channel: [ val(meta), [ results ] ]
-    stats              = SAMTOOLS_STATS.out.stats        // channel: [ val(meta), [ stats ] ]
-    flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat  // channel: [ val(meta), [ flagstat ] ]
-    idxstats           = SAMTOOLS_IDXSTATS.out.idxstats  // channel: [ val(meta), [ idxstats ] ]
+    alignment          = ch_alignment                    // channel: [ val(meta), bam ]
+    alignment_index    = ch_alignment_index              // channel: [ val(meta), bai ]
+    alignment_combined = ch_alignment_combined           // channel: [ val(meta), bam, bai ]
+    qualimap           = QUALIMAP_BAMQC.out.results      // channel: [ val(meta), results ]
+    stats              = SAMTOOLS_STATS.out.stats        // channel: [ val(meta), stats ]
+    flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat  // channel: [ val(meta), flagstat ]
+    idxstats           = SAMTOOLS_IDXSTATS.out.idxstats  // channel: [ val(meta), idxstats ]
     versions           = ch_versions                     // channel: [ ch_versions ]
 }
