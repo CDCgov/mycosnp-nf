@@ -32,7 +32,7 @@ sub usage {
 	ARGUMENTS:
 	-i | --input		DIR (Required).  Input directory name.
 	-o | --output		STR (Optional).  Output sample sheet file name.  If no argument given, prints to STDOUT.
-	-p | --prefix		STR (Optional).  Append a STR prefix to sequence names (to set directories not on current system).
+	-p | --prefix		STR (Optional).  Prepend a STR prefix to sequence names (to set directories not on current system).
 	-f | --fullpath 	(Optional flag). Call realpath and set the fully qualified path in the sequence ID fields.
 	-s | --sanitize		(Optional flag). Find and replace spaces in the sequence ID field.		
 	-v | --version	 	Print version number and exit.
@@ -62,17 +62,9 @@ my @fastqs;
 while ( readdir $dh )	{
 	chomp $_;
 	
-	# Do some magic on the incoming file names if the --sanitize or --fullpath options are activated.
-	# 1) Error checking for spaces in filenames
-	if ( $sanitize )	{	$_ =~ s/\s/_/g;	}	
-	else 				{	die "mycosnp_create_sample_sheet::ERROR --> Identified a filename containing whitespace. Please set --sanitize and try again.\n";	}
-	
-	# 2) System call `realpath` and set the fully qualified path as the incoming filename
-	if ( $fullpath )	{	$_ = qx/realpath $_/; chomp $_; 	}
-	
 	# Keep this file if it is a FASTQ file
 	# WARNING: A curse upon ye who put .fastq somewhere in the filename other than the extension	
-	# This *should* work even will full paths that might contain 'fastq' in the path, e.g. path/to/data/fastq/file1
+	# This *should* work even with full paths that might contain 'fastq' in the path, e.g. path/to/data/fastq/file1
 	push @fastqs, $_ if ( $_ =~ /\.fq/ || $_ =~ /\.fastq/ );	
 }
 
@@ -83,13 +75,15 @@ my %Samples = ();
 foreach my $file ( @fastqs )	{
 	
 	# Deconstruct the sample name -- here I'm doing it with regex capture groups
-	my ( $name, $fr_read ) = $file =~ /(.*)_[Rr]?(1|2)/;		
-	my ( $lane ) = $name =~ s/_L(\d{3})?//;
-	$lane = ( $1 eq $name )? "001" : $1;			# Default to 001 if there is no lane information
+	my $filetmp = $file;
+	$filetmp =~ s/\s/_/g;
+	my ( $id, $fr_read ) = $filetmp =~ /(.*)_[Rr]?(1|2)/;		
+	my ( $lane ) = $id =~ s/_L(\d{3})?//;
+	$lane = ( $1 eq $id )? "001" : $1;			# Default to 001 if there is no lane information
 	
 	# Add the file to the lookup table
 	# Hierarchy is SAMPLENAME ==> LANE ==> READ (1|2) = FILENAME
-	$Samples{$name}->{$lane}->{$fr_read} = $file;
+	$Samples{$id}->{$lane}->{$fr_read} = $file;
 }
 	
 # Set output filehandles
@@ -102,15 +96,28 @@ else				{	$fhout = *STDOUT;		}
 foreach my $sample ( keys %Samples )		{
 	
 	# Prepend the prefix if one is set by the user.  
-	#Also do a quick sanity check to remove any double // that might be introduced in various ways.
-	my @line_out;
-	$line_out[0] = ( $prefix )? "$prefix/$sample" : "$sample" ;
+	# Also do a quick sanity check to remove any double // that might be introduced in various ways.
+	my @line_out = ( $sample );
 	$line_out[0] =~ s/\/\//\//;			# Well that's an ugly subst regex...
+	$line_out[0] =~ s/\s/_/g if ( $sanitize );
 	
 	# Loop to get the lanes/read 1 or 2 information
 	foreach my $lane ( sort {$a <=> $b} keys %{$Samples{$sample}} )	{
 		foreach my $read ( sort {$a <=> $b} keys %{$Samples{$sample}->{$lane}} )	{
-			push @line_out, $Samples{$sample}->{$lane}->{$read};
+			if ( $fullpath ) 	{
+				my $filetmp = $Samples{$sample}->{$lane}->{$read};
+				my $realpath = `realpath "$input/$filetmp"`;
+				chomp $realpath;
+				push @line_out, $realpath;
+			}
+			else	{
+				if ( $prefix ) 	{
+					push @line_out, "$prefix/$Samples{$sample}->{$lane}->{$read}";		# May need to add $input between prefix/INPUT/name...
+				}
+				else 	{
+					push @line_out, "$input/$Samples{$sample}->{$lane}->{$read}";
+				}
+			}
 		}
 	}
 	print $fhout join(",", @line_out), "\n";
