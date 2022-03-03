@@ -15,29 +15,40 @@ use Getopt::Long qw(GetOptions);
 # GetOpts Variable declarations
 my $input = "--";
 my $output = "--";
+my $prefix;
+my $fullpath;
+my $sanitize;
 my $version;
 my $help;
 
 sub usage {
-	my $usage = "mycosnp_create_sample_sheet.pl v0.1.0\n
+	my $usage = "\nmycosnp_create_sample_sheet.pl\nv0.1.0\n
 	PURPOSE: Reads the contents of a given directory (expected to contain sequencing read data files in FASTQ format, optionally gzip-compressed),
-		then uses standard file naming conventions to match up samples with their read mate information (including potentially multiple sequencing lanes),
-		and finally, formats and outputs a csv sample sheet. 
+		 then uses standard file naming conventions to match up samples with their read mate information (including potentially multiple sequencing lanes),
+		 and finally, formats and outputs a csv sample sheet. 
 
-	\n
 	USAGE:	mycosnp_create_sample_sheet.pl -i <input directory> -o <output>
-	-i		input directory
-	-o 		output file name
-	-v	 	print version number and exit
-	-h 		print this help message and exit
-\n";
+	
+	ARGUMENTS:
+	-i | --input		DIR (Required).  Input directory name.
+	-o | --output		STR (Optional).  Output sample sheet file name.  If no argument given, prints to STDOUT.
+	-p | --prefix		STR (Optional).  Append a STR prefix to sequence names (to set directories not on current system).
+	-f | --fullpath 	(Optional flag). Call realpath and set the fully qualified path in the sequence ID fields.
+	-s | --sanitize		(Optional flag). Find and replace spaces in the sequence ID field.		
+	-v | --version	 	Print version number and exit.
+	-h | --help		Print this help message and exit.
+	
+	\n";
 	print $usage;
 }
 
-GetOptions(	'input|i=s' => \$input, 
-			'out|o=s'   => \$output,
-			'version|v' => \$version,
-			'help|h'    => \$help,
+GetOptions(	'input|i=s'  => \$input, 
+			'out|o=s'    => \$output,
+			'prefix|p=s' => \$prefix,
+			'sanitize|s' => \$sanitize,
+			'fullpath|f' => \$fullpath,
+			'version|v'  => \$version,
+			'help|h'     => \$help,
 ) or die usage();
 
 # Print the version number or the help message and exit if -v or -h is activated
@@ -50,7 +61,19 @@ opendir( my $dh, $input ) or die "mycosnp_create_sample_sheet::ERROR --> Cannot 
 my @fastqs;
 while ( readdir $dh )	{
 	chomp $_;
-	push @fastqs, $_ if ( $_ =~ /\.fq/ || $_ =~ /\.fastq/ );	# A curse upon ye who put .fastq somewhere in the filename other than the extension	
+	
+	# Do some magic on the incoming file names if the --sanitize or --fullpath options are activated.
+	# 1) Error checking for spaces in filenames
+	if ( $sanitize )	{	$_ =~ s/\s/_/g;	}	
+	else 				{	die "mycosnp_create_sample_sheet::ERROR --> Identified a filename containing whitespace. Please set --sanitize and try again.\n";	}
+	
+	# 2) System call `realpath` and set the fully qualified path as the incoming filename
+	if ( $fullpath )	{	$_ = qx/realpath $_/; chomp $_; 	}
+	
+	# Keep this file if it is a FASTQ file
+	# WARNING: A curse upon ye who put .fastq somewhere in the filename other than the extension	
+	# This *should* work even will full paths that might contain 'fastq' in the path, e.g. path/to/data/fastq/file1
+	push @fastqs, $_ if ( $_ =~ /\.fq/ || $_ =~ /\.fastq/ );	
 }
 
 # For each FASTQ file:
@@ -77,7 +100,14 @@ else				{	$fhout = *STDOUT;		}
 	
 # Print out a csv sample sheet with format <name>, <r1>, <r2>, <r1b>, <r2b>, ... <r1n>, <r2n>
 foreach my $sample ( keys %Samples )		{
-	my @line_out = ( $sample );
+	
+	# Prepend the prefix if one is set by the user.  
+	#Also do a quick sanity check to remove any double // that might be introduced in various ways.
+	my @line_out;
+	$line_out[0] = ( $prefix )? "$prefix/$sample" : "$sample" ;
+	$line_out[0] =~ s/\/\//\//;			# Well that's an ugly subst regex...
+	
+	# Loop to get the lanes/read 1 or 2 information
 	foreach my $lane ( sort {$a <=> $b} keys %{$Samples{$sample}} )	{
 		foreach my $read ( sort {$a <=> $b} keys %{$Samples{$sample}->{$lane}} )	{
 			push @line_out, $Samples{$sample}->{$lane}->{$read};
