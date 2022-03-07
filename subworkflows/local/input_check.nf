@@ -3,13 +3,15 @@
 //
 
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
+include { SAMPLESHEET_MERGE } from '../../modules/local/samplesheet_merge'
 
 workflow INPUT_CHECK {
     take:
     samplesheet // file: /path/to/samplesheet.csv
 
     main:
-    SAMPLESHEET_CHECK ( samplesheet )
+    SAMPLESHEET_MERGE ( samplesheet )
+    SAMPLESHEET_CHECK ( SAMPLESHEET_MERGE.out.csv )
         .csv
         .splitCsv ( header:true, sep:',' )
         .map { create_fastq_channels(it) }

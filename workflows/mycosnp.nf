@@ -125,13 +125,6 @@ workflow MYCOSNP {
                                 fai_file, 
                                 dict_file)
 
-/*
-    v_out = GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf
-    vcf_meta_file = v_out.map{meta, vcf, idx -> [ meta ]}
-    vcf_vcf_file = v_out.map{meta, vcf, idx -> [ vcf ]}
-    vcf_idx_file = v_out.map{meta, vcf, idx -> [ idx]}
-    */
-
     //GATK_VARIANTS( fas_file, fai_file, bai_file, dict_file, vcf_meta_file, vcf_vcf_file, vcf_idx_file )
     GATK_VARIANTS( 
                     fas_file, 
@@ -151,11 +144,8 @@ workflow MYCOSNP {
     //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], [ [ id:'combined', single_end:false ], gvcftest, gvcfidxtest] )
     ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
-
-
     // Phylogeny
     CREATE_PHYLOGENY(GATK_VARIANTS.out.snps_fasta.map{meta, fas->[fas]}, '')
-
 
      CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
