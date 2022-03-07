@@ -78,9 +78,9 @@ while ( <$fh> )		{
 	}
 	
 	# Print entry out to the sample sheet with the qualified full path
-	my $realpathR1 = system("realpath $seqid/$seqid\_R1.$ext");
-	my $realpathR2 = system("realpath $seqid/$seqid\_R2.$ext");
-	print $fhout join(",", $seqid, "$realpathR1", "$realpathR2"), "\n";
+	my $realpathR1 = `realpath $seqid/$seqid\_R1.$ext`; chomp $realpathR1;
+	my $realpathR2 = `realpath $seqid/$seqid\_R2.$ext`; chomp $realpathR2;
+	print $fhout join(",", $seqid, "0", $realpathR1, $realpathR2), "\n";
 }
 close $fh if ( $succin );
 close $fhout if ( $succout );
