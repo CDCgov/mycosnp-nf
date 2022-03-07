@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 # mycosnp_combine_lanes.pl v0.1.0
 # Author: @hseabolt, @mjcipriano, @sateeshperi
@@ -56,6 +56,9 @@ my $fhout;
 if ( $succout )		{	$fhout = *OUT;			}
 else				{	$fhout = *STDOUT;		}
 
+# Print sample sheet header line
+print $fhout join(",", "sample", "fastq_1", "fastq_2" ), "\n";
+
 while ( <$fh> )		{
 	chomp $_;
 	my @line = split(",", $_);
@@ -80,7 +83,7 @@ while ( <$fh> )		{
 	# Print entry out to the sample sheet with the qualified full path
 	my $realpathR1 = `realpath $seqid/$seqid\_R1.$ext`; chomp $realpathR1;
 	my $realpathR2 = `realpath $seqid/$seqid\_R2.$ext`; chomp $realpathR2;
-	print $fhout join(",", $seqid, "0", $realpathR1, $realpathR2), "\n";
+	print $fhout join(",", $seqid, $realpathR1, $realpathR2), "\n";
 }
 close $fh if ( $succin );
 close $fhout if ( $succout );
