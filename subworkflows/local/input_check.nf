@@ -3,42 +3,57 @@
 //
 
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
-include { SAMPLESHEET_MERGE } from '../../modules/local/samplesheet_merge'
+include { LANE_MERGE }        from '../../modules/local/lane_merge'
 
 workflow INPUT_CHECK {
     take:
     samplesheet // file: /path/to/samplesheet.csv
 
     main:
-    SAMPLESHEET_MERGE ( samplesheet )
-    SAMPLESHEET_CHECK ( SAMPLESHEET_MERGE.out.csv )
-        .csv
-        .splitCsv ( header:true, sep:',' )
-        .map { create_fastq_channels(it) }
-        .set { reads }
+    ch_versions = Channel.empty()
+
+    Channel.fromPath(samplesheet)
+        .splitCsv( header:false, sep:',', skip:1 )
+        .map { row -> stage_fastq(row) }
+        .set{ precheck_reads }
+
+   LANE_MERGE(precheck_reads)
 
     emit:
-    reads                                     // channel: [ val(meta), [ reads ] ]
-    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
+    reads  =   LANE_MERGE.out.reads         // channel: [ val(meta), [ reads ] ]
+    versions = ch_versions                  // channel: [ versions.yml ]
 }
 
-// Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
-def create_fastq_channels(LinkedHashMap row) {
-    def meta = [:]
-    meta.id           = row.sample
-    meta.single_end   = row.single_end.toBoolean()
-
+// Function to get list of [ meta, [ fastq_1, fastq_2, fastq_?... ] ]
+def stage_fastq(ArrayList row) {
+    //print row
+    def meta  = [:]
+    meta.id   = row[0]
+    meta.single_end = false
     def array = []
-    if (!file(row.fastq_1).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> Read 1 FastQ file does not exist!\n${row.fastq_1}"
-    }
-    if (meta.single_end) {
-        array = [ meta, [ file(row.fastq_1) ] ]
-    } else {
-        if (!file(row.fastq_2).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"
+    def filesarray = []
+
+    for(int i = 1; i < row.size(); i++)
+    {
+        if(row[i] == "")
+        {
+            // skip this row
+        }else if (!file(row[i]).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> Read $i FastQ file does not exist!\n${row[i]}"
+        } else
+        {
+            filesarray.add(file(row[i]))
         }
-        array = [ meta, [ file(row.fastq_1), file(row.fastq_2) ] ]
     }
+
+    if(filesarray.size() == 1)
+    {
+        meta.single_end = true
+    } else if( (filesarray.size() % 2) != 0)
+    {
+        exit 1, "ERROR: Please check input samplesheet -> Number of samples is not an even number or 1.\n$row"
+    }
+    
+    array = [ meta, filesarray]
     return array
 }
