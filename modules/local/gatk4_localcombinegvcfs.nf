@@ -33,8 +33,36 @@ process GATK4_LOCALCOMBINEGVCFS {
     } else {
         avail_mem = task.memory.giga
     }
-    def input_files = vcf.collect{"-V ${it}"}.join(' ') // add '-V' to each vcf file
-    
+    def skip_samples = task.ext.skip_samples ?: ''
+    def sample_list = []
+    if(skip_samples != '')
+    {
+        
+      sample_list = skip_samples.split(',')  // split by comma and put into list
+    }
+
+    //def input_files = vcf.collect{"-V ${it}"}.join(' ') // add '-V' to each vcf file
+    def input_files = ""
+    for (int i=0; i < vcf.size(); i++)
+    {
+        skip_this = false
+        thisVcf = vcf[i]
+        for (int j=0; j < sample_list.size(); j++)
+        {
+            cmpSample = sample_list[j]
+            if(thisVcf.getName().startsWith(cmpSample))
+            {
+                skip_this = true
+            }
+        }
+        if(skip_this)
+        {
+            // do nothing
+        } else
+        {
+            input_files += "-V $thisVcf "
+        }
+    }
     """
 	    gatk \\
           --java-options "-Xmx${avail_mem}g" \\

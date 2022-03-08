@@ -15,8 +15,10 @@ def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
+
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Input reference fasta not specified!' }
+
 
 /*
 ========================================================================================
@@ -70,7 +72,6 @@ def multiqc_report = []
 workflow MYCOSNP {
 
     ch_versions = Channel.empty()
-    ch_gatk_in = Channel.empty()
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -104,48 +105,51 @@ workflow MYCOSNP {
     BWA_PREPROCESS( [fas_file, fai_file, bai_file ], INPUT_CHECK.out.reads)
     ch_versions = ch_versions.mix(BWA_PREPROCESS.out.versions)
 
-    // SUBWORKFLOW: Run GATK And GATK_VARIANTS
-    GATK4_HAPLOTYPECALLER(  BWA_PREPROCESS.out.alignment_combined.map{meta, bam, bai            -> [ meta, bam, bai, [] ] },
-                            fas_file,
-                            fai_file,
-                            dict_file,
-                            [],
-                            []
-     )
-     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
-     
+    if(! params.skip_vcf)
+    {
+        // SUBWORKFLOW: Run GATK And GATK_VARIANTS
+        GATK4_HAPLOTYPECALLER(  BWA_PREPROCESS.out.alignment_combined.map{meta, bam, bai            -> [ meta, bam, bai, [] ] },
+                                fas_file,
+                                fai_file,
+                                dict_file,
+                                [],
+                                []
+        )
+        ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
+        
 
-    ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
-    ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
-    GATK4_LOCALCOMBINEGVCFS(
-                                [id:'combined', single_end:false],
-                                ch_vcf,
-                                ch_vcf_idx,
-                                fas_file, 
-                                fai_file, 
-                                dict_file)
+        ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
+        ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
+        GATK4_LOCALCOMBINEGVCFS(
+                                    [id:'combined', single_end:false],
+                                    ch_vcf,
+                                    ch_vcf_idx,
+                                    fas_file, 
+                                    fai_file, 
+                                    dict_file)
 
-    //GATK_VARIANTS( fas_file, fai_file, bai_file, dict_file, vcf_meta_file, vcf_vcf_file, vcf_idx_file )
-    GATK_VARIANTS( 
-                    fas_file, 
-                    fai_file, 
-                    bai_file, 
-                    dict_file,
-                    GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf.map{meta, vcf, tbi->[ meta ]}, 
-                    GATK4_LOCALCOMBINEGVCFS.out.gvcf, 
-                    GATK4_LOCALCOMBINEGVCFS.out.tbi 
-                )
-    
+        //GATK_VARIANTS( fas_file, fai_file, bai_file, dict_file, vcf_meta_file, vcf_vcf_file, vcf_idx_file )
+        GATK_VARIANTS( 
+                        fas_file, 
+                        fai_file, 
+                        bai_file, 
+                        dict_file,
+                        GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf.map{meta, vcf, tbi->[ meta ]}, 
+                        GATK4_LOCALCOMBINEGVCFS.out.gvcf, 
+                        GATK4_LOCALCOMBINEGVCFS.out.tbi 
+                    )
+        
+        
 
+        // These files are temporary for testing only gatk - this will allow pipeline to continue with testdata running only
+        //gvcftest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf")
+        //gvcfidxtest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf.idx")
+        //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], [ [ id:'combined', single_end:false ], gvcftest, gvcfidxtest] )
+        ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
-    // These files are temporary for testing only gatk - this will allow pipeline to continue with testdata running only
-    //gvcftest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf")
-    //gvcfidxtest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf.idx")
-    //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], [ [ id:'combined', single_end:false ], gvcftest, gvcfidxtest] )
-    ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
-
-    // Phylogeny
-    CREATE_PHYLOGENY(GATK_VARIANTS.out.snps_fasta.map{meta, fas->[fas]}, '')
+        // Phylogeny
+        CREATE_PHYLOGENY(GATK_VARIANTS.out.snps_fasta.map{meta, fas->[fas]}, '')
+    }
 
      CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
