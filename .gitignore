@@ -3,3 +3,4 @@ work
 results*
 bin/broad-vcf-filter/vcfTools.pyc*
 bin/broad-vcf-filter/__pycache__/
+tmp
