@@ -83,6 +83,7 @@ nf-core modules install seqtk/seq
 nf-core modules install seqtk/rename
 nf-core modules install faqcs
 nf-core modules install seqkit/pair
+nf-core modules install seqkit/replace
 nf-core modules install rapidnj
 nf-core modules install raxmlng
 nf-core modules install fasttree
