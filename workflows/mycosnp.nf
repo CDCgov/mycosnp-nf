@@ -55,9 +55,10 @@ include { CREATE_PHYLOGENY }      from '../subworkflows/local/phylogeny'
 include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
-include { GATK4_HAPLOTYPECALLER }       from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
-include { GATK4_COMBINEGVCFS }          from '../modules/nf-core/modules/gatk4/combinegvcfs/main'
-include { GATK4_LOCALCOMBINEGVCFS }     from '../modules/local/gatk4_localcombinegvcfs.nf'
+include { GATK4_HAPLOTYPECALLER       } from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
+include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/modules/gatk4/combinegvcfs/main'
+include { SEQKIT_REPLACE              } from '../modules/nf-core/modules/seqkit/replace/main'
+include { GATK4_LOCALCOMBINEGVCFS     } from '../modules/local/gatk4_localcombinegvcfs.nf'
 
 /*
 ========================================================================================
@@ -139,16 +140,13 @@ workflow MYCOSNP {
                         GATK4_LOCALCOMBINEGVCFS.out.tbi 
                     )
         
-        
 
-        // These files are temporary for testing only gatk - this will allow pipeline to continue with testdata running only
-        //gvcftest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf")
-        //gvcfidxtest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf.idx")
-        //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], [ [ id:'combined', single_end:false ], gvcftest, gvcfidxtest] )
         ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
         // Phylogeny
-        CREATE_PHYLOGENY(GATK_VARIANTS.out.snps_fasta.map{meta, fas->[fas]}, '')
+        // Swap * for -
+        SEQKIT_REPLACE(GATK_VARIANTS.out.snps_fasta)
+        CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '')
     }
 
      CUSTOM_DUMPSOFTWAREVERSIONS (
