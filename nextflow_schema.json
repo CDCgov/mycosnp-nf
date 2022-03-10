@@ -35,12 +35,28 @@
                     "description": "Email address for completion summary.",
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+                    "hidden": true
                 },
                 "multiqc_title": {
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
-                    "fa_icon": "fas fa-file-signature"
+                    "fa_icon": "fas fa-file-signature",
+                    "hidden": true
+                },
+                "publish_dir_mode": {
+                    "type": "string",
+                    "enum": [
+                        "symlink",
+                        "rellink",
+                        "link",
+                        "copy",
+                        "copyNoFollow",
+                        "move"
+                    ],
+                    "default": "copy",
+                    "description": "Method used to save pipeline results to output directory.",
+                    "fa_icon": "fas fa-archive"
                 }
             }
         },
@@ -54,14 +70,15 @@
                     "type": "string",
                     "description": "Name of iGenomes reference.",
                     "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details.",
+                    "hidden": true
                 },
                 "fasta": {
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
+                    "description": "Path to FASTA formatted reference genome file.",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
                 },
@@ -79,6 +96,126 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                }
+            },
+            "required": [
+                "fasta"
+            ]
+        },
+        "mycosnp_run_save_skip_options": {
+            "title": "MycoSNP Run/Save/Skip Options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "save_reference": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Saves the reference genome/index files to the results folder",
+                    "fa_icon": "fas fa-align-left"
+                },
+                "save_alignment": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Saves the reference alignment BAM files to the samples results folder",
+                    "fa_icon": "fas fa-align-right"
+                },
+                "rapidnj": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Build a tree using the RapidNJ neighbour-joining algorithm",
+                    "fa_icon": "fab fa-pagelines"
+                },
+                "fasttree": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Build a tree using the FastTree approximate ML algorithm",
+                    "fa_icon": "fas fa-tree"
+                },
+                "iqtree": {
+                    "type": "boolean",
+                    "description": "Build a tree using the IQ-TREE ML algorithm",
+                    "fa_icon": "fab fa-pagelines"
+                },
+                "raxmlng": {
+                    "type": "boolean",
+                    "description": "Build a tree using the RAxML-NG ML algorithm",
+                    "fa_icon": "fab fa-pagelines"
+                },
+                "save_debug": {
+                    "type": "boolean",
+                    "description": "Save intermediate files for debugging",
+                    "fa_icon": "fas fa-bug"
+                },
+                "skip_samples": {
+                    "type": "string",
+                    "description": "a comma separated list of IDs to skip for variant calling and analysis",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_samples_file": {
+                    "type": "string",
+                    "description": "a file with new-line separated list of IDs to skip for variant calling and analysis",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_vcf": {
+                    "type": "boolean",
+                    "description": "Skip variant calling and analysis (run reference prep and mapping)",
+                    "fa_icon": "fas fa-forward"
+                }
+            }
+        },
+        "mycosnp_run_params": {
+            "title": "MycoSNP Run Params",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "sample_ploidy": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Ploidy of sample (GATK)",
+                    "fa_icon": "fas fa-dna"
+                },
+                "coverage": {
+                    "type": "integer",
+                    "default": 70,
+                    "description": "If coverage is specified and rate is not specified, coverage is used to calculate a down-sampling rate that results in the specified coverage. For example if coverage 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
+                    "fa_icon": "fas fa-align-center"
+                },
+                "rate": {
+                    "type": "number",
+                    "description": "If rate is specified, then coverage is ignored. rate specifies the rate for down-sampling FASTQ files. A rate of 1.0 indicates that 100% of reads in the FASTQ files are retained, which effectively \"skips\" down-sampling",
+                    "fa_icon": "fas fa-car-side"
+                },
+                "gvcfs_filter": {
+                    "type": "string",
+                    "default": "QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10",
+                    "description": "Filter criteria for variants (GATK)",
+                    "fa_icon": "fas fa-filter"
+                },
+                "vcftools_filter": {
+                    "type": "string",
+                    "default": "--min_GQ \"50\" --keep_GQ_0_refs --min_percent_alt_in_AD \"0.8\" --min_total_DP \"10\" --keep_all_ref",
+                    "description": "Filter criteria for VCFTOOLS",
+                    "fa_icon": "fas fa-filter"
+                },
+                "max_amb_samples": {
+                    "type": "integer",
+                    "default": 10000000,
+                    "description": "Max number of samples with ambiguous calls for inclusion (GATK)",
+                    "fa_icon": "fas fa-question"
+                },
+                "max_perc_amb_samples": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Max percent of samples with ambiguous calls for inclusion (GATK)",
+                    "fa_icon": "fas fa-question"
+                },
+                "mask": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Perform masking of reference genome before analysis",
+                    "fa_icon": "fas fa-mask"
                 }
             }
         },
@@ -140,7 +277,7 @@
                 "max_cpus": {
                     "type": "integer",
                     "description": "Maximum number of CPUs that can be requested for any single job.",
-                    "default": 16,
+                    "default": 8,
                     "fa_icon": "fas fa-microchip",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
@@ -148,7 +285,7 @@
                 "max_memory": {
                     "type": "string",
                     "description": "Maximum amount of memory that can be requested for any single job.",
-                    "default": "128.GB",
+                    "default": "64.GB",
                     "fa_icon": "fas fa-memory",
                     "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
                     "hidden": true,
@@ -175,8 +312,7 @@
                 "help": {
                     "type": "boolean",
                     "description": "Display help text.",
-                    "fa_icon": "fas fa-question-circle",
-                    "hidden": true
+                    "fa_icon": "fas fa-question-circle"
                 },
                 "email_on_fail": {
                     "type": "string",
@@ -238,6 +374,11 @@
                     "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
                     "hidden": true,
                     "fa_icon": "fas fa-bacon"
+                },
+                "tmpdir": {
+                    "type": "string",
+                    "default": "/tmp",
+                    "description": "temporary directory for shell and java processes"
                 }
             }
         }
@@ -250,6 +391,12 @@
             "$ref": "#/definitions/reference_genome_options"
         },
         {
+            "$ref": "#/definitions/mycosnp_run_save_skip_options"
+        },
+        {
+            "$ref": "#/definitions/mycosnp_run_params"
+        },
+        {
             "$ref": "#/definitions/institutional_config_options"
         },
         {
@@ -258,87 +405,5 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ],
-    "properties": {
-        "save_reference": {
-            "type": "string",
-            "default": "true"
-        },
-        "save_alignment": {
-            "type": "string",
-            "default": "true"
-        },
-        "sample_ploidy": {
-            "type": "integer",
-            "default": 1
-        },
-        "coverage": {
-            "type": "integer",
-            "default": 70
-        },
-        "rate": {
-            "type": "string",
-            "default": ""
-        },
-        "gvcfs_filter": {
-            "type": "string",
-            "default": "QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10"
-        },
-        "vcftools_filter": {
-            "type": "string",
-            "default": "--min_GQ \"50\" --keep_GQ_0_refs --min_percent_alt_in_AD \"0.8\" --min_total_DP \"10\" --keep_all_ref"
-        },
-        "max_amb_samples": {
-            "type": "integer",
-            "default": 10000000
-        },
-        "max_perc_amb_samples": {
-            "type": "integer",
-            "default": 10
-        },
-        "publish_dir_mode": {
-            "type": "string",
-            "default": "symlink"
-        },
-        "rapidnj": {
-            "type": "string",
-            "default": "true"
-        },
-        "fasttree": {
-            "type": "string",
-            "default": "true"
-        },
-        "iqtree": {
-            "type": "string",
-            "default": "true"
-        },
-        "raxmlng": {
-            "type": "string",
-            "default": "true"
-        },
-        "save_debug": {
-            "type": "string",
-            "default": "false"
-        },
-        "mask": {
-            "type": "string",
-            "default": "true"
-        },
-        "tmpdir": {
-            "type": "string",
-            "default": "/scicomp/home-pure/rrx8/devops/mycosnp-nf/tmp"
-        },
-        "skip_samples": {
-            "type": "string",
-            "default": ""
-        },
-        "skip_samples_file": {
-            "type": "string",
-            "default": null
-        },
-        "skip_vcf": {
-            "type": "string",
-            "default": "false"
-        }
-    }
+    ]
 }
