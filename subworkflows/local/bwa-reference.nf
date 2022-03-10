@@ -4,12 +4,12 @@
 ========================================================================================
 */
 
-include { NUCMER }                          from '../../modules/nf-core/modules/nucmer/main'
-include { COORDSTOBED }                     from '../../modules/local/coordstobed.nf'
-include { BEDTOOLS_MASKFASTA }              from '../../modules/nf-core/modules/bedtools/maskfasta/main'
-include { BWA_INDEX }                       from '../../modules/nf-core/modules/bwa/index/main'
+include { NUCMER                          } from '../../modules/nf-core/modules/nucmer/main'
+include { COORDSTOBED                     } from '../../modules/local/coordstobed.nf'
+include { BEDTOOLS_MASKFASTA              } from '../../modules/nf-core/modules/bedtools/maskfasta/main'
+include { BWA_INDEX                       } from '../../modules/nf-core/modules/bwa/index/main'
 include { PICARD_CREATESEQUENCEDICTIONARY } from '../../modules/nf-core/modules/picard/createsequencedictionary/main'
-include { SAMTOOLS_FAIDX }                  from '../../modules/nf-core/modules/samtools/faidx/main'
+include { SAMTOOLS_FAIDX                  } from '../../modules/nf-core/modules/samtools/faidx/main'
 
 process INPUT_PROC {
 
@@ -47,10 +47,10 @@ workflow BWA_REFERENCE {
     ch_reference_combined = Channel.empty()
     ch_versions           = Channel.empty()
 
-    INPUT_PROC(fasta)
+    INPUT_PROC( fasta )
     NUCMER( INPUT_PROC.out )
-    COORDSTOBED(NUCMER.out.delta)
-    BEDTOOLS_MASKFASTA(COORDSTOBED.out.bed, INPUT_PROC.out.map{ meta, fa, fa2->[ fa]})
+    COORDSTOBED( NUCMER.out.delta )
+    BEDTOOLS_MASKFASTA( COORDSTOBED.out.bed, INPUT_PROC.out.map{ meta, fa, fa2->[ fa]} )
 
 
     if(params.mask)
@@ -69,9 +69,11 @@ workflow BWA_REFERENCE {
 
     
     // reference_fasta, samtools_faidx, bwa_index, dict
-    ch_use_fasta.combine(SAMTOOLS_FAIDX.out.fai).combine(BWA_INDEX.out.index).combine(PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict)
-      .map{meta, fa1, meta2, fai, bai, meta4, dict -> [meta, fa1, fai, bai, dict] }
-      .set{ch_reference_combined}
+    ch_use_fasta.combine(SAMTOOLS_FAIDX.out.fai)
+                .combine(BWA_INDEX.out.index)
+                .combine(PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict)
+                .map{meta, fa1, meta2, fai, bai, meta4, dict -> [meta, fa1, fai, bai, dict] }
+                .set{ch_reference_combined}
 
 
     // Collect versions information
