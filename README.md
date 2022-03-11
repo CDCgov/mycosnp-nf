@@ -116,11 +116,14 @@ nf-core/mycosnp was originally written by CDC.
 We thank the following people for their extensive assistance in the development of this pipeline:
 
 <!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-*   Michael Cipriano
-*   Hunter Seabolt
-*   Sateesh Peri
-*   Lynn Dotrang
-*   Christopher Jossart
+
+* Michael Cipriano [@mjcipriano](https://github.com/mjcipriano)
+* Sateesh Peri [@sateeshperi](https://github.com/sateeshperi)
+* Hunter Seabolt [@hseabolt](https://github.com/hseabolt)
+* Chris Sandlin [@cssandlin](https://github.com/cssandlin)
+* Drewry Morris [@drewry](https://github.com/drewry)
+* Lynn Dotrang **TODO** add github
+* Christopher Jossart **TODO** add github
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
