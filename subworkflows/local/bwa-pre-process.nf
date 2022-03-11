@@ -17,7 +17,7 @@ include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM } from '../../modules/nf-core/mod
 include { PICARD_FIXMATEINFORMATION            } from '../../modules/nf-core/modules/picard/fixmateinformation/main'
 include { PICARD_ADDORREPLACEREADGROUPS        } from '../../modules/nf-core/modules/picard/addorreplacereadgroups/main'
 include { SAMTOOLS_INDEX                       } from '../../modules/nf-core/modules/samtools/index/main'
-include { FASTQC                               } from '../../modules/nf-core/modules/fastqc/main'
+include { FASTQC as FASTQC_POST                } from '../../modules/nf-core/modules/fastqc/main'
 include { QUALIMAP_BAMQC                       } from '../../modules/nf-core/modules/qualimap/bamqc/main'
 include { DOWNSAMPLE_RATE                      } from '../../modules/local/downsample_rate.nf'
 include { SAMTOOLS_STATS                       } from '../../modules/nf-core/modules/samtools/stats/main'
@@ -49,7 +49,7 @@ workflow BWA_PREPROCESS {
     PICARD_FIXMATEINFORMATION(PICARD_CLEANSAM.out.bam)
     PICARD_ADDORREPLACEREADGROUPS(PICARD_FIXMATEINFORMATION.out.bam)
     SAMTOOLS_INDEX(PICARD_ADDORREPLACEREADGROUPS.out.bam)
-    FASTQC(FAQCS.out.reads)
+    FASTQC_POST(FAQCS.out.reads)
     QUALIMAP_BAMQC(PICARD_ADDORREPLACEREADGROUPS.out.bam, [], false)
 
     ch_alignment_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam.join(SAMTOOLS_INDEX.out.bai)
@@ -67,7 +67,7 @@ workflow BWA_PREPROCESS {
                                                PICARD_FIXMATEINFORMATION.out.versions,
                                                PICARD_ADDORREPLACEREADGROUPS.out.versions,
                                                SAMTOOLS_INDEX.out.versions,
-                                               FASTQC.out.versions,
+                                               FASTQC_POST.out.versions,
                                                SAMTOOLS_STATS.out.versions,
                                                QUALIMAP_BAMQC.out.versions
                                             )
@@ -83,6 +83,6 @@ workflow BWA_PREPROCESS {
     stats              = SAMTOOLS_STATS.out.stats        // channel: [ val(meta), stats ]
     flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat  // channel: [ val(meta), flagstat ]
     idxstats           = SAMTOOLS_IDXSTATS.out.idxstats  // channel: [ val(meta), idxstats ]
-    post_qc            = FASTQC.out.zip                  // channel: [ val(meta), zip ]
+    post_qc            = FASTQC_POST.out.zip             // channel: [ val(meta), zip ]
     versions           = ch_versions                     // channel: [ ch_versions ]
 }
