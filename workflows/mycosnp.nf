@@ -103,6 +103,7 @@ workflow MYCOSNP {
     // tuple meta, fastq
     
     BWA_PREPROCESS( [fas_file, fai_file, bai_file ], INPUT_CHECK.out.reads)
+    // do we need to collect sample to perform the qc_report process?
     ch_versions = ch_versions.mix(BWA_PREPROCESS.out.versions)
 
     if(! params.skip_vcf)

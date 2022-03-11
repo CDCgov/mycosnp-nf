@@ -7,6 +7,7 @@
 include { SEQKIT_PAIR }                   from '../../modules/nf-core/modules/seqkit/pair/main'
 include { SEQTK_SAMPLE }                  from '../../modules/nf-core/modules/seqtk/sample/main'
 include { FAQCS }                         from '../../modules/nf-core/modules/faqcs/main'
+include { QC_REPORT }                     from '../../modules/local/qc_report.nf'
 // TODO: QC report local module
 include { BWA_INDEX }                     from '../../modules/nf-core/modules/bwa/index/main'
 include { BWA_MEM }                       from '../../modules/nf-core/modules/bwa/mem/main'
@@ -45,7 +46,7 @@ workflow BWA_PREPROCESS {
 	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
     SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, DOWNSAMPLE_RATE.out.number_to_sample)
     FAQCS(SEQTK_SAMPLE.out.reads)
-    // QC() // Local qc report
+    QC_REPORT(FAQCS.out.txt) //reference[0])
     BWA_MEM(FAQCS.out.reads, reference[2], true) // This already sorts the bam file
     PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
     PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam)
