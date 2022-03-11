@@ -12,6 +12,9 @@ WorkflowMycosnp.initialise(params, log)
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+if (params.skip_samples_file) { // check for skip_samples_file
+    checkPathParamList.add(params.skip_samples_file)
+}
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -38,11 +41,11 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK }    from '../subworkflows/local/input_check'
-include { BWA_PREPROCESS } from '../subworkflows/local/bwa-pre-process'
-include { BWA_REFERENCE }  from '../subworkflows/local/bwa-reference'
-include { GATK_VARIANTS }  from '../subworkflows/local/gatk-variants'
-include { CREATE_PHYLOGENY }      from '../subworkflows/local/phylogeny'
+include { INPUT_CHECK      } from '../subworkflows/local/input_check'
+include { BWA_PREPROCESS   } from '../subworkflows/local/bwa-pre-process'
+include { BWA_REFERENCE    } from '../subworkflows/local/bwa-reference'
+include { GATK_VARIANTS    } from '../subworkflows/local/gatk-variants'
+include { CREATE_PHYLOGENY } from '../subworkflows/local/phylogeny'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -55,9 +58,10 @@ include { CREATE_PHYLOGENY }      from '../subworkflows/local/phylogeny'
 include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
-include { GATK4_HAPLOTYPECALLER }       from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
-include { GATK4_COMBINEGVCFS }          from '../modules/nf-core/modules/gatk4/combinegvcfs/main'
-include { GATK4_LOCALCOMBINEGVCFS }     from '../modules/local/gatk4_localcombinegvcfs.nf'
+include { GATK4_HAPLOTYPECALLER       } from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
+include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/modules/gatk4/combinegvcfs/main'
+include { SEQKIT_REPLACE              } from '../modules/nf-core/modules/seqkit/replace/main'
+include { GATK4_LOCALCOMBINEGVCFS     } from '../modules/local/gatk4_localcombinegvcfs.nf'
 
 /*
 ========================================================================================
@@ -81,14 +85,20 @@ workflow MYCOSNP {
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
-    // SUBWORKFLOW: Run BWA_REFERENCE
-    //emit:
-    //fasta = masked_fasta
-    //samtools_index = SAMTOOLS_FAIDX.out.fai
-    //bwa_index = BWA_INDEX.out.index
-    //dict = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
-    //versions = ch_versions // channel: [ versions.yml ]
-
+/*
+========================================================================================
+                          SUBWORKFLOW: Run BWA_REFERENCE
+    take:
+        fasta               file
+    emit:
+        masked_fasta        channel: [ val(meta), fas ]
+        samtools_index      channel: [ val(meta), fai ]
+        bwa_index           channel: [ val(meta), bwa ]
+        dict                channel: [ val(meta), dict ]
+        reference_combined  channel: [ val(meta), fa, fai, bai, dict ]
+        versions            channel: [ ch_versions ]
+========================================================================================
+*/
     BWA_REFERENCE(ch_fasta)
     ch_versions = ch_versions.mix(BWA_REFERENCE.out.versions)
     fas_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fa1 ]}.first()
@@ -97,18 +107,45 @@ workflow MYCOSNP {
     dict_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ dict ]}.first()
     meta_val = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ meta1 ]}.first()
 
-    // SUBWORKFLOW: Run BWA_PRE_PROCESS
-    // take:
-    // tuple reference_fasta, samtools_faidx, bwa_index
-    // tuple meta, fastq
-    
+/*
+========================================================================================
+                          SUBWORKFLOW: Run BWA_PRE_PROCESS
+    take:
+        reference          channel:  [ tuple reference_fasta, samtools_faidx, bwa_index ]
+        reads              channel:  [ val(meta), [ fastq ] ]
+    emit:
+        alignment           channel: [ val(meta), bam ]
+        alignment_index     channel: [ val(meta), bai ]
+        alignment_combined  channel: [ val(meta), bam, bai ]
+        qualimap            channel: [ val(meta), results ]
+        stats               channel: [ val(meta), stats ]
+        flagstat            channel: [ val(meta), flagstat ]
+        idxstats            channel: [ val(meta), idxstats ]
+        versions            channel: [ ch_versions ]    
+========================================================================================
+*/
+
     BWA_PREPROCESS( [fas_file, fai_file, bai_file ], INPUT_CHECK.out.reads)
     // do we need to collect sample to perform the qc_report process?
     ch_versions = ch_versions.mix(BWA_PREPROCESS.out.versions)
 
-    if(! params.skip_vcf)
+/*
+========================================================================================
+                          SUBWORKFLOW: Run GATK And GATK_VARIANTS
+    take:
+        fasta
+        fai
+        bai
+        dict
+        thismeta
+        vcffile
+        vcfidx
+    emit:
+        snps_fasta   channel: [ val(meta), fasta ]
+========================================================================================
+*/
+if(! params.skip_vcf)
     {
-        // SUBWORKFLOW: Run GATK And GATK_VARIANTS
         GATK4_HAPLOTYPECALLER(  BWA_PREPROCESS.out.alignment_combined.map{meta, bam, bai            -> [ meta, bam, bai, [] ] },
                                 fas_file,
                                 fai_file,
@@ -129,7 +166,6 @@ workflow MYCOSNP {
                                     fai_file, 
                                     dict_file)
 
-        //GATK_VARIANTS( fas_file, fai_file, bai_file, dict_file, vcf_meta_file, vcf_vcf_file, vcf_idx_file )
         GATK_VARIANTS( 
                         fas_file, 
                         fai_file, 
@@ -140,16 +176,26 @@ workflow MYCOSNP {
                         GATK4_LOCALCOMBINEGVCFS.out.tbi 
                     )
         
-        
 
-        // These files are temporary for testing only gatk - this will allow pipeline to continue with testdata running only
-        //gvcftest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf")
-        //gvcfidxtest = file("$projectDir/assets/testdata/combinegvcfs/gatk-combinegvcfs.g.vcf.idx")
-        //GATK_VARIANTS( [fas_file, fai_file, bai_file, dict_file ], [ [ id:'combined', single_end:false ], gvcftest, gvcfidxtest] )
         ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
-        // Phylogeny
-        CREATE_PHYLOGENY(GATK_VARIANTS.out.snps_fasta.map{meta, fas->[fas]}, '')
+/*
+========================================================================================
+                          SUBWORKFLOW: Create Phylogeny 
+    take:
+        fasta                     file
+        constant_sites_string     val: string of constant sites A,C,G,T
+    emit:
+        rapidnj_tree      = rapidnj_tree     // channel: [ phylogeny ]
+        fasttree_tree     = fasttree_tree    // channel: [ phylogeny ]
+        iqtree_tree       = iqtree_tree      // channel: [ phylogeny ]
+        raxmlng_tree      = raxmlng_tree     // channel: [ phylogeny ]
+        versions          = ch_versions 
+========================================================================================
+*/
+
+        SEQKIT_REPLACE(GATK_VARIANTS.out.snps_fasta) // Swap * for -
+        CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '')
     }
 
      CUSTOM_DUMPSOFTWAREVERSIONS (
@@ -157,7 +203,7 @@ workflow MYCOSNP {
     )
 
     //
-    // MODULE: Run FastQC
+    // MODULE: Run Pre-FastQC 
     //
     FASTQC (
         INPUT_CHECK.out.reads
@@ -176,6 +222,7 @@ workflow MYCOSNP {
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    //ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.post_qc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.stats.map{meta, stats -> [stats]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.flagstat.map{meta, stats -> [stats]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.idxstats.map{meta, stats -> [stats]}.ifEmpty([]))

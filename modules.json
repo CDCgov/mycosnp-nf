@@ -111,6 +111,9 @@
             "seqkit/pair": {
                 "git_sha": "4c59984d7bcc772598ba44fb8289051352c7a6c6"
             },
+            "seqkit/replace": {
+                "git_sha": "24f0bdd14ec32e0114aa6ee5337ddbd490ffd570"
+            },
             "seqtk/rename": {
                 "git_sha": "a69faefee8ff63565629a2b6dfc40e08f4690b80"
             },

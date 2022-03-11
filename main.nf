@@ -3,9 +3,8 @@
 ========================================================================================
     nf-core/mycosnp
 ========================================================================================
-    Github : https://github.com/nf-core/mycosnp
-    Website: https://nf-co.re/mycosnp
-    Slack  : https://nfcore.slack.com/channels/mycosnp
+    Github : https://github.com/CDCgov/mycosnp-nf
+    Wiki   : https://github.com/CDCgov/mycosnp-nf/wiki
 ----------------------------------------------------------------------------------------
 */
 
@@ -33,38 +32,13 @@ WorkflowMain.initialise(workflow, params, log)
 ========================================================================================
 */
 
-include { MYCOSNP        } from './workflows/mycosnp'
-include { INPUT_CHECK    } from './subworkflows/local/input_check'
-include { BWA_PREPROCESS } from './subworkflows/local/bwa-pre-process'
-include { BWA_REFERENCE  } from './subworkflows/local/bwa-reference'
-include { GATK_VARIANTS  } from './subworkflows/local/gatk-variants'
+include { MYCOSNP } from './workflows/mycosnp'
 
 //
 // WORKFLOW: Run main nf-core/mycosnp analysis pipeline
 //
 workflow NFCORE_MYCOSNP {
     MYCOSNP ()
-}
-
-//
-// SUB-WORKFLOW: Run bwa-reference sub-workflow of nf-core/mycosnp analysis pipeline
-//
-workflow PREPARE_REFERENCE {
-    BWA_REFERENCE ()
-}
-
-//
-// SUB-WORKFLOW: Run bwa-preprocess sub-workflow of nf-core/mycosnp analysis pipeline
-//
-workflow PREPROCESS {
-    BWA_PREPROCESS ()
-}
-
-//
-// SUB-WORKFLOW: Run gatk-variants sub-workflow of nf-core/mycosnp analysis pipeline
-//
-workflow FIND_VARIANTS {
-    GATK_VARIANTS ()
 }
 
 /*
@@ -75,7 +49,6 @@ workflow FIND_VARIANTS {
 
 //
 // WORKFLOW: Execute a single named workflow for the pipeline
-// See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
     NFCORE_MYCOSNP ()

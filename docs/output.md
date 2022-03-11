@@ -1,19 +1,86 @@
-# nf-core/mycosnp: Output
+# CDCgov/mycosnp-nf: Output
 
 ## Introduction
 
-This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
+*   MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris.
+*   This method prepares the reference, performs quality control, and calls variants using a reference.
+*   MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations.
+
+This document describes the output produced by the pipeline.
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
-
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
 
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-* [FastQC](#fastqc) - Raw read QC
+### Reference Preparation
+
+> **Prepares a reference FASTA file for BWA alignment and GATK variant calling by masking repeats in the reference and generating the BWA index.**
+* Genome repeat identification and masking (`nucmer`)
+* BWA index generation (`bwa`)
+* FAI and DICT file creation (`Picard`, `Samtools`)
+
+### Sample QC and Processing
+
+> **Prepares samples (paired-end FASTQ files) for GATK variant calling by aligning the samples to a BWA reference index and ensuring that the BAM files are correctly formatted. This step also provides different quality reports for sample evaluation.**
+
+* Combine FASTQ file lanes if they were provided with multiple lanes.
+* Filter unpaired reads from FASTQ files (`SeqKit`).
+* Down sample FASTQ files to a desired coverage or sampling rate (`SeqTK`).
+* Trim reads and assess quality (`FaQCs`).
+* Generate a QC report by extracting data from FaQCs report data.
+* Align FASTQ reads to a reference (`BWA`).
+* Sort BAM files (`SAMTools`).
+* Mark and remove duplicates in the BAM file (`Picard`).
+* Clean the BAM file (`Picard "CleanSam"`).
+* Fix mate information in the BAM file (`Picard "FixMateInformation"`).
+* Add read groups to the BAM file (`Picard "AddOrReplaceReadGroups"`).
+* Index the BAM file (`SAMTools`).
+* [FastQC](#fastqc) - Filtered reads QC.
+* Qualimap mapping quality report.
 * [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
+
+**Important output files from this section:**
+
+| File          | Path                                      |
+| ---           | ---                                       |
+| Trimmed Reads |  `(samples/<sampleID>/faqcs/*.fastq.gz)`  |
+|  Bam files    |  `(samples/<sampleID>/finalbam)`          |
+|  QC Report    |  `(stats/qcreplrt)`                       |
+|  MultiQC      |  `(multiqc/)`                             |
+
+### Variant calling and analysis
+
+> **Calls variants and generates a multi-FASTA file and phylogeny.**
+
+* Call variants (`GATK HaplotypeCaller`).
+* Combine gVCF files from the HaplotypeCaller into a single VCF (`GATK CombineGVCFs`).
+* Call genotypes using the (`GATK GenotypeGVCFs`).
+* Filter the variants (`GATK VariantFiltration`) [default (but customizable) filter: 'QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10'].
+* Run a customized VCF filtering script (`Broad Institute`).
+* Split the filtered VCF file by sample.
+* Select only SNPs from the VCF files (`GATK SelectVariants`).
+* Split the VCF file with SNPs by sample.
+* Create a consensus sequence for each sample (`BCFTools`, `SeqTK`).
+* Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
+* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `RaxML`, `IQTree`)
+
+
+**Important output files from this section:**
+
+| File                                      | Path                                         |
+| ---                                       | ---                                          |
+| Individual VCF Files from HaplotypeCaller |  `(samples/variant_calling/haplotypecaller)` |
+|  Filtered selected variants combined      |  `(combined/finalfiltered)`                  |
+|  Filtered selected variants individual    |  `(combined/splitvcf)`                       |
+|  Individual consensus fasta files         |  `(combined/consensus)`                      |
+|  Selected SNP fasta file                  |  `(combined/vcf-to-fasta)`                   |
+|  Phylogeny files                          |  `(combined/phylogeny/)`                     |
+
+
+### Summary Files
+
 * [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
 ### FastQC

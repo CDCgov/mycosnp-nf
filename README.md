@@ -1,4 +1,4 @@
-[![Open nf-core/mycosnp in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CDCgov/mycosnp-nf)
+[![Open CDCgov/mycosnp-nf in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CDCgov/mycosnp-nf)
 
 Once the pod launches, it will present a VS-Code interface and comes with Nextflow, Conda and Docker pre-installed
 
@@ -7,10 +7,10 @@ Once the pod launches, it will present a VS-Code interface and comes with Nextfl
 nextflow run main.nf -profile docker,test
 ```
 
-# ![nf-core/mycosnp](docs/images/nf-core-mycosnp_logo_light.png#gh-light-mode-only) ![nf-core/mycosnp](docs/images/nf-core-mycosnp_logo_dark.png#gh-dark-mode-only)
+# ![CDCgov/mycosnp-nf](docs/images/nf-core-mycosnp_logo_light.png#gh-light-mode-only) ![CDCgov/mycosnp-nf](docs/images/nf-core-mycosnp_logo_dark.png#gh-dark-mode-only)
 
-[![GitHub Actions CI Status](https://github.com/nf-core/mycosnp/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/mycosnp/actions?query=workflow%3A%22nf-core+CI%22)
-[![GitHub Actions Linting Status](https://github.com/nf-core/mycosnp/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/mycosnp/actions?query=workflow%3A%22nf-core+linting%22)
+[![GitHub Actions CI Status](https://github.com/CDCgov/mycosnp-nf/workflows/nf-core%20CI/badge.svg)](https://github.com/CDCgov/mycosnp-nf/actions?query=workflow%3A%22nf-core+CI%22)
+[![GitHub Actions Linting Status](https://github.com/CDCgov/mycosnp-nf/workflows/nf-core%20linting/badge.svg)](https://github.com/CDCgov/mycosnp-nf/actions?query=workflow%3A%22nf-core+linting%22)
 [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/mycosnp/results)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
@@ -25,7 +25,7 @@ nextflow run main.nf -profile docker,test
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
+
 **nf-core/mycosnp** is a bioinformatics best-practice analysis pipeline for MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations..
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
@@ -37,8 +37,48 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+### Reference Preparation
+
+> **Prepares a reference FASTA file for BWA alignment and GATK variant calling by masking repeats in the reference and generating the BWA index.**
+* Genome repeat identification and masking (`nucmer`)
+* BWA index generation (`bwa`)
+* FAI and DICT file creation (`Picard`, `Samtools`)
+
+### Sample QC and Processing
+
+> **Prepares samples (paired-end FASTQ files) for GATK variant calling by aligning the samples to a BWA reference index and ensuring that the BAM files are correctly formatted. This step also provides different quality reports for sample evaluation.**
+
+* Combine FASTQ file lanes if they were provided with multiple lanes.
+* Filter unpaired reads from FASTQ files (`SeqKit`).
+* Down sample FASTQ files to a desired coverage or sampling rate (`SeqTK`).
+* Trim reads and assess quality (`FaQCs`).
+* Generate a QC report by extracting data from FaQCs report data.
+* Align FASTQ reads to a reference (`BWA`).
+* Sort BAM files (`SAMTools`).
+* Mark and remove duplicates in the BAM file (`Picard`).
+* Clean the BAM file (`Picard "CleanSam"`).
+* Fix mate information in the BAM file (`Picard "FixMateInformation"`).
+* Add read groups to the BAM file (`Picard "AddOrReplaceReadGroups"`).
+* Index the BAM file (`SAMTools`).
+* [FastQC](#fastqc) - Filtered reads QC.
+* Qualimap mapping quality report.
+* [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
+
+### Variant calling and analysis
+
+> **Calls variants and generates a multi-FASTA file and phylogeny.**
+
+* Call variants (`GATK HaplotypeCaller`).
+* Combine gVCF files from the HaplotypeCaller into a single VCF (`GATK CombineGVCFs`).
+* Call genotypes using the (`GATK GenotypeGVCFs`).
+* Filter the variants (`GATK VariantFiltration`) [default (but customizable) filter: 'QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10'].
+* Run a customized VCF filtering script (`Broad Institute`).
+* Split the filtered VCF file by sample.
+* Select only SNPs from the VCF files (`GATK SelectVariants`).
+* Split the VCF file with SNPs by sample.
+* Create a consensus sequence for each sample (`BCFTools`, `SeqTK`).
+* Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
+* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `RaxML`, `IQTree`)
 
 ## Quick Start
 
@@ -49,7 +89,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```console
-    nextflow run nf-core/mycosnp -profile test,YOURPROFILE
+    nextflow run CDCgov/mycosnp-nf -profile test,YOURPROFILE
     ```
 
     Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -61,15 +101,13 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 4. Start running your own analysis!
 
-    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
     ```console
-    nextflow run nf-core/mycosnp -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --genome GRCh37
+    nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta c_auris.fasta
     ```
 
 ## Documentation
 
-The nf-core/mycosnp pipeline comes with documentation about the pipeline [usage](https://nf-co.re/mycosnp/usage), [parameters](https://nf-co.re/mycosnp/parameters) and [output](https://nf-co.re/mycosnp/output).
+The nf-core/mycosnp pipeline comes with documentation about the pipeline [usage](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md), [parameters](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs) and [output](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/output.md).
 
 ## Credits
 
@@ -79,16 +117,21 @@ We thank the following people for their extensive assistance in the development 
 
 <!-- TODO nf-core: If applicable, make list of people who have also contributed -->
 
+* Michael Cipriano [@mjcipriano](https://github.com/mjcipriano)
+* Sateesh Peri [@sateeshperi](https://github.com/sateeshperi)
+* Hunter Seabolt [@hseabolt](https://github.com/hseabolt)
+* Chris Sandlin [@cssandlin](https://github.com/cssandlin)
+* Drewry Morris [@drewry](https://github.com/drewry)
+* Lynn Dotrang **TODO** add github
+* Christopher Jossart **TODO** add github
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-For further information or help, don't hesitate to get in touch on the [Slack `#mycosnp` channel](https://nfcore.slack.com/channels/mycosnp) (you can join with [this invite](https://nf-co.re/join/slack)).
-
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  nf-core/mycosnp for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+<!-- If you use  CDCgov/mycosnp-nf for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
@@ -107,9 +150,6 @@ You can cite the `nf-core` publication as follows:
 
 **General disclaimer** This repository was created for use by CDC programs to collaborate on public health related projects in support of the [CDC mission](https://www.cdc.gov/about/organization/mission.htm).  GitHub is not hosted by the CDC, but is a third party website used by CDC and its partners to share information and collaborate on software. CDC use of GitHub does not imply an endorsement of any one particular service, product, or enterprise. 
 
-## Access Request, Repo Creation Request
-
-* [CDC GitHub Open Project Request Form](https://forms.office.com/Pages/ResponsePage.aspx?id=aQjnnNtg_USr6NJ2cHf8j44WSiOI6uNOvdWse4I-C2NUNk43NzMwODJTRzA4NFpCUk1RRU83RTFNVi4u) _[Requires a CDC Office365 login, if you do not have a CDC Office365 please ask a friend who does to submit the request on your behalf. If you're looking for access to the CDCEnt private organization, please use the [GitHub Enterprise Cloud Access Request form](https://forms.office.com/Pages/ResponsePage.aspx?id=aQjnnNtg_USr6NJ2cHf8j44WSiOI6uNOvdWse4I-C2NUQjVJVDlKS1c0SlhQSUxLNVBaOEZCNUczVS4u).]_
 
 ## Related documents
 
@@ -120,9 +160,6 @@ You can cite the `nf-core` publication as follows:
 * [Contribution Notice](CONTRIBUTING.md)
 * [Code of Conduct](code-of-conduct.md)
 
-## Overview
-
-Describe the purpose of your project. Add additional sections as necessary to help collaborators and potential collaborators understand and use your project.
   
 ## Public Domain Standard Notice
 This repository constitutes a work of the United States Government and is not

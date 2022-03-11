@@ -9,28 +9,28 @@ include { SEQTK_SAMPLE }                  from '../../modules/nf-core/modules/se
 include { FAQCS }                         from '../../modules/nf-core/modules/faqcs/main'
 include { QC_REPORT }                     from '../../modules/local/qc_report.nf'
 // TODO: QC report local module
-include { BWA_INDEX }                     from '../../modules/nf-core/modules/bwa/index/main'
-include { BWA_MEM }                       from '../../modules/nf-core/modules/bwa/mem/main'
-include { SAMTOOLS_SORT }                 from '../../modules/nf-core/modules/samtools/sort/main'
-include { PICARD_MARKDUPLICATES }         from '../../modules/nf-core/modules/picard/markduplicates/main'
-include { PICARD_CLEANSAM }               from '../../modules/nf-core/modules/picard/cleansam/main'
-include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM} from '../../modules/nf-core/modules/samtools/view/main'
-include { PICARD_FIXMATEINFORMATION }     from '../../modules/nf-core/modules/picard/fixmateinformation/main'
-include { PICARD_ADDORREPLACEREADGROUPS } from '../../modules/nf-core/modules/picard/addorreplacereadgroups/main'
-include { SAMTOOLS_INDEX }                from '../../modules/nf-core/modules/samtools/index/main'
-include { FASTQC }                        from '../../modules/nf-core/modules/fastqc/main'
-include { QUALIMAP_BAMQC }                from '../../modules/nf-core/modules/qualimap/bamqc/main'
-include { DOWNSAMPLE_RATE }               from '../../modules/local/downsample_rate.nf'
-include { SAMTOOLS_STATS    }             from '../../modules/nf-core/modules/samtools/stats/main'
-include { SAMTOOLS_IDXSTATS }             from '../../modules/nf-core/modules/samtools/idxstats/main'
-include { SAMTOOLS_FLAGSTAT }             from '../../modules/nf-core/modules/samtools/flagstat/main'
+include { BWA_INDEX                            } from '../../modules/nf-core/modules/bwa/index/main'
+include { BWA_MEM                              } from '../../modules/nf-core/modules/bwa/mem/main'
+include { SAMTOOLS_SORT                        } from '../../modules/nf-core/modules/samtools/sort/main'
+include { PICARD_MARKDUPLICATES                } from '../../modules/nf-core/modules/picard/markduplicates/main'
+include { PICARD_CLEANSAM                      } from '../../modules/nf-core/modules/picard/cleansam/main'
+include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM } from '../../modules/nf-core/modules/samtools/view/main'
+include { PICARD_FIXMATEINFORMATION            } from '../../modules/nf-core/modules/picard/fixmateinformation/main'
+include { PICARD_ADDORREPLACEREADGROUPS        } from '../../modules/nf-core/modules/picard/addorreplacereadgroups/main'
+include { SAMTOOLS_INDEX                       } from '../../modules/nf-core/modules/samtools/index/main'
+include { FASTQC                               } from '../../modules/nf-core/modules/fastqc/main'
+include { QUALIMAP_BAMQC                       } from '../../modules/nf-core/modules/qualimap/bamqc/main'
+include { DOWNSAMPLE_RATE                      } from '../../modules/local/downsample_rate.nf'
+include { SAMTOOLS_STATS                       } from '../../modules/nf-core/modules/samtools/stats/main'
+include { SAMTOOLS_IDXSTATS                    } from '../../modules/nf-core/modules/samtools/idxstats/main'
+include { SAMTOOLS_FLAGSTAT                    } from '../../modules/nf-core/modules/samtools/flagstat/main'
 
 
 workflow BWA_PREPROCESS {
 
     take:
     reference //channel: [ tuple reference_fasta, samtools_faidx, bwa_index ]
-    reads // channel: [ val(meta), [ fastq ] ]
+    reads     // channel: [ val(meta), [ fastq ] ]
 
     main:
     ch_versions           = Channel.empty()
@@ -38,9 +38,6 @@ workflow BWA_PREPROCESS {
     ch_alignment_index    = Channel.empty()
     ch_alignment_combined = Channel.empty()
     
-
-    // Going to skip this one for now and add multilane support within the read_csv
-    // CONCAT_FASTQ_LANES()
 
     SEQKIT_PAIR(reads)
 	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
@@ -87,5 +84,6 @@ workflow BWA_PREPROCESS {
     stats              = SAMTOOLS_STATS.out.stats        // channel: [ val(meta), stats ]
     flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat  // channel: [ val(meta), flagstat ]
     idxstats           = SAMTOOLS_IDXSTATS.out.idxstats  // channel: [ val(meta), idxstats ]
+    post_qc            = FASTQC.out.zip                  // channel: [ val(meta), zip ]
     versions           = ch_versions                     // channel: [ ch_versions ]
 }

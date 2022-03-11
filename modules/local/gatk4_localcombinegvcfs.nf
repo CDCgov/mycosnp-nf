@@ -33,8 +33,12 @@ process GATK4_LOCALCOMBINEGVCFS {
     } else {
         avail_mem = task.memory.giga
     }
-    def skip_samples = task.ext.skip_samples ?: ''
-    def sample_list = []
+    def skip_samples      = task.ext.skip_samples ?: ''
+    def skip_samples_file = task.ext.skip_samples_file ?: ''
+    if(skip_samples_file){
+        skip_samples = file(skip_samples_file).readLines().collect { line -> line.trim() }.join(",")
+    }
+    def sample_list       = []
     if(skip_samples != '')
     {
         
