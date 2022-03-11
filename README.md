@@ -38,42 +38,47 @@ On release, automated continuous integration tests run the pipeline on a full-si
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
 ### Reference Preparation
-Prepares a reference FASTA file for BWA alignment and GATK variant calling by masking repeats in the reference and generating the BWA index.
-* Genome repeat identification and masking (nucmer)
-* BWA index generation (bwa)
-* FAI and DICT file creation (Picard, Samtools)
+
+> **Prepares a reference FASTA file for BWA alignment and GATK variant calling by masking repeats in the reference and generating the BWA index.**
+* Genome repeat identification and masking (`nucmer`)
+* BWA index generation (`bwa`)
+* FAI and DICT file creation (`Picard`, `Samtools`)
 
 ### Sample QC and Processing
-Prepares samples (paired-end FASTQ files) for GATK variant calling by aligning the samples to a BWA reference index and ensuring that the BAM files are correctly formatted. This step also provides different quality reports for sample evaluation.
+
+> **Prepares samples (paired-end FASTQ files) for GATK variant calling by aligning the samples to a BWA reference index and ensuring that the BAM files are correctly formatted. This step also provides different quality reports for sample evaluation.**
+
 * Combine FASTQ file lanes if they were provided with multiple lanes.
-* Filter unpaired reads from FASTQ files (SeqKit).
-* Down sample FASTQ files to a desired coverage or sampling rate (SeqTK).
-* Trim reads and assess quality (FaQCs).
+* Filter unpaired reads from FASTQ files (`SeqKit`).
+* Down sample FASTQ files to a desired coverage or sampling rate (`SeqTK`).
+* Trim reads and assess quality (`FaQCs`).
 * Generate a QC report by extracting data from FaQCs report data.
-* Align FASTQ reads to a reference (BWA).
-* Sort BAM files (SAMTools).
-* Mark and remove duplicates in the BAM file (Picard).
-* Clean the BAM file (Picard "CleanSam").
-* Fix mate information in the BAM file (Picard "FixMateInformation").
-* Add read groups to the BAM file (Picard "AddOrReplaceReadGroups").
-* Index the BAM file (SAMTools).
-* Run FastQC on filtered reads.
+* Align FASTQ reads to a reference (`BWA`).
+* Sort BAM files (`SAMTools`).
+* Mark and remove duplicates in the BAM file (`Picard`).
+* Clean the BAM file (`Picard "CleanSam"`).
+* Fix mate information in the BAM file (`Picard "FixMateInformation"`).
+* Add read groups to the BAM file (`Picard "AddOrReplaceReadGroups"`).
+* Index the BAM file (`SAMTools`).
+* [FastQC](#fastqc) - Filtered reads QC.
 * Qualimap mapping quality report.
-* Aggregate report describing results and QC from the whole pipeline (MultiQC)
+* [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 
 ### Variant calling and analysis
-Calls variants and generates a multi-FASTA file and phylogeny.
-* Call variants (GATK HaplotypeCaller).
-* Combine gVCF files from the HaplotypeCaller into a single VCF (GATK CombineGVCFs).
-* Call genotypes using the (GATK GenotypeGVCFs).
-* Filter the variants (GATK VariantFiltration).
-* Run a customized VCF filtering script (Broad Institute).
+
+> **Calls variants and generates a multi-FASTA file and phylogeny.**
+
+* Call variants (`GATK HaplotypeCaller`).
+* Combine gVCF files from the HaplotypeCaller into a single VCF (`GATK CombineGVCFs`).
+* Call genotypes using the (`GATK GenotypeGVCFs`).
+* Filter the variants (`GATK VariantFiltration`) [default (but customizable) filter: 'QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10'].
+* Run a customized VCF filtering script (`Broad Institute`).
 * Split the filtered VCF file by sample.
-* Select only SNPs from the VCF files (GATK SelectVariants).
+* Select only SNPs from the VCF files (`GATK SelectVariants`).
 * Split the VCF file with SNPs by sample.
-* Create a consensus sequence for each sample (BCFTools, SeqTK).
-* Create a multi-fasta file from the VCF SNP positions using a custom script (Broad).
-* Create phylogeny from multi-fasta file (rapidNJ, FastTree2, RaxML, IQTree)
+* Create a consensus sequence for each sample (`BCFTools`, `SeqTK`).
+* Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
+* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `RaxML`, `IQTree`)
 
 ## Quick Start
 
@@ -96,15 +101,13 @@ Calls variants and generates a multi-FASTA file and phylogeny.
 
 4. Start running your own analysis!
 
-   
-
     ```console
     nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta c_auris.fasta
     ```
 
 ## Documentation
 
-The nf-core/mycosnp pipeline comes with documentation about the pipeline [usage](https://nf-co.re/mycosnp/usage), [parameters](https://nf-co.re/mycosnp/parameters) and [output](https://nf-co.re/mycosnp/output).
+The nf-core/mycosnp pipeline comes with documentation about the pipeline [usage](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md), [parameters](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs) and [output](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/output.md).
 
 ## Credits
 
@@ -113,12 +116,14 @@ nf-core/mycosnp was originally written by CDC.
 We thank the following people for their extensive assistance in the development of this pipeline:
 
 <!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
+*   Michael Cipriano
+*   Hunter Seabolt
+*   Sateesh Peri
+*   Lynn Dotrang
+*   Christopher Jossart
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
-
-For further information or help, don't hesitate to get in touch on the [Slack `#mycosnp` channel](https://nfcore.slack.com/channels/mycosnp) (you can join with [this invite](https://nf-co.re/join/slack)).
 
 ## Citations
 
