@@ -63,10 +63,10 @@ Alternatively, you can skip the reference file processing steps by providing the
 ```
 
 * Second way is by providing each of the files separately.
-- --ref_masked_fasta path/to/ref.fasta
-- --ref_fai path/to/fai/file.fai
-- --ref_bwa path/to/bwa/directory
-- --ref_dict path/to/picard/dict/file.dict
+  - --ref_masked_fasta path/to/ref.fasta
+  - --ref_fai path/to/fai/file.fai
+  - --ref_bwa path/to/bwa/directory
+  - --ref_dict path/to/picard/dict/file.dict
 
 ```console
 --ref_masked_fasta results-copy/reference/masked/reference.fa --ref_fai results-copy/reference/fai/reference.fa.fai --ref_bwa results-copy/reference/bwa/bwa --ref_dict results-copy/reference/dict/reference.dict
