@@ -86,7 +86,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "pattern": "^\\S+$",,
+                    "pattern": "^\\S+$",
                     "description": "Path to reference genome masked files/picard dict/samtools fai/bwa index from previous run. If you use this command, it invalidates `--fasta --ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
                     "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the results/reference directory which includes all relevant files. If you use this command, it invalidates `--fasta --ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
                     "fa_icon": "far fa-file-code"
