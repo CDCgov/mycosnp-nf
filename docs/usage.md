@@ -1,12 +1,46 @@
 # nf-core/mycosnp: Usage
 
-## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/mycosnp/usage](https://nf-co.re/mycosnp/usage)
+## :warning: This documentation is available on the mycosnp website: [https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md]https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md)
 
-> _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
 ## Introduction
+CDCgov/mycosnp-nf bioinformatics best-practice analysis pipeline written to nf-core standards. MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including _Candida auris_. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations. This document will describe how to prepare input files and run the pipeline.
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+## Requirements
+Nextflow >= 21.10.3
+Java 8 or later
+Bash 3.2 or later
+Singularity _(Optional/Recommended)_
+Conda _(Optional/Recommended)_
+
+## Installation
+mycosnp-nf is written in Nextflow, and as such requires Nextflow installation to run. Please see nextflow installation documents.
+[https://www.nextflow.io/docs/latest/getstarted.html#installation](Nextflow installation)
+
+Alternatively, you can install nextflow and other dependencies via conda like so:
+```console
+conda create -n nextflow -c bioconda -c conda-forge nf-core nextflow git graphviz yamllint
+conda activate nextflow
+```
+
+The pipeline code is available from github.
+[https://github.com/CDCgov/mycosnp-nf](https://github.com/CDCgov/mycosnp-nf)
+```console
+git clone https://github.com/CDCgov/mycosnp-nf
+```
+
+Alternatively, mycosnp-nf can be run directly from github
+```console
+nextflow run CDCgov/mycosnp-nf -profile singularity,test
+```
+
+## Reference input
+
+You will need to provide the reference sequence in fasta format. You can pass the location of the fasta file using the 'fasta' argument.
+
+```console
+--fasta '[path to fasta file]'
+```
 
 ## Samplesheet input
 
@@ -22,9 +56,7 @@ The `sample` identifiers have to be the same when you have re-sequenced the same
 
 ```console
 sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
 ```
 
 ### Full samplesheet
@@ -38,10 +70,7 @@ sample,fastq_1,fastq_2
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
 CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,AEG588A6_S6_L003_R2_001.fastq.gz,AEG588A6_S6_L004_R1_001.fastq.gz,AEG588A6_S6_L004_R2_001.fastq.gz
 ```
 
 | Column         | Description                                                                                                                                                                            |
@@ -52,15 +81,47 @@ TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
+## Samplesheet creation - automated
+
+A script is available to create a samplesheet from a directory of fastq files. The script will search 1 directory deep and attempt to determine sample id names and pairing/multilane information and will automatically create a samplesheet. Please review the samplesheet for accuracy before using it in the pipeline.
+
+```console
+ bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samplesheet.csv
+```
+
+## Pipeline parameters
+Sane recommended defaults parameters are used, but full documentation on the default parameters can be viewed in the help documentation. 
+You can see full pipeline parameters by using '-help' when running the workflow.
+```console
+ nextflow run main.nf -help
+# Or
+ nextflow run CDCgov/mycosnp-nf -help
+
+```
+
+Some parameters are hidden, but can be seen by using the '--show_hidden_params' option.
+```console
+ nextflow run main.nf -help --show_hidden_params
+# Or
+ nextflow run CDCgov/mycosnp-nf -help --show_hidden_params
+
+```
+
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
+For a test run:
 ```console
 nextflow run main.nf -profile singularity,test
 ```
 
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
+For a real run:
+```console
+nextflow run main.nf -profile singularity --input samplesheet.csv --fasta reference_genome.fasta
+```
+
+This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -76,14 +137,14 @@ results         # Finished results (configurable, see below)
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```console
-nextflow pull nf-core/mycosnp
+nextflow pull CDCgov/mycosnp-nf
 ```
 
 ### Reproducibility
 
 It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/mycosnp releases page](https://github.com/nf-core/mycosnp/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
+First, go to the [CDCgov/mycosnp-nf releases page](https://github.com/CDCgov/mycosnp-nf/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.0.1`.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 
@@ -136,23 +197,23 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 ### Resource requests
 
-Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
+Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/CDCgov/mycosnp-nf/blob/master/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
 For example, if the nf-core/rnaseq pipeline is failing after multiple re-submissions of the `STAR_ALIGN` process due to an exit code of `137` this would indicate that there is an out of memory issue:
 
 ```console
-[62/149eb0] NOTE: Process `RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137) -- Execution is retried (1)
-Error executing process > 'RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)'
+[62/149eb0] NOTE: Process `MYCOSNP:BWA_PRE_PROCESS:FAQCS (SAMPLE_1` terminated with an error exit status (137) -- Execution is retried (1)
+Error executing process > 'MYCOSNP:BWA_PRE_PROCESS:FAQCS (SAMPLE_1'
 
 Caused by:
-    Process `RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137)
+    Process `MYCOSNP:BWA_PRE_PROCESS:FAQCS (SAMPLE_1)` terminated with an error exit status (137)
 
 Command executed:
-    STAR \
-        --genomeDir star \
-        --readFilesIn WT_REP1_trimmed.fq.gz  \
-        --runThreadN 2 \
-        --outFileNamePrefix WT_REP1. \
+FaQCs \
+            -d . \
+            -u SAMPLE_1.fastq.gz \
+            --prefix SAMPLE_1_clean \
+            -t 8 \
         <TRUNCATED>
 
 Command exit status:
@@ -162,24 +223,24 @@ Command output:
     (empty)
 
 Command error:
-    .command.sh: line 9:  30 Killed    STAR --genomeDir star --readFilesIn WT_REP1_trimmed.fq.gz --runThreadN 2 --outFileNamePrefix WT_REP1. <TRUNCATED>
+    .command.sh: line 9:  30 Killed    FaQCs -d . -u SAMPLE_1.fastq.gz -t 8 <TRUNCATED>
 Work dir:
     /home/pipelinetest/work/9d/172ca5881234073e8d76f2a19c88fb
 
 Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
 ```
 
-To bypass this error you would need to find exactly which resources are set by the `STAR_ALIGN` process. The quickest way is to search for `process STAR_ALIGN` in the [nf-core/rnaseq Github repo](https://github.com/nf-core/rnaseq/search?q=process+STAR_ALIGN). We have standardised the structure of Nextflow DSL2 pipelines such that all module files will be present in the `modules/` directory and so based on the search results the file we want is `modules/nf-core/software/star/align/main.nf`. If you click on the link to that file you will notice that there is a `label` directive at the top of the module that is set to [`label process_high`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/modules/nf-core/software/star/align/main.nf#L9). The [Nextflow `label`](https://www.nextflow.io/docs/latest/process.html#label) directive allows us to organise workflow processes in separate groups which can be referenced in a configuration file to select and configure subset of processes having similar computing requirements. The default values for the `process_high` label are set in the pipeline's [`base.config`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L33-L37) which in this case is defined as 72GB. Providing you haven't set any other standard nf-core parameters to __cap__ the [maximum resources](https://nf-co.re/usage/configuration#max-resources) used by the pipeline then we can try and bypass the `STAR_ALIGN` process failure by creating a custom config file that sets at least 72GB of memory, in this case increased to 100GB. The custom config below can then be provided to the pipeline via the [`-c`](#-c) parameter as highlighted in previous sections.
+To bypass this error you would need to find exactly which resources are set by the `STAR_ALIGN` process. The quickest way is to search for `process STAR_ALIGN` in the [CDCgov/mycosnp-nf Github repo](https://github.com/CDCgov/mycosnp-nf/search?q=process+FAQCS). We have standardised the structure of Nextflow DSL2 pipelines such that all module files will be present in the `modules/` directory and so based on the search results the file we want is `modules/nf-core/modules/faqcs/main.nf`. If you click on the link to that file you will notice that there is a `label` directive at the top of the module that is set to [`label process_medium`](https://github.com/CDCgov/mycosnp-nf/blob/master/modules/nf-core/modules/faqcs/main.nf#L3). The [Nextflow `label`](https://www.nextflow.io/docs/latest/process.html#label) directive allows us to organize workflow processes in separate groups which can be referenced in a configuration file to select and configure subset of processes having similar computing requirements. The default values for the `process_medium` label are set in the pipeline's [`base.config`](https://github.com/CDCgov/mycosnp-nf/blob/master/conf/base.config#L34-L38) which in this case is defined as 12GB. Providing you haven't set any other standard nf-core parameters to __cap__ the [maximum resources](https://nf-co.re/usage/configuration#max-resources) used by the pipeline then we can try and bypass the `FAQCS` process failure by creating a custom config file that sets at least 12GB of memory, in this case increased to 50GB. The custom config below can then be provided to the pipeline via the [`-c`](#-c) parameter as highlighted in previous sections.
 
 ```nextflow
 process {
-    withName: STAR_ALIGN {
-        memory = 100.GB
+    withName: FAQCS {
+        memory = 50.GB
     }
 }
 ```
 
-> **NB:** We specify just the process name i.e. `STAR_ALIGN` in the config file and not the full task name string that is printed to screen in the error message or on the terminal whilst the pipeline is running i.e. `RNASEQ:ALIGN_STAR:STAR_ALIGN`. You may get a warning suggesting that the process selector isn't recognised but you can ignore that if the process name has been specified correctly. This is something that needs to be fixed upstream in core Nextflow.
+> **NB:** We specify just the process name i.e. `FAQCS` in the config file and not the full task name string that is printed to screen in the error message or on the terminal whilst the pipeline is running i.e. `MYCOSNP:BWA_PRE_PROCESS:FAQCS`. You may get a warning suggesting that the process selector isn't recognised but you can ignore that if the process name has been specified correctly. This is something that needs to be fixed upstream in core Nextflow.
 
 ### Updating containers
 
