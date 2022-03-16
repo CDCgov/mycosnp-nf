@@ -1,17 +1,17 @@
 # nf-core/mycosnp: Usage
 
-## :warning: This documentation is available on the mycosnp website: [https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md]https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md)
+## :warning: This documentation is available on the mycosnp website: [https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md)
 
 
 ## Introduction
 CDCgov/mycosnp-nf bioinformatics best-practice analysis pipeline written to nf-core standards. MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including _Candida auris_. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations. This document will describe how to prepare input files and run the pipeline.
 
 ## Requirements
-Nextflow >= 21.10.3
-Java 8 or later
-Bash 3.2 or later
-Singularity _(Optional/Recommended)_
-Conda _(Optional/Recommended)_
+* Nextflow >= 21.10.3
+* Java 8 or later
+* Bash 3.2 or later
+* Singularity _(Optional/Recommended)_
+* Conda _(Optional/Recommended)_
 
 ## Installation
 mycosnp-nf is written in Nextflow, and as such requires Nextflow installation to run. Please see nextflow installation documents.
