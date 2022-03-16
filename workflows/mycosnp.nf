@@ -99,13 +99,59 @@ workflow MYCOSNP {
         versions            channel: [ ch_versions ]
 ========================================================================================
 */
-    BWA_REFERENCE(ch_fasta)
-    ch_versions = ch_versions.mix(BWA_REFERENCE.out.versions)
-    fas_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fa1 ]}.first()
-    fai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fai ]}.first()
-    bai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ bai ]}.first()
-    dict_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ dict ]}.first()
-    meta_val = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ meta1 ]}.first()
+/*
+    ref_dir                     = null
+    ref_fasta                   = null
+    ref_fai                     = null
+    ref_bwa                     = null
+    ref_dict                    = null
+*/
+    fas_file = Channel.empty()
+    fai_file = Channel.empty()
+    bai_file = Channel.empty()
+    dict_file = Channel.empty()
+    meta_val = Channel.empty()
+
+
+    if(params.ref_dir != null)
+    {
+        fas_file  = Channel.fromPath(params.ref_dir + "/masked/*.fa*", checkIfExists:true).first()
+        fai_file  = Channel.fromPath(params.ref_dir + "/fai/*.fai", checkIfExists:true).first()
+        bai_file  = Channel.fromPath(params.ref_dir + "/bwa/bwa", checkIfExists:true, type: 'dir').first()
+        dict_file = Channel.fromPath(params.ref_dir + "/dict/*.dict", checkIfExists:true).first()
+        // meta_val // Not used
+         
+    } else if (params.ref_masked_fasta && params.ref_fai && params.ref_bwa && params.ref_dict ) 
+    {
+
+        if(params.ref_masked_fasta != null)
+        {
+            fas_file  = Channel.fromPath(params.ref_masked_fasta, checkIfExists:true).first()
+        }
+        if(params.ref_fai != null)
+        {
+            fai_file  = Channel.fromPath(params.ref_fai, checkIfExists:true).first()
+        }
+        if(params.ref_bwa != null)
+        {
+            bai_file  = Channel.fromPath(params.ref_bwa, checkIfExists:true, type: 'dir').first()
+        }
+        if(params.ref_dict != null)
+        {
+            dict_file = Channel.fromPath(params.ref_dict, checkIfExists:true).first()
+        }
+    }
+    else
+    {
+        BWA_REFERENCE(ch_fasta)
+    
+        ch_versions = ch_versions.mix(BWA_REFERENCE.out.versions)
+        fas_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fa1 ]}.first()
+        fai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ fai ]}.first()
+        bai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ bai ]}.first()
+        dict_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ dict ]}.first()
+        meta_val = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ meta1 ]}.first()
+    }
 
 /*
 ========================================================================================
