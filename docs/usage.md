@@ -84,7 +84,7 @@ TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,AEG588A6_S6_L003_R2_001.fastq.gz
 | `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 | `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 
-An [example samplesheet](/assets/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](https://github.com/CDCgov/mycosnp-nf/blob/b4216fec5d1ec2e7d8b136539748c3623a02fb45/assets/samplesheet.csv) has been provided with the pipeline.
 
 ## Samplesheet creation - automated
 
@@ -130,14 +130,14 @@ nextflow run main.nf -profile singularity --input samplesheet.csv --fasta refere
 
 This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
 
-Note that the pipeline will create the following files in your working directory:
-
-```console
-work            # Directory containing the nextflow working files
-results         # Finished results (configurable, see below)
-.nextflow_log   # Log file from Nextflow
-# Other nextflow hidden files, eg. history of pipeline runs and old logs.
-```
+> Note: that the pipeline will create the following files in your working directory:
+>
+>```console
+>work            # Directory containing the nextflow working files
+>results         # Finished results (configurable, see below)
+>.nextflow_log   # Log file from Nextflow
+># Other nextflow hidden files, eg. history of pipeline runs and old logs.
+>```
 
 ### Updating the pipeline
 
