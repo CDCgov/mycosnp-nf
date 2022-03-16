@@ -45,7 +45,33 @@ You will need to provide the reference sequence in fasta format. You can pass th
 
 ```console
 --fasta '[path to fasta file]'
+
 ```
+
+Alternatively, you can skip the reference file processing steps by providing the files needed. This can be done in one of two ways.
+
+* First way is by supplying a directory which has all the reference files from a previous mycosnp run using '--ref_dir'.
+* This expects the following directory format:
+** masked fasta in <ref_dir>/masked/\*.fa\*
+** picard dict in <ref dir>/dict/*.dict
+** samtools fai in <ref dir>/fai/*.fai
+** bwa mem index directory in <ref dir>/bwa/bwa
+
+```console
+--ref_dir 'results/reference'
+
+```
+
+* Second way is by providing each of the files separately.
+** --ref_masked_fasta path/to/ref.fasta
+** --ref_fai path/to/fai/file.fai
+** --ref_bwa path/to/bwa/directory
+** --ref_dict path/to/picard/dict/file.dict
+```console
+--ref_masked_fasta results-copy/reference/masked/reference.fa --ref_fai results-copy/reference/fai/reference.fa.fai --ref_bwa results-copy/reference/bwa/bwa --ref_dict results-copy/reference/dict/reference.dict
+
+```
+
 
 ## Samplesheet input
 
