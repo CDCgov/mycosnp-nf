@@ -4,39 +4,44 @@
 
 
 ## Introduction
-CDCgov/mycosnp-nf bioinformatics best-practice analysis pipeline written to nf-core standards. MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including _Candida auris_. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations. This document will describe how to prepare input files and run the pipeline.
+
+`CDCgov/mycosnp-nf` bioinformatics best-practice analysis pipeline written to [nf-core](https://nf-co.re/) standards. MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including _Candida auris_. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations. This document will describe how to prepare input files and run the pipeline.
 
 ## Requirements
+
 * Nextflow >= 21.10.3
 * Java 8 or later
 * Bash 3.2 or later
 * Singularity _(Optional/Recommended)_
+* Docker _(Optional/Recommended)_
 * Conda _(Optional/Recommended)_
 
 ## Installation
-mycosnp-nf is written in Nextflow, and as such requires Nextflow installation to run. Please see nextflow installation documents.
-[https://www.nextflow.io/docs/latest/getstarted.html#installation](Nextflow installation)
 
-Alternatively, you can install nextflow and other dependencies via conda like so:
+*   mycosnp-nf is written in [Nextflow](https://www.nextflow.io/), and as such requires Nextflow installation to run. Please see [nextflow installation documents](https://www.nextflow.io/docs/latest/getstarted.html#installation) for instructions.
+
+*   Alternatively, you can install nextflow and other dependencies via conda like so:
+
 ```console
-conda create -n nextflow -c bioconda -c conda-forge nf-core nextflow git graphviz yamllint
+conda create -n nextflow -c bioconda -c conda-forge nf-core nextflow git graphviz
 conda activate nextflow
 ```
 
-The pipeline code is available from github.
-[https://github.com/CDCgov/mycosnp-nf](https://github.com/CDCgov/mycosnp-nf)
+*  To clone [mycosnp-nf github repo](https://github.com/CDCgov/mycosnp-nf)
+
 ```console
 git clone https://github.com/CDCgov/mycosnp-nf
 ```
 
-Alternatively, mycosnp-nf can be run directly from github
+*   Alternatively, `mycosnp-nf` can be pulled from github and run directly like so:
+
 ```console
 nextflow run CDCgov/mycosnp-nf -profile singularity,test
 ```
 
 ## Reference input
 
-You will need to provide the reference sequence in fasta format. You can pass the location of the fasta file using the 'fasta' argument.
+You will need to provide the reference sequence in fasta format. You can pass the location of the fasta file using the `--fasta` argument.
 
 ```console
 --fasta '[path to fasta file]'
@@ -44,7 +49,7 @@ You will need to provide the reference sequence in fasta format. You can pass th
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use the `--input` parameter to specify its location. It has to be a comma-separated file (csv) with 3 columns, and a header row as shown in the examples below.
 
 ```console
 --input '[path to samplesheet file]'
@@ -79,32 +84,32 @@ TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,AEG588A6_S6_L003_R2_001.fastq.gz
 | `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 | `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](/assets/samplesheet.csv) has been provided with the pipeline.
 
 ## Samplesheet creation - automated
 
 A script is available to create a samplesheet from a directory of fastq files. The script will search 1 directory deep and attempt to determine sample id names and pairing/multilane information and will automatically create a samplesheet. Please review the samplesheet for accuracy before using it in the pipeline.
 
 ```console
- bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samplesheet.csv
+mycosnp-nf/bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samplesheet.csv
 ```
 
 ## Pipeline parameters
-Sane recommended defaults parameters are used, but full documentation on the default parameters can be viewed in the help documentation. 
-You can see full pipeline parameters by using '-help' when running the workflow.
-```console
- nextflow run main.nf -help
-# Or
- nextflow run CDCgov/mycosnp-nf -help
 
+Sane recommended defaults parameters are used, but full documentation on the default parameters can be viewed in the help documentation or on [mycosnp-nf wiki](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs). You can see full pipeline parameters by using '-help' when running the workflow.
+
+```console
+nextflow run main.nf --help
+# Or
+nextflow run CDCgov/mycosnp-nf --help
 ```
 
-Some parameters are hidden, but can be seen by using the '--show_hidden_params' option.
-```console
- nextflow run main.nf -help --show_hidden_params
-# Or
- nextflow run CDCgov/mycosnp-nf -help --show_hidden_params
+Some parameters are hidden, but can be seen by using the `--show_hidden_params` option:
 
+```console
+nextflow run main.nf -help --show_hidden_params
+# Or
+nextflow run CDCgov/mycosnp-nf -help --show_hidden_params
 ```
 
 ## Running the pipeline
@@ -112,11 +117,13 @@ Some parameters are hidden, but can be seen by using the '--show_hidden_params' 
 The typical command for running the pipeline is as follows:
 
 For a test run:
+
 ```console
 nextflow run main.nf -profile singularity,test
 ```
 
 For a real run:
+
 ```console
 nextflow run main.nf -profile singularity --input samplesheet.csv --fasta reference_genome.fasta
 ```
@@ -199,7 +206,7 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/CDCgov/mycosnp-nf/blob/master/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
-For example, if the nf-core/rnaseq pipeline is failing after multiple re-submissions of the `STAR_ALIGN` process due to an exit code of `137` this would indicate that there is an out of memory issue:
+For example, if the mycosnp-nf pipeline is failing after multiple re-submissions of the `BWA_PRE_PROCESS:FAQCS` process due to an exit code of `137` this would indicate that there is an out of memory issue:
 
 ```console
 [62/149eb0] NOTE: Process `MYCOSNP:BWA_PRE_PROCESS:FAQCS (SAMPLE_1` terminated with an error exit status (137) -- Execution is retried (1)
@@ -247,7 +254,9 @@ process {
 The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. If for some reason you need to use a different version of a particular tool with the pipeline then you just need to identify the `process` name and override the Nextflow `container` definition for that process using the `withName` declaration. For example, in the [nf-core/viralrecon](https://nf-co.re/viralrecon) pipeline a tool called [Pangolin](https://github.com/cov-lineages/pangolin) has been used during the COVID-19 pandemic to assign lineages to SARS-CoV-2 genome sequenced samples. Given that the lineage assignments change quite frequently it doesn't make sense to re-release the nf-core/viralrecon everytime a new version of Pangolin has been released. However, you can override the default container used by the pipeline by creating a custom config file and passing it as a command-line argument via `-c custom.config`.
 
 1. Check the default version used by the pipeline in the module file for [Pangolin](https://github.com/nf-core/viralrecon/blob/a85d5969f9025409e3618d6c280ef15ce417df65/modules/nf-core/software/pangolin/main.nf#L14-L19)
+
 2. Find the latest version of the Biocontainer available on [Quay.io](https://quay.io/repository/biocontainers/pangolin?tag=latest&tab=tags)
+
 3. Create the custom config accordingly:
 
     * For Docker:
