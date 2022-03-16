@@ -36,10 +36,10 @@ process LANE_MERGE {
         fi
     else
         if [[ $numReads == 1 ]]; then
-            ln ${reads[0]} combined/${meta.id}.$fileEnding
+            cd combined; ln -s ../${reads[0]} ${meta.id}.$fileEnding; cd ..
         elif [[ $numReads == 2 ]]; then
-            ln ${reads[0]} combined/${meta.id}_R1.$fileEnding
-            ln ${reads[1]} combined/${meta.id}_R2.$fileEnding
+            cd combined; ln -s ../${reads[0]} ${meta.id}_R1.$fileEnding; cd ..
+            cd combined; ln -s ../${reads[1]} ${meta.id}_R2.$fileEnding; cd ..
         elif [[ $numReads == 4 ]]; then
             cat ${reads[0]} ${reads[2]} > combined/${meta.id}_R1.$fileEnding
             cat ${reads[1]} ${reads[3]} > combined/${meta.id}_R2.$fileEnding
