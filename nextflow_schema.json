@@ -82,6 +82,51 @@
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
                 },
+                "ref_dir": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+$",,
+                    "description": "Path to reference genome masked files/picard dict/samtools fai/bwa index from previous run. If you use this command, it invalidates `--fasta --ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the results/reference directory which includes all relevant files. If you use this command, it invalidates `--fasta --ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "fa_icon": "far fa-file-code"
+                },
+                "ref_masked_fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to reference genome masked fasta file. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the masked fasta file. If you use this command, it invalidates `--fasta",
+                    "fa_icon": "far fa-file-code"
+                },
+                "ref_fai": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fai$",
+                    "description": "Path to reference genome samtools fai file. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the samtools fai file. If you use this command, it invalidates `--fasta",
+                    "fa_icon": "far fa-file-code"
+                },
+                "ref_dict": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.dict$",
+                    "description": "Path to reference genome picard tools dict file. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the picard tools dict file. If you use this command, it invalidates `--fasta",
+                    "fa_icon": "far fa-file-code"
+                },
+                "ref_bwa": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+$",
+                    "description": "Path to reference genome bwatools bwa directory. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the bwa index files directory. If you use this command, it invalidates `--fasta",
+                    "fa_icon": "far fa-file-code"
+                },
                 "igenomes_base": {
                     "type": "string",
                     "format": "directory-path",
