@@ -36,7 +36,7 @@ workflow GATK_VARIANTS {
     combined_gvcf = thismeta.combine(vcffile).combine(vcfidx)
 
     GATK4_GENOTYPEGVCFS(
-        combined_gvcf.map{meta, vcf, idx -> [ meta, vcf, idx, [], [] ]},
+        combined_gvcf.map{meta, vcf, idx -> [ meta, vcf, idx, [] ]},
         fasta, 
         fai, 
         dict, [], []

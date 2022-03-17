@@ -20,8 +20,6 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 // Check mandatory parameters
 
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Input reference fasta not specified!' }
-
 
 /*
 ========================================================================================
@@ -141,8 +139,9 @@ workflow MYCOSNP {
             dict_file = Channel.fromPath(params.ref_dict, checkIfExists:true).first()
         }
     }
-    else
+    else if (params.fasta) 
     {
+        ch_fasta = file(params.fasta) 
         BWA_REFERENCE(ch_fasta)
     
         ch_versions = ch_versions.mix(BWA_REFERENCE.out.versions)
@@ -151,7 +150,11 @@ workflow MYCOSNP {
         bai_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ bai ]}.first()
         dict_file = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ dict ]}.first()
         meta_val = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ meta1 ]}.first()
+    } else 
+    {
+        exit 1, 'Input reference fasta or index files not specified!'
     }
+
 
 /*
 ========================================================================================
@@ -199,14 +202,14 @@ if(! params.skip_vcf)
                                 []
         )
         ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
-        
 
         ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
         ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
+        ch_vcfs = ch_vcf.combine(ch_vcf_idx).collect()
+
         GATK4_LOCALCOMBINEGVCFS(
                                     [id:'combined', single_end:false],
-                                    ch_vcf,
-                                    ch_vcf_idx,
+                                    ch_vcfs,
                                     fas_file, 
                                     fai_file, 
                                     dict_file)
@@ -240,7 +243,9 @@ if(! params.skip_vcf)
 */
 
         SEQKIT_REPLACE(GATK_VARIANTS.out.snps_fasta) // Swap * for -
-        CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '')
+        if(! params.skip_phylogeny) {
+            CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '')
+        }
     }
 
      CUSTOM_DUMPSOFTWAREVERSIONS (

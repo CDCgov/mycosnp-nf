@@ -8,12 +8,11 @@ process GATK4_LOCALCOMBINEGVCFS {
         'quay.io/biocontainers/gatk4:4.2.5.0--hdfd78af_0' }"
 
     input:
-    val(meta)
-    path(vcf)
-    path(vcf_idx)
-    path (fasta)
-    path (fasta_fai)
-    path (fasta_dict)
+    val meta
+    path vcf
+    path fasta
+    path fasta_fai
+    path fasta_dict
 
     output:
     tuple val(meta), path("*.combined.g.vcf.gz"), path("*.combined.g.vcf.gz.tbi"), emit: combined_gvcf
@@ -49,22 +48,22 @@ process GATK4_LOCALCOMBINEGVCFS {
     def input_files = ""
     for (int i=0; i < vcf.size(); i++)
     {
-        skip_this = false
         thisVcf = vcf[i]
-        for (int j=0; j < sample_list.size(); j++)
-        {
-            cmpSample = sample_list[j]
-            if(thisVcf.getName().startsWith(cmpSample))
+        if (!thisVcf.getName().endsWith(".tbi")) {
+            include_this = true
+            for (int j=0; j < sample_list.size(); j++)
             {
-                skip_this = true
+                cmpSample = sample_list[j]
+
+                if(thisVcf.getName().startsWith(cmpSample))
+                {
+                    include_this = false
+                }
             }
-        }
-        if(skip_this)
-        {
-            // do nothing
-        } else
-        {
-            input_files += "-V $thisVcf "
+            if(include_this)
+            {   
+                input_files += "-V $thisVcf "
+            }
         }
     }
     """
