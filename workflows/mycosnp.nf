@@ -152,7 +152,7 @@ workflow MYCOSNP {
         meta_val = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ meta1 ]}.first()
     } else 
     {
-        exit 1, 'Input reference fasta not specified!'
+        exit 1, 'Input reference fasta or index files not specified!'
     }
 
 
