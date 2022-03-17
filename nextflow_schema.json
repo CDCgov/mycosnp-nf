@@ -203,6 +203,11 @@
                     "type": "boolean",
                     "description": "Skip variant calling and analysis (run reference prep and mapping)",
                     "fa_icon": "fas fa-forward"
+                },
+                "skip_phylogeny": {
+                    "type": "boolean",
+                    "description": "Skip phylogenetic tree creation",
+                    "fa_icon": "fas fa-forward"
                 }
             }
         },

@@ -202,14 +202,14 @@ if(! params.skip_vcf)
                                 []
         )
         ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
-        
 
         ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
         ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
+        ch_vcfs = ch_vcf.combine(ch_vcf_idx).collect()
+
         GATK4_LOCALCOMBINEGVCFS(
                                     [id:'combined', single_end:false],
-                                    ch_vcf,
-                                    ch_vcf_idx,
+                                    ch_vcfs,
                                     fas_file, 
                                     fai_file, 
                                     dict_file)
@@ -243,7 +243,9 @@ if(! params.skip_vcf)
 */
 
         SEQKIT_REPLACE(GATK_VARIANTS.out.snps_fasta) // Swap * for -
-        CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '')
+        if(! params.skip_phylogeny) {
+            CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '')
+        }
     }
 
      CUSTOM_DUMPSOFTWAREVERSIONS (
