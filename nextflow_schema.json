@@ -142,10 +142,7 @@
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
                 }
-            },
-            "required": [
-                "fasta"
-            ]
+            }
         },
         "mycosnp_run_save_skip_options": {
             "title": "MycoSNP Run/Save/Skip Options",
