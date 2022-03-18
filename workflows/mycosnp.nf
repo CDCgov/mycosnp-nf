@@ -41,6 +41,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 include { INPUT_CHECK      } from '../subworkflows/local/input_check'
 include { BWA_PREPROCESS   } from '../subworkflows/local/bwa-pre-process'
+include { QC_REPORTSHEET   } from '../modules/local/qc_reportsheet.nf'
 include { BWA_REFERENCE    } from '../subworkflows/local/bwa-reference'
 include { GATK_VARIANTS    } from '../subworkflows/local/gatk-variants'
 include { CREATE_PHYLOGENY } from '../subworkflows/local/phylogeny'
@@ -176,6 +177,12 @@ workflow MYCOSNP {
 
     BWA_PREPROCESS( [fas_file, fai_file, bai_file ], INPUT_CHECK.out.reads)
     ch_versions = ch_versions.mix(BWA_PREPROCESS.out.versions)
+
+    // MODULE: QC_REPORTSHEET
+    ch_qcreportsheet = BWA_PREPROCESS.out.qc_lines.collect()
+    QC_REPORTSHEET (
+        ch_qcreportsheet
+    )
 
 /*
 ========================================================================================

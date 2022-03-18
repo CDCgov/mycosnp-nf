@@ -7,7 +7,7 @@
 include { SEQKIT_PAIR                          } from '../../modules/nf-core/modules/seqkit/pair/main'
 include { SEQTK_SAMPLE                         } from '../../modules/nf-core/modules/seqtk/sample/main'
 include { FAQCS                                } from '../../modules/nf-core/modules/faqcs/main'
-// TODO: QC report local module
+include { QC_REPORT                            } from '../../modules/local/qc_report.nf'
 include { BWA_INDEX                            } from '../../modules/nf-core/modules/bwa/index/main'
 include { BWA_MEM                              } from '../../modules/nf-core/modules/bwa/mem/main'
 include { SAMTOOLS_SORT                        } from '../../modules/nf-core/modules/samtools/sort/main'
@@ -42,7 +42,7 @@ workflow BWA_PREPROCESS {
 	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
     SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, DOWNSAMPLE_RATE.out.number_to_sample)
     FAQCS(SEQTK_SAMPLE.out.reads)
-    // QC() // Local qc report
+    QC_REPORT(FAQCS.out.txt, reference[0])
     BWA_MEM(FAQCS.out.reads, reference[2], true)
     PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
     PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam)
@@ -73,7 +73,7 @@ workflow BWA_PREPROCESS {
                                             )
     ch_alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam
     ch_alignment_index    = SAMTOOLS_INDEX.out.bai
-
+    ch_qcreport           = QC_REPORT.out.qc_line
 
     emit:
     alignment          = ch_alignment                    // channel: [ val(meta), bam ]
@@ -85,4 +85,6 @@ workflow BWA_PREPROCESS {
     idxstats           = SAMTOOLS_IDXSTATS.out.idxstats  // channel: [ val(meta), idxstats ]
     post_qc            = FASTQC_POST.out.zip             // channel: [ val(meta), zip ]
     versions           = ch_versions                     // channel: [ ch_versions ]
+    qc_lines           = ch_qcreport                     // channel: [ qc_line ]
+
 }
