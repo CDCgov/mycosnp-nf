@@ -17,7 +17,7 @@ workflow INPUT_CHECK {
            .map { row -> stage_fastq(row) }
            .set{ precheck_reads }
 
-   LANE_MERGE(precheck_reads)
+    LANE_MERGE(precheck_reads)
 
     emit:
     reads    =   LANE_MERGE.out.reads       // channel: [ val(meta), [ reads ] ]

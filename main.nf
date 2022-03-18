@@ -33,6 +33,7 @@ WorkflowMain.initialise(workflow, params, log)
 */
 
 include { MYCOSNP } from './workflows/mycosnp'
+include { MYCOSNPTREE } from './workflows/mycosnptree'
 
 //
 // WORKFLOW: Run main nf-core/mycosnp analysis pipeline
@@ -40,6 +41,11 @@ include { MYCOSNP } from './workflows/mycosnp'
 workflow NFCORE_MYCOSNP {
     MYCOSNP ()
 }
+
+workflow NFCORE_MYCOSNPTREE {
+    MYCOSNPTREE ()
+}
+
 
 /*
 ========================================================================================
