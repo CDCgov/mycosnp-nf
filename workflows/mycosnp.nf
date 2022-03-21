@@ -112,8 +112,15 @@ workflow MYCOSNP {
     ch_sra_reads = Channel.empty()
     if(params.add_sra_file)
     {   
-        ch_sra_reads = Channel.fromSRA(sra_list, protocol:'https')
+        if(params.NCBIapiKey)
+        {
+               ch_sra_reads = Channel.fromSRA(sra_list, protocol:'https', apiKey:params.NCBIapiKey)
                         .map{sra_id, reads -> [ ['id':sra_ids[sra_id], single_end:false], reads ]}
+        } else
+        {
+            ch_sra_reads = Channel.fromSRA(sra_list, protocol:'https')
+                        .map{sra_id, reads -> [ ['id':sra_ids[sra_id], single_end:false], reads ]}
+        }
         ch_all_reads = ch_all_reads.mix(ch_sra_reads)
     }
     
