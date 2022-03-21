@@ -120,6 +120,23 @@ A script is available to create a samplesheet from a directory of fastq files. T
 ```console
 mycosnp-nf/bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samplesheet.csv
 ```
+## SRA sequence file additions
+
+You may provide a list of SRA ids as additional inputs sequences into the pipeline. Use the `--add_sra_file` parameter to specify its location. It has to be a comma-separated file (csv) with one or 2 columns, and NO header row as shown in the examples below.
+
+```console
+--add_sra_file '[path to samplesheet file: assets/sra_small.csv]'
+```
+
+Example File:
+
+If two fields are provided, the first field will be used as the sequence name, and the second field will be used to specify the SRA id to download. If one field is provided, it must be the SRA id, and this SRA id will be used as the sequence name.
+
+```console
+B12352,SRR7909282
+SRR7909249
+B13520,SRR7909394
+```
 
 ## Pipeline parameters
 
