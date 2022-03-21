@@ -39,12 +39,15 @@ for lines in args.stats:
     list.append(lines)
 reads_before_trim = list[1].split(" ")[2].strip("\n")
 read_length_before_trim = list[3].split(" ")[2]
-reads_after_trim = list[6].split(": ")[1].strip("\n")
+reads_after_trim = list[6].split(" ")[2].strip("\n")
+reads_after_trim_percent = list[6].split(": ")[1].strip("\n")
 read_length_after_trim = list[8].split(" ")[3]
 paired_reads_after_trim = list[9].split(": ")[1].strip("\n")
 unpaired_reads_after_trim = list[11].split(": ")[1].strip("\n")
-coverage_numer = float(read_length_before_trim) * float(reads_before_trim)
-coverage = coverage_numer / length
+coverage_numer_before = float(read_length_before_trim) * float(reads_before_trim)
+coverage_before = coverage_numer_before / length
+coverage_numer_after = float(read_length_after_trim) * float(reads_after_trim)
+coverage_after = coverage_numer_after / length
 
 # Calculate the GC content from base_conent.txt file using Pandas
 df1 = pd.read_csv(
@@ -95,12 +98,13 @@ output_list = [
     reads_before_trim,
     str(GC_content_before),
     str(phred_avg_before),
-    reads_after_trim,
+    str(coverage_before),
+    reads_after_trim_percent,
     paired_reads_after_trim,
     unpaired_reads_after_trim,
     str(GC_content_after),
     str(phred_avg_after),
-    str(coverage),
+    str(coverage_after),
 ]
 
 # Creating tab delimited string for qc report generation
