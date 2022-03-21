@@ -33,6 +33,12 @@
                     "help_text": "You will need to create a csv file with information about the sra samples you want to add. Use this parameter to specify its location. It has to be a comma-separated file with 1 or 2 columns. See [usage docs](https://github.com/CDCgov/mycosnp-nf/docs/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "NCBIapiKey": {
+                    "type": "string",
+                    "description": "NCBI API Key for accessing NCBI ESearch",
+                    "help_text": "More information for how to obtain a key is available at (https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/)",
+                    "fa_icon": "fas fa-filter"
+                },
                 "outdir": {
                     "type": "string",
                     "description": "Path to the output directory where the results will be saved.",
