@@ -17,9 +17,7 @@ process QC_REPORT {
     script:
     def args = task.ext.args ?: '' 
     def prefix = task.ext.prefix ?: "${meta.id}"
-
     """
-    
     python $projectDir/bin/qc_report_stats.py \\
         --sample ${meta.id} \\
         --stats ${meta.id}.stats.txt \\
@@ -28,8 +26,5 @@ process QC_REPORT {
         --qual_scores_before_trim ${meta.id}.for_qual_histogram.txt \\
         --qual_scores_after_trim qa.${meta.id}.for_qual_histogram.txt \\
         --reference ${reference} > ${meta.id}_output.txt
-    
     """
-    // results need to be collected and put into the same csv spreadsheet
 }
-//#REFERENCE_LEN=\$(awk '!/^>/ {len+=length(\$0)} END {print len}' < ${reference}) 
