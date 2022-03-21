@@ -138,6 +138,10 @@ SRR7909249
 B13520,SRR7909394
 ```
 
+*    Note: You can must provide an NCBI API key to use this feature. You can do this by setting your environment variable NCBI_API_KEY or using the param `--NCBIapiKey <key>`. More information for how to obtain a key is available at (https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/)
+*    Warning: If there is an interruption while downloading the SRA sequence files, it might create partial files within your `work/stage` directory which will cause errors during your run. If this happens, you must find and remove the staged files within this directory. Optionally, you can delete the whole `work/stage` directory, this will force a re-download of all the staged files.
+*    Behind the scene this uses the fromSRA method from Nexflow, and as such it uses the NCBI ESearch API. Therefore the SRA id field allows the usage of any query term supported by this API.
+
 ## Pipeline parameters
 
 Sane recommended defaults parameters are used, but full documentation on the default parameters can be viewed in the help documentation or on [mycosnp-nf wiki](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs). You can see full pipeline parameters by using '-help' when running the workflow.
