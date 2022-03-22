@@ -9,7 +9,6 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowMycosnp.initialise(params, log)
 
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
 if (params.skip_samples_file) { // check for skip_samples_file
@@ -18,8 +17,39 @@ if (params.skip_samples_file) { // check for skip_samples_file
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
+sra_list = []
+sra_ids = [:]
+ch_input = null;
+if (params.input) 
+{ 
+    ch_input = file(params.input) 
+}
+if(params.add_sra_file)
+{
+    sra_file = file(params.add_sra_file, checkIfExists: true)
+    allLines  = sra_file.readLines()
+    for( line : allLines ) 
+    {
+        row = line.split(',')
+        if(row.size() > 1)
+        {
+            println " ${row[1]} => ${row[0]}"
+            sra_list.add(row[1])
+            sra_ids[row[1]] = row[0]
+        } else
+        {
+            if(row[0] != "")
+            {
+                println " ${row[0]} => ${row[0]}"
+                sra_list.add(row[0])
+                sra_ids[row[0]] = row[0]
+            }
+        }
+    }
+} 
+if(!params.input && !params.add_sra_file) { exit 1, 'Input samplesheet or sra file not specified!' }
 
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+
 
 /*
 ========================================================================================
@@ -79,10 +109,31 @@ workflow MYCOSNP {
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    INPUT_CHECK (
-        ch_input
-    )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+    ch_all_reads = Channel.empty()
+    ch_sra_reads = Channel.empty()
+    if(params.add_sra_file)
+    {   
+        if(params.NCBIapiKey)
+        {
+               ch_sra_reads = Channel.fromSRA(sra_list, protocol:'https', apiKey:params.NCBIapiKey)
+                        .map{sra_id, reads -> [ ['id':sra_ids[sra_id], single_end:false], reads ]}
+        } else
+        {
+            ch_sra_reads = Channel.fromSRA(sra_list, protocol:'https')
+                        .map{sra_id, reads -> [ ['id':sra_ids[sra_id], single_end:false], reads ]}
+        }
+        ch_all_reads = ch_all_reads.mix(ch_sra_reads)
+    }
+    
+    if(params.input)
+    {
+        INPUT_CHECK (
+            ch_input
+        )
+        ch_all_reads = ch_all_reads.mix(INPUT_CHECK.out.reads)
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+    }
+
 
 /*
 ========================================================================================
@@ -175,7 +226,7 @@ workflow MYCOSNP {
 ========================================================================================
 */
 
-    BWA_PREPROCESS( [fas_file, fai_file, bai_file ], INPUT_CHECK.out.reads)
+    BWA_PREPROCESS( [fas_file, fai_file, bai_file ], ch_all_reads)
     ch_versions = ch_versions.mix(BWA_PREPROCESS.out.versions)
 
     // MODULE: QC_REPORTSHEET
@@ -263,7 +314,7 @@ if(! params.skip_vcf)
     // MODULE: Run Pre-FastQC 
     //
     FASTQC_RAW (
-        INPUT_CHECK.out.reads
+        ch_all_reads
     )
     ch_versions = ch_versions.mix(FASTQC_RAW.out.versions.first())
 
