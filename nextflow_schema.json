@@ -11,7 +11,6 @@
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
             "required": [
-                "input"
             ],
             "properties": {
                 "input": {
@@ -21,8 +20,24 @@
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/mycosnp/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs]((https://github.com/CDCgov/mycosnp-nf/docs/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "add_sra_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "schema": "assets/schema_input.json",
+                    "description": "Path to comma-separated file containing SRA ids to download from NCBI. Format: Name,SRAID",
+                    "help_text": "You will need to create a csv file with information about the sra samples you want to add. Use this parameter to specify its location. It has to be a comma-separated file with 1 or 2 columns. See [usage docs](https://github.com/CDCgov/mycosnp-nf/docs/usage#samplesheet-input).",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "NCBIapiKey": {
+                    "type": "string",
+                    "description": "NCBI API Key for accessing NCBI ESearch",
+                    "help_text": "More information for how to obtain a key is available at (https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/)",
+                    "fa_icon": "fas fa-filter"
                 },
                 "outdir": {
                     "type": "string",

@@ -120,6 +120,27 @@ A script is available to create a samplesheet from a directory of fastq files. T
 ```console
 mycosnp-nf/bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samplesheet.csv
 ```
+## SRA sequence file additions
+
+You may provide a list of SRA ids as additional inputs sequences into the pipeline. Use the `--add_sra_file` parameter to specify its location. It has to be a comma-separated file (csv) with one or 2 columns, and NO header row as shown in the examples below.
+
+```console
+--add_sra_file '[path to samplesheet file: assets/sra_small.csv]'
+```
+
+Example File:
+
+If two fields are provided, the first field will be used as the sequence name, and the second field will be used to specify the SRA id to download. If one field is provided, it must be the SRA id, and this SRA id will be used as the sequence name.
+
+```console
+B12352,SRR7909282
+SRR7909249
+B13520,SRR7909394
+```
+
+*    Note: You can must provide an NCBI API key to use this feature. You can do this by setting your environment variable NCBI_API_KEY or using the param `--NCBIapiKey <key>`. More information for how to obtain a key is available at (https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/)
+*    Warning: If there is an interruption while downloading the SRA sequence files, it might create partial files within your `work/stage` directory which will cause errors during your run. If this happens, you must find and remove the staged files within this directory. Optionally, you can delete the whole `work/stage` directory, this will force a re-download of all the staged files.
+*    Behind the scene this uses the fromSRA method from Nexflow, and as such it uses the NCBI ESearch API. Therefore the SRA id field allows the usage of any query term supported by this API.
 
 ## Pipeline parameters
 
