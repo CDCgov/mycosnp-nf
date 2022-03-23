@@ -120,6 +120,7 @@ A script is available to create a samplesheet from a directory of fastq files. T
 ```console
 mycosnp-nf/bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samplesheet.csv
 ```
+
 ## SRA sequence file additions
 
 You may provide a list of SRA ids as additional inputs sequences into the pipeline. Use the `--add_sra_file` parameter to specify its location. It has to be a comma-separated file (csv) with one or 2 columns, and NO header row as shown in the examples below.
@@ -137,10 +138,6 @@ B12352,SRR7909282
 SRR7909249
 B13520,SRR7909394
 ```
-
-*    Note: You can must provide an NCBI API key to use this feature. You can do this by setting your environment variable NCBI_API_KEY or using the param `--NCBIapiKey <key>`. More information for how to obtain a key is available at (https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/)
-*    Warning: If there is an interruption while downloading the SRA sequence files, it might create partial files within your `work/stage` directory which will cause errors during your run. If this happens, you must find and remove the staged files within this directory. Optionally, you can delete the whole `work/stage` directory, this will force a re-download of all the staged files.
-*    Behind the scene this uses the fromSRA method from Nexflow, and as such it uses the NCBI ESearch API. Therefore the SRA id field allows the usage of any query term supported by this API.
 
 ## Pipeline parameters
 
@@ -164,10 +161,16 @@ nextflow run CDCgov/mycosnp-nf -help --show_hidden_params
 
 The typical command for running the pipeline is as follows:
 
-For a test run:
+For a minimal test run:
 
 ```console
 nextflow run main.nf -profile singularity,test
+```
+
+For a full test run:
+
+```console
+nextflow run main.nf -profile singularity,test_full
 ```
 
 For a real run:
@@ -175,6 +178,19 @@ For a real run:
 ```console
 nextflow run main.nf -profile singularity --input samplesheet.csv --fasta reference_genome.fasta
 ```
+
+Additional examples:
+
+```console
+nextflow run main.nf \
+  -profile singularity \
+  --fasta "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/775/015/GCF_002775015.1_Cand_auris_B11221_V1/GCF_002775015.1_Cand_auris_B11221_V1_genomic.fna.gz" \
+  --custom_config_base ~/nf-core-custom \
+  --publish_dir_mode copy \
+  --add_sra_file assets/sra_ca_controls.csv \
+  --outdir sra_controlsdata
+```
+
 
 This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
 
