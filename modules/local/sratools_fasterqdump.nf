@@ -59,4 +59,4 @@ process SRATOOLS_FASTERQDUMP {
     END_VERSIONS
     """
 }
-// taken from [nf-core/viralrecon](https://github.com/nf-core/fetchngs/blob/master/modules/local/sratools_fasterqdump.nf)
+// taken from [nf-core/fetchngs](https://github.com/nf-core/fetchngs/blob/master/modules/local/sratools_fasterqdump.nf)

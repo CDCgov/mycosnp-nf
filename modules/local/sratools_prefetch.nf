@@ -35,4 +35,4 @@ process SRATOOLS_PREFETCH {
     END_VERSIONS
     """
 }
-// taken from [nf-core/viralrecon](https://github.com/nf-core/fetchngs/blob/master/modules/local/sratools_prefetch.nf)
+// taken from [nf-core/fetchngs](https://github.com/nf-core/fetchngs/blob/master/modules/local/sratools_prefetch.nf)

@@ -29,4 +29,4 @@ workflow SRA_FASTQ_SRATOOLS {
     reads    = SRATOOLS_FASTERQDUMP.out.reads  // channel: [ val(meta), [ reads ] ]
     versions = ch_versions                     // channel: [ versions.yml ]
 }
-// Taken from [nf-core/viralrecon](https://github.com/nf-core/fetchngs/blob/master/subworkflows/local/sra_fastq_sratools.nf)
+// Taken from [nf-core/fetchngs](https://github.com/nf-core/fetchngs/blob/master/subworkflows/local/sra_fastq_sratools.nf)

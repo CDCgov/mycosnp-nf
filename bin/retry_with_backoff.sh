@@ -99,4 +99,4 @@ done
 
 retry_with_backoff ${RETRY} ${DELAY} ${MAX_TIME} ${@:OPTIND}
 
-# Taken from [nf-core/viralrecon](https://github.com/nf-core/fetchngs/blob/master/bin/retry_with_backoff.sh)
+# Taken from [nf-core/fetchngs](https://github.com/nf-core/fetchngs/blob/master/bin/retry_with_backoff.sh)
