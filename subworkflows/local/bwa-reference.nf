@@ -23,10 +23,18 @@ process INPUT_PROC {
     meta = [
             "id": 'reference'
     ]
-
+    def is_compressed = false
+    if(fasta.getName().endsWith(".gz"))
+    {
+        is_compressed = true
+    }
     """
     echo ${meta.id}
-    mv ${fasta} reference.fasta
+    if [[ ${is_compressed} == "true" ]]; then
+        gunzip -c $fasta > reference.fasta
+    else
+        mv ${fasta} reference.fasta
+    fi
     cp reference.fasta reference.copy.fasta
     """
 

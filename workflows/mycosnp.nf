@@ -9,7 +9,6 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowMycosnp.initialise(params, log)
 
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
 if (params.skip_samples_file) { // check for skip_samples_file
@@ -18,8 +17,39 @@ if (params.skip_samples_file) { // check for skip_samples_file
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
+sra_list = []
+sra_ids = [:]
+ch_input = null;
+if (params.input) 
+{ 
+    ch_input = file(params.input) 
+}
+if(params.add_sra_file)
+{
+    sra_file = file(params.add_sra_file, checkIfExists: true)
+    allLines  = sra_file.readLines()
+    for( line : allLines ) 
+    {
+        row = line.split(',')
+        if(row.size() > 1)
+        {
+            println " ${row[1]} => ${row[0]}"
+            sra_list.add(row[1])
+            sra_ids[row[1]] = row[0]
+        } else
+        {
+            if(row[0] != "")
+            {
+                println " ${row[0]} => ${row[0]}"
+                sra_list.add(row[0])
+                sra_ids[row[0]] = row[0]
+            }
+        }
+    }
+} 
+if(!params.input && !params.add_sra_file) { exit 1, 'Input samplesheet or sra file not specified!' }
 
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+
 
 /*
 ========================================================================================
@@ -39,11 +69,13 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK      } from '../subworkflows/local/input_check'
-include { BWA_PREPROCESS   } from '../subworkflows/local/bwa-pre-process'
-include { BWA_REFERENCE    } from '../subworkflows/local/bwa-reference'
-include { GATK_VARIANTS    } from '../subworkflows/local/gatk-variants'
-include { CREATE_PHYLOGENY } from '../subworkflows/local/phylogeny'
+include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
+include { INPUT_CHECK        } from '../subworkflows/local/input_check'
+include { BWA_PREPROCESS     } from '../subworkflows/local/bwa-pre-process'
+include { QC_REPORTSHEET     } from '../modules/local/qc_reportsheet.nf'
+include { BWA_REFERENCE      } from '../subworkflows/local/bwa-reference'
+include { GATK_VARIANTS      } from '../subworkflows/local/gatk-variants'
+include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -78,10 +110,27 @@ workflow MYCOSNP {
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    INPUT_CHECK (
-        ch_input
-    )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+    ch_all_reads = Channel.empty()
+    ch_sra_reads = Channel.empty()
+    ch_sra_list  = Channel.empty()
+    if(params.add_sra_file)
+    {   
+            ch_sra_list = Channel.fromList(sra_list)
+                                 .map{valid -> [ ['id':sra_ids[valid],single_end:false], valid ]}
+            SRA_FASTQ_SRATOOLS(ch_sra_list)
+                        //.map{meta, reads -> [ ['id':sra_ids[meta.id], single_end:meta.single_end], reads ]}
+        ch_all_reads = ch_all_reads.mix(SRA_FASTQ_SRATOOLS.out.reads)
+    }
+    
+    if(params.input)
+    {
+        INPUT_CHECK (
+            ch_input
+        )
+        ch_all_reads = ch_all_reads.mix(INPUT_CHECK.out.reads)
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+    }
+
 
 /*
 ========================================================================================
@@ -174,8 +223,14 @@ workflow MYCOSNP {
 ========================================================================================
 */
 
-    BWA_PREPROCESS( [fas_file, fai_file, bai_file ], INPUT_CHECK.out.reads)
+    BWA_PREPROCESS( [fas_file, fai_file, bai_file ], ch_all_reads)
     ch_versions = ch_versions.mix(BWA_PREPROCESS.out.versions)
+
+    // MODULE: QC_REPORTSHEET
+    ch_qcreportsheet = BWA_PREPROCESS.out.qc_lines.collect()
+    QC_REPORTSHEET (
+        ch_qcreportsheet
+    )
 
 /*
 ========================================================================================
@@ -256,7 +311,7 @@ if(! params.skip_vcf)
     // MODULE: Run Pre-FastQC 
     //
     FASTQC_RAW (
-        INPUT_CHECK.out.reads
+        ch_all_reads
     )
     ch_versions = ch_versions.mix(FASTQC_RAW.out.versions.first())
 

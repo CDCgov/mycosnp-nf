@@ -122,8 +122,8 @@ We thank the following people for their extensive assistance in the development 
 * Hunter Seabolt [@hseabolt](https://github.com/hseabolt)
 * Chris Sandlin [@cssandlin](https://github.com/cssandlin)
 * Drewry Morris [@drewry](https://github.com/drewry)
-* Lynn Dotrang **TODO** add github
-* Christopher Jossart **TODO** add github
+* Lynn Dotrang [@leuthrasp](https://github.com/LeuThrAsp)
+* Christopher Jossart [@cjjossart](https://github.com/cjjossart)
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
