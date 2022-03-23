@@ -138,6 +138,22 @@ B12352,SRR7909282
 SRR7909249
 B13520,SRR7909394
 ```
+## VCF file additions
+
+You may provide a list VCF files from previous runs of this pipeline as additional inputs sequences into the pipeline. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. Use the `--add_vcf_file` parameter to specify its location. It has to be plain text file with the full path to the vcf file on each line, and NO header row as shown in the examples below.
+
+```console
+--add_sra_file '[path to vcf file: assets/vcf_add.txt]'
+```
+
+Example File:
+
+```console
+/mydir/results_2021/samples/B12044/variant_calling/haplotypecaller/B12044.g.vcf.gz
+/mydir/results_control/samples/B12352/variant_calling/haplotypecaller/B12352.g.vcf.gz
+/mydir/results_2020/B12427.g.vcf.gz
+/mydir/results/samples/B12430/variant_calling/haplotypecaller/B12430.g.vcf.gz
+```
 
 ## Pipeline parameters
 
@@ -184,7 +200,7 @@ Additional examples:
 ```console
 nextflow run main.nf \
   -profile singularity \
-  --fasta "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/775/015/GCF_002775015.1_Cand_auris_B11221_V1/GCF_002775015.1_Cand_auris_B11221_V1_genomic.fna.gz" \
+  --fasta "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/016/772/135/GCA_016772135.1_ASM1677213v1/GCA_016772135.1_ASM1677213v1_genomic.fna.gz" \
   --custom_config_base ~/nf-core-custom \
   --publish_dir_mode copy \
   --add_sra_file assets/sra_ca_controls.csv \
