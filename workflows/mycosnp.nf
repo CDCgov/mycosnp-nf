@@ -265,21 +265,23 @@ workflow MYCOSNP {
         snps_fasta   channel: [ val(meta), fasta ]
 ========================================================================================
 */
-ch_vcf_files = Channel.empty()
-if(! params.skip_vcf)
+
+    GATK4_HAPLOTYPECALLER(  BWA_PREPROCESS.out.alignment_combined.map{meta, bam, bai            -> [ meta, bam, bai, [] ] },
+                            fas_file,
+                            fai_file,
+                            dict_file,
+                            [],
+                            []
+                            )
+    ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
+
+
+    ch_vcf_files = Channel.empty()
+    if(! params.skip_combined_analysis)
     {
 
         ch_vcf_files    = Channel.fromList(vcf_file_list)
         ch_vcfidx_files = Channel.fromList(vcfidx_file_list)
-
-        GATK4_HAPLOTYPECALLER(  BWA_PREPROCESS.out.alignment_combined.map{meta, bam, bai            -> [ meta, bam, bai, [] ] },
-                                fas_file,
-                                fai_file,
-                                dict_file,
-                                [],
-                                []
-        )
-        ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
         ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
         ch_vcf = ch_vcf.mix(ch_vcf_files)

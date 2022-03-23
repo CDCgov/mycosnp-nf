@@ -215,9 +215,9 @@
                     "description": "a file with new-line separated list of IDs to skip for variant calling and analysis",
                     "fa_icon": "fas fa-forward"
                 },
-                "skip_vcf": {
+                "skip_combined_analysis": {
                     "type": "boolean",
-                    "description": "Skip variant calling and analysis (run reference prep and mapping)",
+                    "description": "Skip combined variant analysis (run reference prep and mapping)",
                     "fa_icon": "fas fa-forward"
                 },
                 "skip_phylogeny": {
