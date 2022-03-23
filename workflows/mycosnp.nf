@@ -69,11 +69,21 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+<<<<<<< HEAD
 include { INPUT_CHECK      } from '../subworkflows/local/input_check'
 include { BWA_PREPROCESS   } from '../subworkflows/local/bwa-pre-process'
 include { BWA_REFERENCE    } from '../subworkflows/local/bwa-reference'
 include { GATK_VARIANTS    } from '../subworkflows/local/gatk-variants'
 include { CREATE_PHYLOGENY } from '../subworkflows/local/phylogeny'
+=======
+include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
+include { INPUT_CHECK        } from '../subworkflows/local/input_check'
+include { BWA_PREPROCESS     } from '../subworkflows/local/bwa-pre-process'
+include { QC_REPORTSHEET     } from '../modules/local/qc_reportsheet.nf'
+include { BWA_REFERENCE      } from '../subworkflows/local/bwa-reference'
+include { GATK_VARIANTS      } from '../subworkflows/local/gatk-variants'
+include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny'
+>>>>>>> 4449802b89ec1b1f28a28c0f71efca43bd847009
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -111,18 +121,14 @@ workflow MYCOSNP {
     //
     ch_all_reads = Channel.empty()
     ch_sra_reads = Channel.empty()
+    ch_sra_list  = Channel.empty()
     if(params.add_sra_file)
     {   
-        if(params.NCBIapiKey)
-        {
-               ch_sra_reads = Channel.fromSRA(sra_list, protocol:'https', apiKey:params.NCBIapiKey)
-                        .map{sra_id, reads -> [ ['id':sra_ids[sra_id], single_end:false], reads ]}
-        } else
-        {
-            ch_sra_reads = Channel.fromSRA(sra_list, protocol:'https')
-                        .map{sra_id, reads -> [ ['id':sra_ids[sra_id], single_end:false], reads ]}
-        }
-        ch_all_reads = ch_all_reads.mix(ch_sra_reads)
+            ch_sra_list = Channel.fromList(sra_list)
+                                 .map{valid -> [ ['id':sra_ids[valid],single_end:false], valid ]}
+            SRA_FASTQ_SRATOOLS(ch_sra_list)
+                        //.map{meta, reads -> [ ['id':sra_ids[meta.id], single_end:meta.single_end], reads ]}
+        ch_all_reads = ch_all_reads.mix(SRA_FASTQ_SRATOOLS.out.reads)
     }
     
     if(params.input)
