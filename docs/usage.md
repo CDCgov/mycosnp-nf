@@ -143,7 +143,7 @@ B13520,SRR7909394
 You may provide a list VCF files from previous runs of this pipeline as additional inputs sequences into the pipeline. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. Use the `--add_vcf_file` parameter to specify its location. It has to be plain text file with the full path to the vcf file on each line, and NO header row as shown in the examples below.
 
 ```console
---add_sra_file '[path to vcf file: assets/vcf_add.txt]'
+--add_vcf_file '[path to vcf file: assets/vcf_add.txt]'
 ```
 
 Example File:
