@@ -33,7 +33,7 @@ if(params.add_sra_file)
         row = line.split(',')
         if(row.size() > 1)
         {
-            println " ${row[1]} => ${row[0]}"
+            println "Add SRA ${row[1]} => ${row[0]}"
             sra_list.add(row[1])
             sra_ids[row[1]] = row[0]
         } else
@@ -46,9 +46,28 @@ if(params.add_sra_file)
             }
         }
     }
-} 
-if(!params.input && !params.add_sra_file) { exit 1, 'Input samplesheet or sra file not specified!' }
+}
 
+vcf_file_list = []
+vcfidx_file_list = []
+if(params.add_vcf_file)
+{
+    vcf_file = file(params.add_vcf_file, checkIfExists: true)
+    allLines  = vcf_file.readLines()
+    for( line : allLines ) 
+    {
+        if(line != "")
+        {
+            println " Add VCF => $line"
+            t_vcf = file(line)
+            t_idx = file(line + ".tbi")
+            vcf_file_list.add(t_vcf)
+            vcfidx_file_list.add(t_idx)
+        }
+    }
+}
+
+if(! ( params.input || params.add_sra_file || params.add_vcf_file ) ) { exit 1, 'Input samplesheet, sra file, or vcf file not specified!' }
 
 
 /*
@@ -115,10 +134,9 @@ workflow MYCOSNP {
     ch_sra_list  = Channel.empty()
     if(params.add_sra_file)
     {   
-            ch_sra_list = Channel.fromList(sra_list)
-                                 .map{valid -> [ ['id':sra_ids[valid],single_end:false], valid ]}
-            SRA_FASTQ_SRATOOLS(ch_sra_list)
-                        //.map{meta, reads -> [ ['id':sra_ids[meta.id], single_end:meta.single_end], reads ]}
+        ch_sra_list = Channel.fromList(sra_list)
+                             .map{valid -> [ ['id':sra_ids[valid],single_end:false], valid ]}
+        SRA_FASTQ_SRATOOLS(ch_sra_list)
         ch_all_reads = ch_all_reads.mix(SRA_FASTQ_SRATOOLS.out.reads)
     }
     
@@ -247,8 +265,13 @@ workflow MYCOSNP {
         snps_fasta   channel: [ val(meta), fasta ]
 ========================================================================================
 */
+ch_vcf_files = Channel.empty()
 if(! params.skip_vcf)
     {
+
+        ch_vcf_files    = Channel.fromList(vcf_file_list)
+        ch_vcfidx_files = Channel.fromList(vcfidx_file_list)
+
         GATK4_HAPLOTYPECALLER(  BWA_PREPROCESS.out.alignment_combined.map{meta, bam, bai            -> [ meta, bam, bai, [] ] },
                                 fas_file,
                                 fai_file,
@@ -259,8 +282,11 @@ if(! params.skip_vcf)
         ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
         ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{meta, vcf ->[ vcf ]  }.collect()
+        ch_vcf = ch_vcf.mix(ch_vcf_files)
         ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{meta, idx ->[ idx ]  }.collect()
-        ch_vcfs = ch_vcf.combine(ch_vcf_idx).collect()
+        ch_vcf_idx = ch_vcf_idx.mix(ch_vcfidx_files)
+        
+        ch_vcfs = ch_vcf.mix(ch_vcf_idx).collect()
 
         GATK4_LOCALCOMBINEGVCFS(
                                     [id:'combined', single_end:false],

@@ -46,9 +46,11 @@ process GATK4_LOCALCOMBINEGVCFS {
 
     //def input_files = vcf.collect{"-V ${it}"}.join(' ') // add '-V' to each vcf file
     def input_files = ""
-    for (int i=0; i < vcf.size(); i++)
+    def sortedVCF = vcf.sort{ a, b -> a.getSimpleName() <=> b.getSimpleName() }
+
+    for (int i=0; i < sortedVCF.size(); i++)
     {
-        thisVcf = vcf[i]
+        thisVcf = sortedVCF[i]
         if (!thisVcf.getName().endsWith(".tbi")) {
             include_this = true
             for (int j=0; j < sample_list.size(); j++)
