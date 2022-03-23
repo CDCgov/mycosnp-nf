@@ -73,8 +73,8 @@ class WorkflowMain {
         NfcoreTemplate.awsBatch(workflow, params)
 
         // Check input has been provided
-        if (! (params.input || params.add_sra_file)) {
-            log.error "Please provide an input samplesheet to the pipeline e.g. '--input samplesheet.csv'"
+        if (! (params.input || params.add_sra_file || params.add_vcf_file) ) {
+            log.error "Please provide an input samplesheet, list of vcf files, or list of sra ids to the pipeline e.g. '--input samplesheet.csv --add_sra_file sralist.csv --add_vcf_file vcflist.csv'"
             System.exit(1)
         }
     }
