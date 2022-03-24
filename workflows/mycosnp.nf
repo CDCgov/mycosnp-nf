@@ -91,7 +91,6 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { BWA_PREPROCESS     } from '../subworkflows/local/bwa-pre-process'
-include { QC_REPORTSHEET     } from '../modules/local/qc_reportsheet.nf'
 include { BWA_REFERENCE      } from '../subworkflows/local/bwa-reference'
 include { GATK_VARIANTS      } from '../subworkflows/local/gatk-variants'
 include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny'
