@@ -10,11 +10,14 @@ Initial release of CDCgov/mycosnp-nf, created with the [nf-core](https://nf-co.r
 ### `Added`
 
 *   Support for phylogenetic tree generation
-*   Skip samples capability
-*   Skip variant calling and analysis (run reference prep and mapping)
+*   Skip samples capability `--skip_samples`
+*   Skip samples file capability `--skip_samples_file`
+*   Skip combined variant analysis (run reference prep and mapping) `skip_combined_analysis`
+*   Skip reference generation `--ref_dir`
+*   `--add_vcf_file`
 ### `Fixed`
 
-*   Intermediate file cleanup
+*   
 ### `Dependencies`
 
 *   Nextflow
@@ -22,3 +25,7 @@ Initial release of CDCgov/mycosnp-nf, created with the [nf-core](https://nf-co.r
 ### `Deprecated`
 
 *   QC pdf report
+
+### `TODO`
+
+*   Intermediate file cleanup and management
