@@ -134,8 +134,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ## Summary Files
 
-* [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
-
 ### FastQC
 
 <details markdown="1">
