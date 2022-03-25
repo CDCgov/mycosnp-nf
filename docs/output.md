@@ -18,7 +18,6 @@ results/
 ├── input
 ├── multiqc
 ├── pipeline_info
-├── qc
 ├── reference
 ├── samples
 └── stats
