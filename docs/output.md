@@ -47,7 +47,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 | ---           | ---                                       |
 | Trimmed Reads |  `(samples/<sampleID>/faqcs/*.fastq.gz)`  |
 |  Bam files    |  `(samples/<sampleID>/finalbam)`          |
-|  QC Report    |  `(stats/qcreplrt)`                       |
+|  QC Report    |  `(stats/qc_report)`                      |
 |  MultiQC      |  `(multiqc/)`                             |
 
 ### Variant calling and analysis
@@ -103,6 +103,12 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
 
 > **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+
+### QC Report
+The QC report values are generated from FAQCS text file outputs. The following is an example table:
+| Sample Name | # Reads Before Trimming | GC Before Trimming | Average Phred Before Trimming | Coverage Before Trimming | # Reads After Trimming | # Paired Reads After Trimming | # Unpaired Reads After Trimming | GC After Trimming | Average Phred After Trimming | Coverage After Trimming |
+|-------------|-------------------------|--------------------|-------------------------------|--------------------------|------------------------|-------------------------------|---------------------------------|-------------------|------------------------------|-------------------------|
+| ERR2172265  | 367402                  | 52.44%             | 34.64                         | 16.578758543095503       | 367396                 | 367390 (100.00 %)             | 6 (0.00 %)                      | 52.45%            | 34.64                        | 16.578487797287757      |
 
 ### MultiQC
 

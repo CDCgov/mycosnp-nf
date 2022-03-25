@@ -91,7 +91,6 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { BWA_PREPROCESS     } from '../subworkflows/local/bwa-pre-process'
-include { QC_REPORTSHEET     } from '../modules/local/qc_reportsheet.nf'
 include { BWA_REFERENCE      } from '../subworkflows/local/bwa-reference'
 include { GATK_VARIANTS      } from '../subworkflows/local/gatk-variants'
 include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny'
@@ -105,6 +104,7 @@ include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny'
 // MODULE: Installed directly from nf-core/modules
 //
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/modules/fastqc/main'
+include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet.nf'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 include { GATK4_HAPLOTYPECALLER       } from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
