@@ -24,16 +24,53 @@ results/
 └── stats
 ```
 
-## Pipeline overview
+## Pipeline Overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
+- [CDCgov/mycosnp: Output](#cdcgov-mycosnp-output)
+	- [Introduction](#introduction) 
+	- [Pipeline Overview](#pipeline-overview)
+- [BWA Reference](#bwa-reference)
+	- [Reference Preparation](#reference-preparation)
+- [BWA Pre-process](#bwa-pre-process)
+	- [Sample QC and Processing](#sample-qc-and-processing)
+- [GATK Variants](#gatk-variants)
+	- [Variant calling and analysis](#variant-calling-and-analysis)
+- [Summary Files](#summary-files) 
+	- [FastQC](#fastqc)
+	- [QC report](#qc-report)
+	- [MultiQC](#multiqc)
+- [Pipeline Information](#pipeline-information)
+
+## BWA Reference
+
 ### Reference Preparation
+
+<details markdown="1">
+<summary>Output files</summary>
+
+* `reference/bwa/bwa`
+    * `reference.amb`
+    * `reference.ann`
+    * `reference.bwt`
+    * `reference.pac`
+    * `reference.sa`
+* `reference/dict`
+	* `reference.dict`
+* `reference/fai`
+	* `reference.fa.fai`
+* `reference/masked`
+	* `reference.fa`    
+
+</details>
 
 > **Prepares a reference FASTA file for BWA alignment and GATK variant calling by masking repeats in the reference and generating the BWA index.**
 * Genome repeat identification and masking (`nucmer`)
 * BWA index generation (`bwa`)
 * FAI and DICT file creation (`Picard`, `Samtools`)
+
+## BWA Pre-process
 
 ### Sample QC and Processing
 
@@ -64,9 +101,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 |  QC Report    |  `(stats/qc_report)`                      |
 |  MultiQC      |  `(multiqc/)`                             |
 
+## GATK Variants
+
 ### Variant calling and analysis
 
-> **Calls variants and generates a multi-FASTA file and phylogeny.**
+> **Calls variants, generates a multi-FASTA file, and creates phylogeny.**
 
 * Call variants (`GATK HaplotypeCaller`).
 * Combine gVCF files from the HaplotypeCaller into a single VCF (`GATK CombineGVCFs`).
@@ -93,7 +132,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 |  Phylogeny files                          |  `(combined/phylogeny/)`                     |
 
 
-### Summary Files
+## Summary Files
 
 * [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
