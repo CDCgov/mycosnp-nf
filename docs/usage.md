@@ -23,7 +23,7 @@
 *   Alternatively, you can install nextflow and other dependencies via conda like so:
 
 ```console
-conda create -n nextflow -c bioconda -c conda-forge nf-core nextflow git graphviz
+conda create -n nextflow -c bioconda -c conda-forge nf-core=2.2 nextflow=21.10.6 git=2.35.0 openjdk=8.0312 graphviz
 conda activate nextflow
 ```
 
