@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.0 [] - [03/25/2022]
+## v1.0 Espresso Myconaut - [03/25/2022]
 
 Initial release of CDCgov/mycosnp-nf, created with the [nf-core](https://nf-co.re/) template.
 
@@ -27,8 +27,8 @@ Initial release of CDCgov/mycosnp-nf, created with the [nf-core](https://nf-co.r
 *   nf-core
 ### `Deprecated`
 
+*   GeneFlow support
 *   QC pdf report
-
 ### `TODO`
 
 *   Intermediate file cleanup and management
