@@ -27,8 +27,7 @@ for line in args.reference:
     if line.startswith(">"):
         # If we captured one before, print it now
         if header is not None:
-            print(header, length)
-            length = 0
+            continue
         header = line[1:]
     else:
         length += len(line)
