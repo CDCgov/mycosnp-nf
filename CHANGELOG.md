@@ -3,6 +3,24 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.1 - [03/28/2022]
+
+### `Added`
+
+### `Fixed`
+
+*		Formatting of `output.md`
+
+### `Dependencies`
+
+### `Deprecated`
+
+*		`/results/qc` output dir removed
+
+### `TODO`
+
+*		Continue improving output docs
+
 ## v1.0 Espresso Myconaut - [03/25/2022]
 
 Initial release of CDCgov/mycosnp-nf, created with the [nf-core](https://nf-co.re/) template.
@@ -33,3 +51,15 @@ Initial release of CDCgov/mycosnp-nf, created with the [nf-core](https://nf-co.r
 
 *   Intermediate file cleanup and management
 *   Update logo and metro-style workflow
+
+## v1.1 - [03/28/2022]
+
+### `Added`
+
+### `Fixed`
+
+### `Dependencies`
+
+### `Deprecated`
+
+### `TODO`
