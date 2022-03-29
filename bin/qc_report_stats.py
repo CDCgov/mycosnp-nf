@@ -25,7 +25,6 @@ for line in args.reference:
     # Trim newline
     line = line.rstrip()
     if line.startswith(">"):
-        # If we captured one before, print it now
         if header is not None:
             print(header, length)
             length = 0
