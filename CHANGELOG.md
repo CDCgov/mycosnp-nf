@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 *       Changed output file combined/vcf-to-fasta/combined_vcf-to-fasta.fasta -> combined/vcf-to-fasta/vcf-to-fasta.fasta
 *       Output file combined/vcf-to-fasta/vcf-to-fasta.fasta will now replace stars with dashes
 *       Output file combined/phylogeny/rapidnj/rapidnj_phylogeny.tre -> combined/phylogeny/rapidnj/rapidnj_phylogeny.nh
+*       Output file combined/phylogeny/iqtree/vcf-to-fasta.fasta.treefile -> combined/phylogeny/iqtree/iqtree_phylogeny.nh
+*       Output file combined/phylogeny/raxmlng/output.raxml.bestTree -> combined/phylogeny/raxmlng/raxmlng_bestTree.nh
+*       Output file combined/phylogeny/raxmlng/output.raxml.support -> combined/phylogeny/raxmlng/raxmlng_support.nh
 
 ### `Dependencies`
 
