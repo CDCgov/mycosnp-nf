@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 *		Formatting of `output.md`
 *       Changed output file combined/vcf-to-fasta/combined_vcf-to-fasta.fasta -> combined/vcf-to-fasta/vcf-to-fasta.fasta
 *       Output file combined/vcf-to-fasta/vcf-to-fasta.fasta will now replace stars with dashes
+*       Output file combined/phylogeny/rapidnj/rapidnj_phylogeny.tre -> combined/phylogeny/rapidnj/rapidnj_phylogeny.nh
 
 ### `Dependencies`
 
