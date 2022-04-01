@@ -26,7 +26,7 @@ process LANE_MERGE {
             gzip -c ${reads[0]} > combined/${meta.id}.fastq.gz
         elif [[ $numReads == 2 ]]; then
             gzip -c ${reads[0]} > combined/${meta.id}_R1.fastq.gz
-            gzip -c ${reads[1]} > combined/${meta.id}_R2.$fileEnding
+            gzip -c ${reads[1]} > combined/${meta.id}_R2.fastq.gz
         elif [[ $numReads == 4 ]]; then
             gzip -c ${reads[0]} ${reads[2]} > combined/${meta.id}_R1.fastq.gz
             gzip -c ${reads[1]} ${reads[3]} > combined/${meta.id}_R2.fastq.gz
