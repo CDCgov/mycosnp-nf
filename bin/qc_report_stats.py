@@ -91,22 +91,19 @@ phred_avg_after = sum(df4["x"]) / sum_reads_num
 phred_avg_after = "{:.2f}".format(phred_avg_after)
 
 # Preparing output list with variables and then reformatting into a string
-output_string = ""
 output_list = [
     sample_name,
-    reads_before_trim,
+    str(reads_before_trim),
     str(GC_content_before),
     str(phred_avg_before),
-    str(coverage_before),
-    reads_after_trim_percent,
-    paired_reads_after_trim,
-    unpaired_reads_after_trim,
+    "{:.2f}".format(coverage_before),
+    str(reads_after_trim_percent),
+    str(paired_reads_after_trim),
+    str(unpaired_reads_after_trim),
     str(GC_content_after),
     str(phred_avg_after),
-    str(coverage_after),
+    "{:.2f}".format(coverage_after)
 ]
 
 # Creating tab delimited string for qc report generation
-for item in output_list:
-    output_string += str(item) + "\t"
-print(output_string)
+print('\t'.join(output_list))
