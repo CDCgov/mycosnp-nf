@@ -5,7 +5,7 @@
 */
 
 include { SEQKIT_PAIR                          } from '../../modules/nf-core/modules/seqkit/pair/main'
-include { SEQTK_SAMPLE                         } from '../../modules/nf-core/modules/seqtk/sample/main'
+include { SEQTK_SAMPLE                         } from '../../modules/local/seqtk_sample.nf'
 include { FAQCS                                } from '../../modules/nf-core/modules/faqcs/main'
 include { QC_REPORT                            } from '../../modules/local/qc_report.nf'
 include { BWA_INDEX                            } from '../../modules/nf-core/modules/bwa/index/main'
@@ -36,11 +36,15 @@ workflow BWA_PREPROCESS {
     ch_alignment          = Channel.empty()
     ch_alignment_index    = Channel.empty()
     ch_alignment_combined = Channel.empty()
+    ch_seq_samplerate     = Channel.empty()
     
 
     SEQKIT_PAIR(reads)
-	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
-    SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, DOWNSAMPLE_RATE.out.number_to_sample)
+    DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
+
+    ch_seq_samplerate = SEQKIT_PAIR.out.reads.join(DOWNSAMPLE_RATE.out.downsampled_rate.map{ meta, sr, snr -> [ meta, snr]})
+    
+    SEQTK_SAMPLE(ch_seq_samplerate)
     FAQCS(SEQTK_SAMPLE.out.reads)
     QC_REPORT(FAQCS.out.txt, reference[0])
     BWA_MEM(FAQCS.out.reads, reference[2], true)
