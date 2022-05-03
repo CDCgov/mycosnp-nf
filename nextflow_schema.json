@@ -256,10 +256,10 @@
                     "description": "Filter criteria for variants (GATK)",
                     "fa_icon": "fas fa-filter"
                 },
-                "vcftools_filter": {
+                "gatkgenotypes_filter": {
                     "type": "string",
                     "default": "--min_GQ \"50\" --keep_GQ_0_refs --min_percent_alt_in_AD \"0.8\" --min_total_DP \"10\" --keep_all_ref",
-                    "description": "Filter criteria for VCFTOOLS",
+                    "description": "Filter criteria for script filterGatkGenotypes",
                     "fa_icon": "fas fa-filter"
                 },
                 "max_amb_samples": {
