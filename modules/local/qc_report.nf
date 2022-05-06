@@ -21,8 +21,8 @@ process QC_REPORT {
     python $projectDir/bin/qc_report_stats.py \\
         --sample ${meta.id} \\
         --stats ${meta.id}.stats.txt \\
-        --base_content_before_trim qa.${meta.id}.base_content.txt \\
-        --base_content_after_trim ${meta.id}.base_content.txt \\
+        --base_content_before_trim ${meta.id}.base_content.txt \\
+        --base_content_after_trim qa.${meta.id}.base_content.txt \\
         --qual_scores_before_trim ${meta.id}.for_qual_histogram.txt \\
         --qual_scores_after_trim qa.${meta.id}.for_qual_histogram.txt \\
         --reference ${reference} \\
