@@ -7,7 +7,6 @@
 include { SEQKIT_PAIR                          } from '../../modules/nf-core/modules/seqkit/pair/main'
 include { SEQTK_SAMPLE                         } from '../../modules/local/seqtk_sample.nf'
 include { FAQCS                                } from '../../modules/nf-core/modules/faqcs/main'
-include { QC_REPORT                            } from '../../modules/local/qc_report.nf'
 include { BWA_INDEX                            } from '../../modules/nf-core/modules/bwa/index/main'
 include { BWA_MEM                              } from '../../modules/nf-core/modules/bwa/mem/main'
 include { SAMTOOLS_SORT                        } from '../../modules/nf-core/modules/samtools/sort/main'
@@ -23,6 +22,8 @@ include { DOWNSAMPLE_RATE                      } from '../../modules/local/downs
 include { SAMTOOLS_STATS                       } from '../../modules/nf-core/modules/samtools/stats/main'
 include { SAMTOOLS_IDXSTATS                    } from '../../modules/nf-core/modules/samtools/idxstats/main'
 include { SAMTOOLS_FLAGSTAT                    } from '../../modules/nf-core/modules/samtools/flagstat/main'
+include { QC_REPORT                            } from '../../modules/local/qc_report.nf'
+
 
 
 workflow BWA_PREPROCESS {
@@ -46,7 +47,6 @@ workflow BWA_PREPROCESS {
     
     SEQTK_SAMPLE(ch_seq_samplerate)
     FAQCS(SEQTK_SAMPLE.out.reads)
-    QC_REPORT(FAQCS.out.txt, reference[0])
     BWA_MEM(FAQCS.out.reads, reference[2], true)
     PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
     PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam)
@@ -61,6 +61,10 @@ workflow BWA_PREPROCESS {
     SAMTOOLS_STATS    ( ch_alignment_combined, reference[0] )
     SAMTOOLS_FLAGSTAT ( ch_alignment_combined )
     SAMTOOLS_IDXSTATS ( ch_alignment_combined )
+    
+    ch_qcreport_input = FAQCS.out.txt.join(QUALIMAP_BAMQC.out.results)
+
+    QC_REPORT(ch_qcreport_input, reference[0])
 
     ch_versions            = ch_versions.mix(  SEQKIT_PAIR.out.versions, 
                                                SEQTK_SAMPLE.out.versions, 

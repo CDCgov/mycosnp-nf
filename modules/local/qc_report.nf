@@ -8,7 +8,7 @@ process QC_REPORT {
         'quay.io/biocontainers/pandas:1.1.5' }"
         
     input:
-    tuple val(meta), path(txt)
+    tuple val(meta), path(txt), path(results)
     path reference
 
     output:
@@ -25,6 +25,7 @@ process QC_REPORT {
         --base_content_after_trim ${meta.id}.base_content.txt \\
         --qual_scores_before_trim ${meta.id}.for_qual_histogram.txt \\
         --qual_scores_after_trim qa.${meta.id}.for_qual_histogram.txt \\
-        --reference ${reference} > ${meta.id}_output.txt
+        --reference ${reference} \\
+        --bam_coverage ${meta.id}/genome_results.txt > ${meta.id}_output.txt
     """
 }
