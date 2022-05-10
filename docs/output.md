@@ -156,24 +156,24 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ### QC Report
 The QC report values are generated from FAQCS text file outputs. The following is an example table:
-| Sample Name | # Reads Before Trimming | GC Before Trimming | Average Phred Before Trimming | Coverage Before Trimming | # Reads After Trimming | # Paired Reads After Trimming | # Unpaired Reads After Trimming | GC After Trimming | Average Phred After Trimming | Coverage After Trimming | Coverage as Mean Depth | Reads Mapped    |
+| Sample Name | Reads Before Trimming | GC Before Trimming | Average Q Score Before Trimming | Reference Length Coverage Before Trimming | Reads After Trimming | Paired Reads After Trimming | Unpaired Reads After Trimming | GC After Trimming | Average Q Score After Trimming | Reference Length Coverage After Trimming | Mean Coverage Depth | Reads Mapped    |
 |-------------|-------------------------|--------------------|-------------------------------|--------------------------|------------------------|-------------------------------|---------------------------------|-------------------|------------------------------|-------------------------|------------------------|-----------------|
 | ERR2172265  | 367402                  | 52.44%             | 34.64                         | 16.58                    | 367396 (100.00 %)      | 367390 (100.00 %)             | 6 (0.00 %)                      | 52.45%            | 34.64                        | 16.58                   | 15.59                  | 352513 (96.43%) |
 
-| QC Metric                       | Source   |
-|---------------------------------|----------|
-| # Reads Before Trimming         | FAQCS    |
-| GC Before Trimming              | FAQCS    |
-| Average Phred Before Trimming   | FAQCS    |
-| Coverage Before Trimming        | FAQCS    |
-| # Reads After Trimming          | FAQCS    |
-| # Paired Reads After Trimming   | FAQCS    |
-| # Unpaired Reads After Trimming | FAQCS    |
-| GC After Trimming               | FAQCS    |
-| Average Phred After Trimming    | FAQCS    |
-| Coverage After Trimming         | FAQCS    |
-| Coverage as Mean Depth          | Qualimap |
-| Reads Mapped                    | Qualimap |
+| QC Metric                                  | Source   |
+|--------------------------------------------|----------|
+| Reads Before Trimming                      | FAQCS    |
+| GC Before Trimming                         | FAQCS    |
+| Average Q Score Before Trimming            | FAQCS    |
+| Reference Length Coverage Before Trimming  | FAQCS    |
+| Reads After Trimming                       | FAQCS    |
+| Paired Reads After Trimming                | FAQCS    |
+| Unpaired Reads After Trimming              | FAQCS    |
+| GC After Trimming                          | FAQCS    |
+| Average Q Score After Trimming             | FAQCS    |
+| Reference Length Coverage After Trimming   | FAQCS    |
+| Mean Coverage Depth                        | Qualimap |
+| Reads Mapped                               | Qualimap |
 
 ### MultiQC
 
