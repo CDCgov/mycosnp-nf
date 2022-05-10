@@ -64,7 +64,7 @@ workflow GATK_VARIANTS {
 
     final_vcf_txt = Channel.empty()
     fin_comb_vcf.combine(SPLIT_VCF.out.txt).map{meta1, vcf, meta2, txt -> 
-                    [ meta1, vcf, txt, params.max_amb_samples, params.max_perc_amb_samples]}.set{final_vcf_txt}
+                    [ meta1, vcf, txt, params.max_amb_samples, params.max_perc_amb_samples, params.min_depth ]}.set{final_vcf_txt}
 
     VCF_CONSENSUS(
         BCFTOOLS_VIEW_CONVERT.out.vcf.combine(BCFTOOLS_INDEX.out.csi).map{meta1, vcf, meta2, csi-> [meta1, vcf, csi] },

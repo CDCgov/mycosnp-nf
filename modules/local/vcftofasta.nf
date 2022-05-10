@@ -8,7 +8,7 @@ process VCF_TO_FASTA {
         'quay.io/biocontainers/scipy:1.1.0' }"
 
     input:
-    tuple val(meta), path(vcf), path(samplelist), val(max_amb_samples), val(max_perc_amb_samples)
+    tuple val(meta), path(vcf), path(samplelist), val(max_amb_samples), val(max_perc_amb_samples), val(min_depth)
     path(fasta)
 
     output:
@@ -34,10 +34,11 @@ process VCF_TO_FASTA {
         gzip -c -d $vcf > $vcf_name
     fi
 
-    python $projectDir/bin/broad-vcf-filter/vcfSnpsToFasta.py --max_amb_samples \$MAX_AMB_SAMPLES $vcf_name > ${prefix}_vcf-to-fasta.fasta
+    python $projectDir/bin/broad-vcf-filter/vcfSnpsToFasta.py --max_amb_samples \$MAX_AMB_SAMPLES --min_depth $min_depth $vcf_name > ${prefix}_vcf-to-fasta.fasta
     echo "NUM_SAMPLES=\$NUM_SAMPLES" >> log.txt
     echo "MAX_PERC_AMB_SAMPLES=$max_perc_amb_samples" >> log.txt
     echo "MAX_AMB_SAMPLES=\$MAX_AMB_SAMPLES" >> log.txt
+    echo "MIN_DEPTH=$min_depth" >> log.txt
     
     """
 
