@@ -3,6 +3,9 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.2 
+*   Changed minimum time requirements in `base.config` for `process_low`, `process_medium`, `process_high` to 72.h and `process_long` to 120.h
+
 ## v1.1 Candid Aura - [04/01/2022]
 
 ### `Added`
