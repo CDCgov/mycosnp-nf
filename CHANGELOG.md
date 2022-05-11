@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 *   change conf name from vcftools_filter to gatkgenotypes_filter
 *   changed samplesheet to accept multiple directories as arguments
 *   set full vcf consensus file to debug output
+*   Remove nf-core branding
 
 ### `Dependencies`
 
