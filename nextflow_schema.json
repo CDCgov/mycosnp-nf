@@ -274,6 +274,12 @@
                     "description": "Max percent of samples with ambiguous calls for inclusion (GATK)",
                     "fa_icon": "fas fa-question"
                 },
+                "min_depth": {
+                    "type": "integer",
+                    "default": 50,
+                    "description": "Min depth for a base to be called as the consensus sequence, otherwise it will be called as an N. Set to 0 to disable.",
+                    "fa_icon": "fas fa-question"
+                },
                 "mask": {
                     "type": "boolean",
                     "default": true,
