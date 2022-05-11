@@ -13,6 +13,7 @@ parser.add_argument("--base_content_after_trim", type=argparse.FileType("r"))
 parser.add_argument("--qual_scores_before_trim", type=argparse.FileType("r"))
 parser.add_argument("--qual_scores_after_trim", type=argparse.FileType("r"))
 parser.add_argument("--reference", type=argparse.FileType("r"))
+parser.add_argument("--bam_coverage", type=argparse.FileType("r"))
 args = parser.parse_args()
 
 # Sample name variable
@@ -25,7 +26,6 @@ for line in args.reference:
     # Trim newline
     line = line.rstrip()
     if line.startswith(">"):
-        # Skip lines with ">"
         if header is not None:
             continue
         header = line[1:]
@@ -90,6 +90,13 @@ phred_avg_after = sum(df4["x"]) / sum_reads_num
 # Formatting. 2 decimal points
 phred_avg_after = "{:.2f}".format(phred_avg_after)
 
+# Parsing coverage (mean depth) and percent coverage of reference sequence from Qualimap bamqc report genome_results.txt file
+for line in args.bam_coverage:
+    if line.__contains__("mean coverageData"):
+        mean_depth_coverage = float(line.split("= ")[1].strip("X\n"))
+    if line.__contains__("number of mapped reads"):
+        reads_mapped = line.split("= ")[1].replace(",","").strip("\n")
+
 # Preparing output list with variables and then reformatting into a string
 output_list = [
     sample_name,
@@ -102,7 +109,9 @@ output_list = [
     str(unpaired_reads_after_trim),
     str(GC_content_after),
     str(phred_avg_after),
-    "{:.2f}".format(coverage_after)
+    "{:.2f}".format(coverage_after),
+    "{:.2f}".format(mean_depth_coverage),
+    str(reads_mapped)
 ]
 
 # Creating tab delimited string for qc report generation
