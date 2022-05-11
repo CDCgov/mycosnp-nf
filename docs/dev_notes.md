@@ -166,3 +166,12 @@ INFO     Modules installed in '.':                                              
 │ seqtk/seq                       │ nf-core/modules │ 1016c9bd1a7b23e31b8215b8c33095e733080735 │ Seqtk seq (#1340)                                  │ 2022-02-23 │
 └─────────────────────────────────┴─────────────────┴──────────────────────────────────────────┴────────────────────────────────────────────────────┴────────────┘
 ```
+
+
+## Bumping a pipeline version number
+
+When releasing a new version of a nf-core pipeline, version numbers have to be updated in several different places. The helper command nf-core bump-version automates this for you to avoid manual errors (and frustration!)
+
+```
+nf-core bump-version 1.2
+```
