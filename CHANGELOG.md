@@ -3,9 +3,34 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.2 
-*   Changed minimum time requirements in `base.config` for `process_low`, `process_medium`, `process_high` to 72.h and `process_long` to 120.h
+## v1.2 Expecto Patronum - [05/11/2022]
 
+### `Added`
+
+*   Changed minimum time requirements in `base.config` for `process_low`, `process_medium`, `process_high` to 72.h and `process_long` to 120.h
+*   snp distance matrix addition
+*   Updated qc_report.txt to include coverage mean depth and reads mapped
+*   mask positions based on DP & Added functionality to use `min_depth`
+*   change `test` profile to include `min_depth = 2`
+*   
+### `Fixed`
+
+*   bug fix for downsample mismatch
+*   change conf name from vcftools_filter to gatkgenotypes_filter
+*   changed samplesheet to accept multiple directories as arguments
+*   set full vcf consensus file to debug output
+
+### `Dependencies`
+
+### `Deprecated`
+
+*   
+
+### `TODO`
+
+*	
+
+---
 ## v1.1 Candid Aura - [04/01/2022]
 
 ### `Added`
