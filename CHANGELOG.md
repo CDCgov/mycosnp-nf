@@ -7,29 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-*   Changed minimum time requirements in `base.config` for `process_low`, `process_medium`, `process_high` to 72.h and `process_long` to 120.h.
+*   Changed minimum time requirements in `base.config` for `process_low`, `process_medium`, `process_high` to **72.h** and `process_long` to **120.h**.
 *   SNP distance matrix addition as output.
-*   Updated qc_report.txt to include coverage mean depth and reads mapped.
-*   Positions masked (N) based on DP & Added functionality to use `min_depth` (Default 50).
+*   Updated `qc_report.txt` to include coverage **mean depth** and **reads mapped**.
+*   Positions masked `(N)` based on **DP** & Added functionality to use `min_depth` (Default 50).
 *   Change `test` profile to include `min_depth = 2` so it will run to completion.
 *   
 ### `Fixed`
 
 *   Bug fix for downsample mismatch.
-*   Change configuratin variable name from vcftools_filter to gatkgenotypes_filter.
-*   Changed samplesheet to accept multiple directories as arguments and to recursively search for sequences.
+*   Change configuration variable name from vcftools_filter to `gatkgenotypes_filter`.
+*   Changed samplesheet creation to accept multiple directories as arguments and to recursively search for sequences.
 *   Set full vcf consensus file to debug output
-*   Remove nf-core branding
+*   Remove part nf-core branding
 
 ### `Dependencies`
 
 ### `Deprecated`
 
 *   
-
 ### `TODO`
 
-*	
+*	Update logo
 
 ---
 ## v1.1 Candid Aura - [04/01/2022]

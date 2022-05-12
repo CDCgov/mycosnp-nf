@@ -1,6 +1,3 @@
->[![Open CDCgov/mycosnp-nf in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CDCgov/mycosnp-nf)
->>Once the pod launches, it will present a VS-Code interface and comes with Nextflow, Conda and Docker pre-installed
-
 # ![CDCgov/mycosnp-nf](docs/images/nf-core-mycosnp_logo_light.png#gh-light-mode-only) ![CDCgov/mycosnp-nf](docs/images/nf-core-mycosnp_logo_dark.png#gh-dark-mode-only)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
@@ -84,7 +81,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     ```console
     nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta c_auris.fasta
     ```
+## Pre-configured Nextflow development environment using Gitpod
 
+>[![Open CDCgov/mycosnp-nf in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CDCgov/mycosnp-nf)
+>>Once the pod launches, it will present a VS-Code interface and comes with Nextflow, Conda and Docker pre-installed
 ## Documentation
 
 The nf-core/mycosnp pipeline comes with documentation about the pipeline [usage](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md), [parameters](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs) and [output](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/output.md).
@@ -104,7 +104,7 @@ We thank the following people for their extensive assistance in the development 
 * Christopher Jossart [@cjjossart](https://github.com/cjjossart)
 * Robert A. Petit III [@rpetit3](https://github.com/rpetit3)
 
-We would like to thank the **Staph-B** Slack workspace for open-source collaborations and discussions.
+> Special thanks the **Staph-B** Slack workspace for open-source collaborations and discussions.
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
