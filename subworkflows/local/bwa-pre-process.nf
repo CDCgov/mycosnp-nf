@@ -41,7 +41,7 @@ workflow BWA_PREPROCESS {
     
 
     SEQKIT_PAIR(reads)
-    DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
+    DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage, params.rate)
 
     ch_seq_samplerate = SEQKIT_PAIR.out.reads.join(DOWNSAMPLE_RATE.out.downsampled_rate.map{ meta, sr, snr -> [ meta, snr]})
     
