@@ -7,11 +7,13 @@ import vcfTools
 parser = argparse.ArgumentParser()
 parser.add_argument('infile', help='VCF file', type=str)
 parser.add_argument('--max_amb_samples', help='maximum number of samples with ambiguous calls for a site to be included', type=int)
+parser.add_argument('--min_depth', default=0, help='Replace SNP with "N" if depth is less than minimum (Default: do not check read depth)', type=int)
 args = parser.parse_args()
 
 infile = args.infile
 
 max_amb = 1000000
+min_depth = args.min_depth
 if args.max_amb_samples:
 	max_amb = args.max_amb_samples
 
@@ -57,11 +59,12 @@ with open(fof_line, 'r') as vcf_file:
 				except:
 					pass
 				genotype = record.get_genotype(index=header.get_sample_index(translation),min_gq=0)
+				record_format = dict(zip(record.format.split(':'), record.genotypes[header.get_sample_index(translation)].split(':')))
 				variant_type = record.get_variant_type(caller,genotype)
 				### print(genome + " " + str(genotype) + " " + str(pass_or_fail) + " " + str(variant_type)) ###
 				if pass_or_fail and not variant_type:
 					pass
-				elif pass_or_fail and variant_type == 'SNP':
+				elif pass_or_fail and variant_type == 'SNP' and int(record_format['DP']) >= min_depth:
 					chrom = record.get_chrom()
 					pos = int(record.get_pos())
 
