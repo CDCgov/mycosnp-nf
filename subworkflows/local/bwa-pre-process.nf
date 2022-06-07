@@ -39,7 +39,7 @@ workflow BWA_PREPROCESS {
     
 
     SEQKIT_PAIR(reads)
-	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
+	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage,params.rate)
     SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, DOWNSAMPLE_RATE.out.number_to_sample)
     FAQCS(SEQTK_SAMPLE.out.reads)
     QC_REPORT(FAQCS.out.txt, reference[0])
