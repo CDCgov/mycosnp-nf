@@ -3,6 +3,29 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## v1.3 Musky Albus - [06/09/2022]
+
+### `Added`
+
+### `Fixed`
+
+*   Changed downsample strategy in `modules/local/downsample_rate.nf` that was causing differences with results from geneflow version. Downsample rate now set at default 1 (closes #67)
+
+### `Dependencies`
+
+### `Deprecated`
+
+* 
+
+### `TODO`
+
+*	
+
+---
+
+
+
 ## v1.2 Expecto Patronum - [05/11/2022]
 
 ### `Added`
