@@ -276,7 +276,7 @@
                 },
                 "min_depth": {
                     "type": "integer",
-                    "default": 50,
+                    "default": 10,
                     "description": "Min depth for a base to be called as the consensus sequence, otherwise it will be called as an N. Set to 0 to disable.",
                     "fa_icon": "fas fa-question"
                 },
@@ -346,7 +346,7 @@
                 "max_cpus": {
                     "type": "integer",
                     "description": "Maximum number of CPUs that can be requested for any single job.",
-                    "default": 8,
+                    "default": 4,
                     "fa_icon": "fas fa-microchip",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
@@ -354,7 +354,7 @@
                 "max_memory": {
                     "type": "string",
                     "description": "Maximum amount of memory that can be requested for any single job.",
-                    "default": "64.GB",
+                    "default": "6.GB",
                     "fa_icon": "fas fa-memory",
                     "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
                     "hidden": true,
