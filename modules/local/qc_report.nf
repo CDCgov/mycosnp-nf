@@ -18,7 +18,7 @@ process QC_REPORT {
     def args = task.ext.args ?: '' 
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    python $projectDir/bin/qc_report_stats.py \\
+    python qc_report_stats.py \\
         --sample ${meta.id} \\
         --stats ${meta.id}.stats.txt \\
         --base_content_before_trim qa.${meta.id}.base_content.txt \\
