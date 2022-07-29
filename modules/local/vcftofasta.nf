@@ -34,7 +34,7 @@ process VCF_TO_FASTA {
         gzip -c -d $vcf > $vcf_name
     fi
 
-    python $projectDir/bin/broad-vcf-filter/vcfSnpsToFasta.py --max_amb_samples \$MAX_AMB_SAMPLES --min_depth $min_depth $vcf_name > ${prefix}_vcf-to-fasta.fasta
+    vcfSnpsToFasta.py --max_amb_samples \$MAX_AMB_SAMPLES --min_depth $min_depth $vcf_name > ${prefix}_vcf-to-fasta.fasta
     echo "NUM_SAMPLES=\$NUM_SAMPLES" >> log.txt
     echo "MAX_PERC_AMB_SAMPLES=$max_perc_amb_samples" >> log.txt
     echo "MAX_AMB_SAMPLES=\$MAX_AMB_SAMPLES" >> log.txt
