@@ -12,6 +12,9 @@
             "bcftools/query": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             },
+            "bcftools/stats": {
+                "git_sha": "535975eb81c9e48eb0403c136b7f1dd7acb1afad"
+            },
             "bcftools/view": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
@@ -26,6 +29,9 @@
             },
             "custom/dumpsoftwareversions": {
                 "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+            },
+            "custom/getchromsizes": {
+                "git_sha": "213403187932dbbdd936a04474cc8cd8abae7a08"
             },
             "faqcs": {
                 "git_sha": "2cd502a236aec1a1eecbe1f9189af3414efbf1d8"
@@ -50,6 +56,9 @@
             },
             "gatk4/variantfiltration": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "gunzip": {
+                "git_sha": "fa37e0662690c4ec4260dae282fbce08777503e6"
             },
             "iqtree": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
@@ -125,6 +134,18 @@
             },
             "snpdists": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "snpeff": {
+                "git_sha": "ffe037504897df081a7497fa5f495d8e23e93e24"
+            },
+            "tabix/bgzip": {
+                "git_sha": "37bf3936f3665483d070a5e0e0b314311032af7c"
+            },
+            "tabix/tabix": {
+                "git_sha": "b3e9b88e80880f450ad79a95b2b7aa05e1de5484"
+            },
+            "untar": {
+                "git_sha": "51be617b1ca9bff973655eb899d591ed6ab253b5"
             }
         }
     }

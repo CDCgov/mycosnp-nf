@@ -103,6 +103,7 @@ include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny'
 //
 // MODULE: Installed directly from nf-core/modules
 //
+include { PREPARE_GENOME              } from '../modules/local/prepare_genome.nf'
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/modules/fastqc/main'
 include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet.nf'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
@@ -149,7 +150,12 @@ workflow MYCOSNP {
         ch_all_reads = ch_all_reads.mix(INPUT_CHECK.out.reads)
         ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     }
-
+    
+    if(params.ref_gff && params.fasta) {
+        PREPARE_GENOME ()
+        ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions)
+    }
+    
 
 /*
 ========================================================================================
@@ -171,6 +177,7 @@ workflow MYCOSNP {
     ref_fai                     = null
     ref_bwa                     = null
     ref_dict                    = null
+    ref_gff                     = null
 */
     fas_file = Channel.empty()
     fai_file = Channel.empty()
@@ -184,10 +191,11 @@ workflow MYCOSNP {
         fas_file  = Channel.fromPath(params.ref_dir + "/masked/*.fa*", checkIfExists:true).first()
         fai_file  = Channel.fromPath(params.ref_dir + "/fai/*.fai", checkIfExists:true).first()
         bai_file  = Channel.fromPath(params.ref_dir + "/bwa/bwa", checkIfExists:true, type: 'dir').first()
+        gff_file  = Channel.fromPath(params.ref_gff + "/gff/*.gff*", checkIfExists:true, type: 'dir').first()
         dict_file = Channel.fromPath(params.ref_dir + "/dict/*.dict", checkIfExists:true).first()
         // meta_val // Not used
          
-    } else if (params.ref_masked_fasta && params.ref_fai && params.ref_bwa && params.ref_dict ) 
+    } else if (params.ref_masked_fasta && params.ref_fai && params.ref_bwa && params.ref_dict && params.ref_gff) 
     {
 
         if(params.ref_masked_fasta != null)
@@ -206,6 +214,10 @@ workflow MYCOSNP {
         {
             dict_file = Channel.fromPath(params.ref_dict, checkIfExists:true).first()
         }
+        if(params.ref_gff != null)
+        {
+            gff_file = Channel.fromPath(params.ref_gff, checkIfExists:true).first()
+        }
     }
     else if (params.fasta) 
     {
@@ -220,7 +232,7 @@ workflow MYCOSNP {
         meta_val = BWA_REFERENCE.out.reference_combined.map{meta1, fa1, fai, bai, dict -> [ meta1 ]}.first()
     } else 
     {
-        exit 1, 'Input reference fasta or index files not specified!'
+        exit 1, 'Input reference fasta, gff, or index files not specified!'
     }
 
 
@@ -310,6 +322,38 @@ workflow MYCOSNP {
         
 
         ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
+
+/*
+========================================================================================
+                   SUBWORKFLOW: Run snpEff and snpSift to annotate variants 
+    take:
+    vcf           // channel: [ val(meta), [ vcf ] ]
+    db            // path   : snpEff database
+    config        // path   : snpEff config
+    fasta         // path   : genome.fasta
+    
+    emit:
+    csv         = SNPEFF_ANN.out.csv              // channel: [ val(meta), [ csv ] ]
+    txt         = SNPEFF_ANN.out.txt              // channel: [ val(meta), [ txt ] ]
+    html        = SNPEFF_ANN.out.html             // channel: [ val(meta), [ html ] ]
+
+    vcf         = VCF_BGZIP_TABIX_STATS.out.vcf   // channel: [ val(meta), [ vcf.gz ] ]
+    tbi         = VCF_BGZIP_TABIX_STATS.out.tbi   // channel: [ val(meta), [ tbi ] ]
+    stats       = VCF_BGZIP_TABIX_STATS.out.stats // channel: [ val(meta), [ txt ] ]
+
+    snpsift_txt = SNPSIFT_EXTRACTFIELDS.out.txt   // channel: [ val(meta), [ txt ] ]
+
+    versions    = ch_versions                     // channel: [ versions.yml ]
+========================================================================================
+*/
+
+    if (!params.skip_snpeff ) {
+        SNPEFF_SNPSIFT( ... )
+    
+    }
+    
+
+
 
 /*
 ========================================================================================
