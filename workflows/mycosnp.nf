@@ -329,7 +329,7 @@ workflow MYCOSNP {
         SEQKIT_REPLACE(GATK_VARIANTS.out.snps_fasta) // Swap * for -
         SNPDISTS(SEQKIT_REPLACE.out.fastx)
         if(! params.skip_phylogeny) {
-            CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '')
+            CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '', SNPDISTS.out.tsv)
         }
     }
 
