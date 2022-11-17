@@ -4,13 +4,16 @@
 ========================================================================================
 */
 
+
+
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+
 
 // Validate input parameters
 WorkflowMycosnp.initialise(params, log)
 
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta]
 if (params.skip_samples_file) { // check for skip_samples_file
     checkPathParamList.add(params.skip_samples_file)
 }
@@ -94,6 +97,8 @@ include { BWA_PREPROCESS     } from '../subworkflows/local/bwa-pre-process'
 include { BWA_REFERENCE      } from '../subworkflows/local/bwa-reference'
 include { GATK_VARIANTS      } from '../subworkflows/local/gatk-variants'
 include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny'
+include { SNPEFF_BUILD       } from '../subworkflows/local/snpeff_build'
+include { SNPEFF             } from '../subworkflows/local/snpeff'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -277,6 +282,7 @@ workflow MYCOSNP {
     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
 
+
     ch_vcf_files = Channel.empty()
     if(! params.skip_combined_analysis)
     {
@@ -369,6 +375,52 @@ workflow MYCOSNP {
     )
     multiqc_report = MULTIQC.out.report.toList()
     ch_versions    = ch_versions.mix(MULTIQC.out.versions)
+
+/*
+========================================================================================
+                          SUBWORKFLOW: Run SNPEFF_BUILD 
+    take:
+        fasta
+        gff
+
+    emit:
+        snpeffdb     
+        snpeffconfig
+========================================================================================
+*/
+
+    // if(params.snpeff_build == true)
+    // {
+    //     SNPEFF_BUILD(
+    //         gff, fasta
+    //     )
+    // }
+
+   /*
+========================================================================================
+                          SUBWORKFLOW: Run SNPEFF 
+    take:
+        ch_snpeff_db
+        ch_snpeff_config
+        vcf
+        fasta (optional)
+
+    emit:
+        csv     
+        txt
+        html
+        tbi
+        vcf (gz)
+========================================================================================
+*/
+
+    if(params.snpeff == true)
+    {
+        SNPEFF(
+            ch_vcf_files, snpeffdb, snpeff_config
+        )
+    }
+
 }
 
 /*

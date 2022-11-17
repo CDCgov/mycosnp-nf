@@ -60,6 +60,12 @@
             "mummer": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             },
+            "nf-core/snpeff": {
+                "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+            },
+            "nf-core/tabix/bgziptabix": {
+                "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+            },
             "nucmer": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             },
