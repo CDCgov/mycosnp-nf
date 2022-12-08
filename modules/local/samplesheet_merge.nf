@@ -14,7 +14,7 @@ process SAMPLESHEET_MERGE {
 
     script: // This script is bundled with the pipeline, in nf-core/mycosnp/bin/
     """
-    $projectDir/bin/mycosnp_combine_lanes.pl -i $samplesheet > samplesheet.system.csv
+    mycosnp_combine_lanes.pl -i $samplesheet > samplesheet.system.csv
 
     # TODO: Add version
     
