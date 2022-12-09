@@ -26,7 +26,7 @@ process FILTER_GATK_GENOTYPES {
         gzip -c -d $vcf > $vcf_name
     fi
 
-    broad-vcf-filter/filterGatkGenotypes.py  $vcf_name \\
+    filterGatkGenotypes.py  $vcf_name \\
                             $args \\
                            > ${prefix}.vcf
     gzip ${prefix}.vcf
