@@ -10,7 +10,7 @@ from __future__ import division
 import sys
 import re
 import argparse
-import vcfTools
+# import vcfTools
 
 # take input
 parser = argparse.ArgumentParser(description=__doc__)
