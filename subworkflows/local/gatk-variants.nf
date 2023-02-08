@@ -88,6 +88,7 @@ workflow GATK_VARIANTS {
     emit:
     snps_fasta = VCF_TO_FASTA.out.fasta  // channel: [ val(meta), fasta ]
     versions = ch_versions               // channel: [ versions.yml ]
+    filtered_vcf       = BCFTOOLS_VIEW_CONVERT.out.vcf
     // filtered_vcf    = BROAD_VCFFILTER.out
     // split_vcf_broad = SPLITVCF.out        --> the broad vcf file
     // variants        = GATK4_SELECTVARIANTS.out
