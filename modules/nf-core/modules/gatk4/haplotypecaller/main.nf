@@ -35,7 +35,6 @@ process GATK4_HAPLOTYPECALLER {
         avail_mem = task.memory.toGiga()
     }
     """
-    echo $PATH > ~/my_path
     gatk \\
         --java-options "-Xms${avail_mem}G -Xmx${avail_mem}G" \\
         HaplotypeCaller \\
