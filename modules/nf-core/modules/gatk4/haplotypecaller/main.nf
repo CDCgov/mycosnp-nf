@@ -32,11 +32,12 @@ process GATK4_HAPLOTYPECALLER {
     if (!task.memory) {
         log.info '[GATK HaplotypeCaller] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.'
     } else {
-        avail_mem = task.memory.giga
+        avail_mem = task.memory.toGiga()
     }
     """
+    echo $PATH > ~/my_path
     gatk \\
-        --java-options "-Xmx${avail_mem}g" \\
+        --java-options "-Xms${avail_mem}G -Xmx${avail_mem}G" \\
         HaplotypeCaller \\
         -R $fasta \\
         -I $input \\
