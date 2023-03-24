@@ -1,6 +1,6 @@
 process GATK4_COMBINEGVCFS {
     tag "$meta.id"
-    label 'process_low'
+    label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::gatk4=4.2.5.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -27,12 +27,12 @@ process GATK4_COMBINEGVCFS {
     if (!task.memory) {
         log.info '[GATK COMBINEGVCFS] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.'
     } else {
-        avail_mem = task.memory.giga
+        avail_mem = task.memory.toGiga()
     }
     def input_files = vcf.collect{"-V ${it}"}.join(' ') // add '-V' to each vcf file
     """
     gatk \\
-        --java-options "-Xmx${avail_mem}g" \\
+        --java-options "-Xms${avail_mem} -Xmx${avail_mem}G" \\
         CombineGVCFs \\
         -R ${fasta} \\
         -O ${prefix}.combined.g.vcf.gz \\

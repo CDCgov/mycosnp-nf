@@ -113,7 +113,13 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
-You can cite the `nf-core` publication as follows:
+You can cite the `MycoSNP` and `nf-core` publications as follows:
+
+> Bagal UR, Phan J, Welsh RM, Misas E, Wagner D, Gade L, Litvintseva AP, Cuomo CA, Chow NA. 
+> 
+> MycoSNP: A Portable Workflow for Performing Whole-Genome Sequencing Analysis of Candida auris. 
+> 
+> _Methods Mol Biol._ 2022; 2517:215-228. doi: [10.1007/978-1-0716-2417-3_17](https://pubmed.ncbi.nlm.nih.gov/35674957)
 
 > **The nf-core framework for community-curated bioinformatics pipelines.**
 >

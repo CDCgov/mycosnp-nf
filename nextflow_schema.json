@@ -157,6 +157,37 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                },
+                "snpeffconfig": {
+                    "type": "string",
+                    "format": "path",
+                    "default": "",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Full path to snpeff config"
+                },
+                "species": {
+                    "type": "string",
+                    "default": "candida_auris_gca_016772135.1",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Species name"
+                },
+                "positions": {
+                    "type": "string",
+                    "default": "fks1_hs1=221638:221665,fks1_hs2=223782:223805",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "positions"
+                },
+                "genes": {
+                    "type": "string",
+                    "default": "CAB11_002014",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Genes"
+                },
+                "exclude": {
+                    "type": "string",
+                    "default": "synonymous_variant",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "exclude variants"
                 }
             }
         },
@@ -189,6 +220,12 @@
                     "default": true,
                     "description": "Build a tree using the FastTree approximate ML algorithm",
                     "fa_icon": "fas fa-tree"
+                },
+                "snpeff": {
+                    "type": "boolean",
+                    "default": true,
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Do SNPEFF annotation."
                 },
                 "iqtree": {
                     "type": "boolean",
