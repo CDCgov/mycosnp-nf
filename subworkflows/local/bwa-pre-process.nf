@@ -72,7 +72,7 @@ workflow BWA_PREPROCESS {
     QC_REPORT(ch_qcreport_input, reference[0])
 
     ch_versions            = ch_versions.mix(  SEQKIT_PAIR.out.versions, 
-                                               SEQTK_SAMPLE.out.versions.ifEmpty('NA'), 
+                                               SEQTK_SAMPLE.out.versions 
                                                FAQCS.out.versions,
                                                BWA_MEM.out.versions,
                                                PICARD_MARKDUPLICATES.out.versions,
@@ -84,6 +84,10 @@ workflow BWA_PREPROCESS {
                                                SAMTOOLS_STATS.out.versions,
                                                QUALIMAP_BAMQC.out.versions
                                             )
+    if (params.coverage != 0) { 
+        ch_versions.mix(SEQTK_SAMPLE.out.versions)
+    }                                        
+    
     ch_alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam
     ch_alignment_index    = SAMTOOLS_INDEX.out.bai
     ch_qcreport           = QC_REPORT.out.qc_line
