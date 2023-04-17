@@ -41,12 +41,17 @@ workflow BWA_PREPROCESS {
     
 
     SEQKIT_PAIR(reads)
+    if (params.coverage == 0) {
+    FAQCS(SEQKIT_PAIR.out.reads)
+    }
+    else {
     DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage)
-
-    ch_seq_samplerate = SEQKIT_PAIR.out.reads.join(DOWNSAMPLE_RATE.out.downsampled_rate.map{ meta, sr, snr -> [ meta, snr]})
-    
+    ch_seq_samplerate = SEQKIT_PAIR.out.reads.join(
+        DOWNSAMPLE_RATE.out.downsampled_rate.map{ meta, sr, snr -> [ meta, snr]}
+        )
     SEQTK_SAMPLE(ch_seq_samplerate)
     FAQCS(SEQTK_SAMPLE.out.reads)
+    }
     BWA_MEM(FAQCS.out.reads, reference[2], true)
     PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
     PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam)
@@ -67,7 +72,7 @@ workflow BWA_PREPROCESS {
     QC_REPORT(ch_qcreport_input, reference[0])
 
     ch_versions            = ch_versions.mix(  SEQKIT_PAIR.out.versions, 
-                                               SEQTK_SAMPLE.out.versions, 
+                                               SEQTK_SAMPLE.out.versions.ifEmpty('NA'), 
                                                FAQCS.out.versions,
                                                BWA_MEM.out.versions,
                                                PICARD_MARKDUPLICATES.out.versions,
