@@ -72,7 +72,6 @@ workflow BWA_PREPROCESS {
     QC_REPORT(ch_qcreport_input, reference[0])
 
     ch_versions            = ch_versions.mix(  SEQKIT_PAIR.out.versions, 
-                                               SEQTK_SAMPLE.out.versions 
                                                FAQCS.out.versions,
                                                BWA_MEM.out.versions,
                                                PICARD_MARKDUPLICATES.out.versions,
