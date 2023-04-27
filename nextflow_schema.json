@@ -278,7 +278,7 @@
                 },
                 "coverage": {
                     "type": "integer",
-                    "default": 70,
+                    "default": 0,
                     "description": "If coverage is specified and rate is not specified, coverage is used to calculate a down-sampling rate that results in the specified coverage. For example if coverage 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
                     "fa_icon": "fas fa-align-center"
                 },

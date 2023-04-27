@@ -19,14 +19,11 @@ process DOWNSAMPLE_RATE {
 	script:
 	"""
 	REFERENCE_LEN=\$(awk '!/^>/ {len+=length(\$0)} END {print len}' < ${reference_fasta})
-	###READS_LEN=\$(zcat ${reads} | awk '/^@/ {getline; len+=length(\$0)} END {print len}')
-	READS_FILES_LEN=\$(zcat ${reads} | wc -l)
-	READS_LEN=\$((READS_FILES_LEN/4))
+	READS_LEN=\$(zcat ${reads} |awk 'NR%4==2 {len +=length(\$0)} END {print len}')
 	
 	SAMPLE_RATE=\$(echo "${coverage} \${READS_LEN} \${REFERENCE_LEN}" | awk '{x=\$1/(\$2/\$3); x=(1<x?1:x)} END {print x}')
 	
 	# Calculate number of reads
-	###NUM_READS=\$(zcat ${reads[0]} | awk '/^@/ {lines+=1} END {print lines}')
 	NUM_READS=\$(zcat ${reads[0]}|awk 'END {print NR/4}')	
 	SAMPLED_NUM_READS=\$(echo "\${NUM_READS} \${SAMPLE_RATE}" | awk '{x=\$1*\$2} END {printf "%.0f", x}')
 	"""
