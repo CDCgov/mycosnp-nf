@@ -279,13 +279,8 @@
                 "coverage": {
                     "type": "integer",
                     "default": 0,
-                    "description": "If coverage is specified and rate is not specified, coverage is used to calculate a down-sampling rate that results in the specified coverage. For example if coverage 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
+                    "description": "Coverage is used to calculate a down-sampling rate that results in the specified coverage. For example, if coverage is 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
                     "fa_icon": "fas fa-align-center"
-                },
-                "rate": {
-                    "type": "number",
-                    "description": "If rate is specified, then coverage is ignored. rate specifies the rate for down-sampling FASTQ files. A rate of 1.0 indicates that 100% of reads in the FASTQ files are retained, which effectively \"skips\" down-sampling",
-                    "fa_icon": "fas fa-car-side"
                 },
                 "gvcfs_filter": {
                     "type": "string",
