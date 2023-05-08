@@ -223,9 +223,9 @@
                 },
                 "snpeff": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Do SNPEFF annotation."
+                    "description": "Run snpEff on the final VCF file"
                 },
                 "iqtree": {
                     "type": "boolean",
