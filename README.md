@@ -57,6 +57,12 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 * Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
 * Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `RaxML`, `IQTree`)
 
+### Variant annotation analysis (currently available for *C. auris* B11205 genome only)
+
+* annotated VCF file (`snpEff`)
+* `SnpEff` combined output report 
+
+
 ## Quick Start
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)

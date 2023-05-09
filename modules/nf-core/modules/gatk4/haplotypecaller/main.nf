@@ -2,10 +2,10 @@ process GATK4_HAPLOTYPECALLER {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::gatk4=4.2.4.1" : null)
+    conda (params.enable_conda ? "bioconda::gatk4=4.2.5.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/gatk4:4.2.4.1--hdfd78af_0' :
-        'quay.io/biocontainers/gatk4:4.2.4.1--hdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/gatk4:4.2.5.0--hdfd78af_0' :
+        'quay.io/biocontainers/gatk4:4.2.5.0--hdfd78af_0' }"
 
     input:
     tuple val(meta), path(input), path(input_index), path(intervals)
@@ -32,11 +32,11 @@ process GATK4_HAPLOTYPECALLER {
     if (!task.memory) {
         log.info '[GATK HaplotypeCaller] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.'
     } else {
-        avail_mem = task.memory.giga
+        avail_mem = task.memory.toGiga()
     }
     """
     gatk \\
-        --java-options "-Xmx${avail_mem}g" \\
+        --java-options "-Xms${avail_mem}G -Xmx${avail_mem}G" \\
         HaplotypeCaller \\
         -R $fasta \\
         -I $input \\

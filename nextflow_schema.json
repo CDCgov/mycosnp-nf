@@ -157,6 +157,37 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                },
+                "snpeffconfig": {
+                    "type": "string",
+                    "format": "path",
+                    "default": "",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Full path to snpeff config"
+                },
+                "species": {
+                    "type": "string",
+                    "default": "candida_auris_gca_016772135.1",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Species name"
+                },
+                "positions": {
+                    "type": "string",
+                    "default": "fks1_hs1=221638:221665,fks1_hs2=223782:223805",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "positions"
+                },
+                "genes": {
+                    "type": "string",
+                    "default": "CAB11_002014",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Genes"
+                },
+                "exclude": {
+                    "type": "string",
+                    "default": "synonymous_variant",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "exclude variants"
                 }
             }
         },
@@ -189,6 +220,12 @@
                     "default": true,
                     "description": "Build a tree using the FastTree approximate ML algorithm",
                     "fa_icon": "fas fa-tree"
+                },
+                "snpeff": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Run snpEff on the final VCF file"
                 },
                 "iqtree": {
                     "type": "boolean",
@@ -241,14 +278,9 @@
                 },
                 "coverage": {
                     "type": "integer",
-                    "default": 70,
-                    "description": "If coverage is specified and rate is not specified, coverage is used to calculate a down-sampling rate that results in the specified coverage. For example if coverage 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
+                    "default": 0,
+                    "description": "Coverage is used to calculate a down-sampling rate that results in the specified coverage. For example, if coverage is 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
                     "fa_icon": "fas fa-align-center"
-                },
-                "rate": {
-                    "type": "number",
-                    "description": "If rate is specified, then coverage is ignored. rate specifies the rate for down-sampling FASTQ files. A rate of 1.0 indicates that 100% of reads in the FASTQ files are retained, which effectively \"skips\" down-sampling",
-                    "fa_icon": "fas fa-car-side"
                 },
                 "gvcfs_filter": {
                     "type": "string",
