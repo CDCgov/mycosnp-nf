@@ -114,9 +114,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 * Split the filtered VCF file by sample.
 * Select only SNPs from the VCF files (`GATK SelectVariants`).
 * Split the VCF file with SNPs by sample.
-* Create a consensus sequence for each sample (`BCFTools`, `SeqTK`).
 * Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
-* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `RaxML`, `IQTree`)
+* Create distance matrix file using muti-fasta file (`snp-dists`).
+* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `quicksnp`,`RaxML`, `IQTree`)
 
 
 **Important output files from this section:**
@@ -126,9 +126,23 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 | Individual VCF Files from HaplotypeCaller |  `(samples/variant_calling/haplotypecaller)` |
 |  Filtered selected variants combined      |  `(combined/finalfiltered)`                  |
 |  Filtered selected variants individual    |  `(combined/splitvcf)`                       |
-|  Individual consensus fasta files         |  `(combined/consensus)`                      |
 |  Selected SNP fasta file                  |  `(combined/vcf-to-fasta)`                   |
 |  Phylogeny files                          |  `(combined/phylogeny/)`                     |
+
+
+## Variant Annotation within the FKS1 gene
+### SnpEff analysis (currently for C.auris B11205 reference only)
+> **Annotate variants using the filtered vcf file and provide output in the form of a report**
+
+* snpEff annotation(snpeff)
+* Create a report file using the snpeff annotated vcf file (`snpeffr`)
+
+**Important output files from this section:**
+
+| File                                      | Path                                         |
+| ---                                       | ---                                          |
+| Annotated vcf file from SnpEff	    | `(combined/snpeff)`			   |
+| Customised report of variants in FKS1     | `(combined/snpeff)`			   |
 
 
 ## Summary Files
