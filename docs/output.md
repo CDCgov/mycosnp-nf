@@ -36,6 +36,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 	- [Sample QC and Processing](#sample-qc-and-processing)
 - [GATK Variants](#gatk-variants)
 	- [Variant calling and analysis](#variant-calling-and-analysis)
+- [Variant Annotation](#variant-annotation)
+	- [snpEff analysis](#snpeff-analysis)
 - [Summary Files](#summary-files) 
 	- [FastQC](#fastqc)
 	- [QC report](#qc-report)
@@ -130,9 +132,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 |  Phylogeny files                          |  `(combined/phylogeny/)`                     |
 
 
-## Variant Annotation within the FKS1 gene
-### SnpEff analysis (currently for C.auris B11205 reference only)
-> **Annotate variants using the filtered vcf file and provide output in the form of a report**
+## Variant Annotation 
+### snpEff analysis 
+> **Annotate variants within the FKS1 gene using the filtered vcf file and provide output in the form of a report (currently for C.auris B11205 reference only)**
 
 * snpEff annotation(snpeff)
 * Create a report file using the snpeff annotated vcf file (`snpeffr`)
