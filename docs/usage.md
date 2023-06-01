@@ -11,6 +11,7 @@
 
 * Nextflow >= 21.10.3
 * Java 8 or later
+* Python 3 or later
 * Bash 3.2 or later
 * Singularity _(Optional/Recommended)_
 * Docker _(Optional/Recommended)_
