@@ -60,8 +60,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 ### Variant annotation analysis (currently available for *C. auris* B11205 genome only)
 
 * annotated VCF file (`snpEff`)
-* `SnpEff` combined output report 
-
+* combined output report(`SnpEffR`)
 
 ## Quick Start
 
