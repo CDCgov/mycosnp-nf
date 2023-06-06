@@ -141,7 +141,7 @@ B13520,SRR7909394
 ```
 ## VCF file additions
 
-You may provide a list VCF files from previous runs of this pipeline as additional inputs sequences into the pipeline. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. Use the `--add_vcf_file` parameter to specify its location. It has to be plain text file with the full path to the vcf file on each line, and NO header row as shown in the examples below.
+You may provide a listof  VCF files from previous runs of this pipeline as additional inputs sequences into the pipeline. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. These files can be found in the `results/samples/sample_id/variant_calling/haplotypecaller` subfolder. Use the `--add_vcf_file` parameter to specify its location. It has to be plain text file with the full path to the vcf file on each line, and NO header row as shown in the examples below.
 
 ```console
 --add_vcf_file '[path to vcf file: assets/vcf_add.txt]'
