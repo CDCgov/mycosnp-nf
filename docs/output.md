@@ -118,7 +118,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 * Split the VCF file with SNPs by sample.
 * Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
 * Create distance matrix file using muti-fasta file (`snp-dists`).
-* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `quicksnp`,`RaxML`, `IQTree`)
+* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `quicksnp`,`RaxML(optional)`, `IQTree(optional)`)
 
 
 **Important output files from this section:**
