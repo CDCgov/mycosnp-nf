@@ -36,6 +36,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.tsv$",
                     "description": "Path to text file containing a list of file paths to vcf files generated from previous runs of this workflow to include in this analysis. They must use the same exact reference. *.tbi file must be in same location. Text file with list in Format: /path/to/vcf/file.gz",
                     "help_text": "You will need to create a text file with a list of vcf files generated from previous runs of this workflow. One vcf file per line and the tbi file must be in the same location. See [usage docs](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md).",
                     "fa_icon": "fas fa-file-csv"
