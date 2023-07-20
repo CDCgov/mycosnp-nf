@@ -16,10 +16,8 @@ reports:
     display: "FastQC (Raw Reads) (Per Sample)"
   "**/samples/**/fastqc_post/*":
     display: "FastQC (Trimmed Reads) (Per Sample)"
-  "**/samples/**/final_bam/*":
+  "**/samples/**/finalbam/*":
     display: "Final BAM (Per Sample)"
-  "**/samples/**/qc_report/*":
-    display: "QC Report (Per Sample)"
   "**/samples/**/variant_calling/haplotypecaller/*":
     display: "Raw VCF (Per Sample)"
   "**/multiqc/multiqc_report.html":
