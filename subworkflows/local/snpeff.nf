@@ -21,6 +21,7 @@ workflow SNPEFF {
 
     SNPEFF_ANN (
         vcf,
+        params.snpeffconfig,
         species
     )
     ch_snpeff_vcf    = SNPEFF_ANN.out.vcf
