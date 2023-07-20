@@ -1,14 +1,14 @@
 reports:
   "**/stats/qc_report/qc_report.txt":
-    display: "QC Report (All Samples)"
+    display: "QC Report (Per Sample)"
   "**/stats/samtools_flagstat/*.flagstat":
-    display: "Samtools Flagstat"
+    display: "Samtools Flagstat (Per Sample)"
     mimeType: txt
   "**/stats/samtools_idxstats/*.idxstats":
-    display: "Samtools Idxstat"
+    display: "Samtools Idxstat (Per Sample)"
     mimeType: txt
   "**/stats/samtools_stats/*.stats":
-    display: "Samtools Stat"
+    display: "Samtools Stat (Per Sample)"
     mimeType: txt
   "**/samples/**/faqcs/*":
     display: "FaQCs (Per Sample)"
