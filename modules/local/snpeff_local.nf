@@ -9,6 +9,7 @@ process SNPEFF {
 
     input:
     tuple val(meta), path(vcf)
+    path snpeffconfig
     val species
 
     output:
@@ -34,6 +35,7 @@ process SNPEFF {
     snpEff \\
         -Xmx${avail_mem}g \\
         $args \\
+        -config ${snpeffconfig}/snpEff.config \\
         -v $species \\
         -csvStats ${prefix}.csv \\
         $vcf \\
