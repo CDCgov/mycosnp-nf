@@ -28,6 +28,21 @@ WorkflowMain.initialise(workflow, params, log)
 
 /*
 ========================================================================================
+    PRE-MYCOSNP
+========================================================================================
+*/
+
+include { CLASSIFY } from './workflows/classify'
+
+//
+// WORKFLOW: Run main nf-core/mycosnp analysis pipeline
+//
+workflow NFCORE_CLASSIFY {
+    CLASSIFY ()
+}
+
+/*
+========================================================================================
     NAMED WORKFLOW FOR PIPELINE
 ========================================================================================
 */
