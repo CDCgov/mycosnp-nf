@@ -90,6 +90,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
+include { GAMBIT_QUERY       } from '../modules/local/gambit'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -168,7 +169,19 @@ workflow CLASSIFY {
     )
     ch_versions = ch_versions.mix(SPADES.out.versions.first())
 
-     CUSTOM_DUMPSOFTWAREVERSIONS (
+    //
+    // MODULE: Run Gambit
+    //
+    gambit_db = file("gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db")
+    gambit_h5 = file("gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5")
+
+    GAMBIT_QUERY(
+        SPADES.out.scaffolds,
+        gambit_db,
+        gambit_h5
+    )
+
+    CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 

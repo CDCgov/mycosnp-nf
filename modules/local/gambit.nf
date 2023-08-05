@@ -1,4 +1,4 @@
-process GAMBIT {
+process GAMBIT_QUERY {
     tag "$meta.id"
     label 'process_low'
 
@@ -9,7 +9,8 @@ process GAMBIT {
         
     input:
     tuple val(meta), path(assembly)
-    path db_dir
+    path db_file
+    path h5_file
 
     output:
     path("*_gambit.txt"), emit: taxa
@@ -20,7 +21,7 @@ process GAMBIT {
     """
     gambit \\
         ${args} \\
-        -d ${db_dir} \\
+        -d ./ \\
         query ${assembly} > ${prefix}_gambit.txt
 
     cat <<-END_VERSIONS > versions.yml
