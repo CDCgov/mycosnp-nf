@@ -147,10 +147,10 @@ workflow CLASSIFY {
     //
     // MODULE: Run Fastp
     //
-    ch_fastp_adapter = Channel.empty()
+    
     FASTP (
         ch_all_reads,
-        ch_fastp_adapter,
+        [],
         true,
         true
 
@@ -160,12 +160,11 @@ workflow CLASSIFY {
     //
     // MODULE: Run SPAdes
     //
-    ch_spades_yml = Channel.empty()
-    ch_spades_hmm = Channel.empty()
+    FASTP.out.reads.map{ meta, illumina -> [meta, illumina, [], []] }.set{ trmd_reads }
     SPADES (
-        FASTP.out.reads,
-        ch_spades_yml,
-        ch_spades_hmm
+        trmd_reads,
+        [],
+        []
     )
     ch_versions = ch_versions.mix(SPADES.out.versions.first())
 
