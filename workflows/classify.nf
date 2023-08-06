@@ -181,6 +181,25 @@ workflow CLASSIFY {
         gambit_h5
     )
 
+    //
+    // MODULE: Subtype
+    //
+
+    // Join the GAMBIT output and the spades assembly into a single channel
+    GAMBIT
+        .out
+        .taxa
+        .join(SPADES.out.assembly)
+        .set{ ch_gambit_assembly }
+
+    // Define path to subtyper files
+    subtype_db = Channel.fromPath($projectDir+"/assets/subtyper_files/")
+
+    SUBTYPE(
+        ch_gambit_assembly,
+        subtype_db
+    )
+
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
