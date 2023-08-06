@@ -92,6 +92,7 @@ include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { GAMBIT_QUERY       } from '../modules/local/gambit'
 include { SUBTYPE            } from '../modules/local/subtype'
+include { GET_QC_REF         } from '../modules/local/get_qc_ref'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -206,6 +207,14 @@ workflow CLASSIFY {
     SUBTYPE(
         ch_gambit_assembly,
         subtype_db
+    )
+
+    //
+    // MODULE: Download the QC reference
+    //
+
+    GET_QC_REF(
+        GAMBIT_QUERY.out.taxa
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
