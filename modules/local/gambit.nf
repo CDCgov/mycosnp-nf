@@ -13,7 +13,7 @@ process GAMBIT_QUERY {
     path h5_file
 
     output:
-    path("*_gambit.txt"), emit: taxa
+    tuple val(meta), path("*_gambit.txt"), emit: taxa
 
     script:
     def args = task.ext.args ?: '' 

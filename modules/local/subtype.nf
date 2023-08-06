@@ -12,24 +12,16 @@ process SUBTYPE {
     path subtype_db
 
     output:
-    path("*_subtype.txt"), emit: subtype
+    tuple val(meta), path("*_subtype.csv"), emit: subtype
 
-    shell:
+    script:
     def args = task.ext.args ?: '' 
     def prefix = task.ext.prefix ?: "${meta.id}"
-    '''
+    """
     # determine species call from Gambit
-    species=$(cat !{gambit_results} | tr ',' '\t' | cut -f 2)
-    
-    # select a mash sketch file (if listed)
-    sketch_file=$(cat sketch_list.csv | tr ',' '\t' | awk -v s=${species} '$1 == s {print $2}')
+    species=\$(cat ${gambit_results} | grep -v "predicted.name" | tr ' ' '_' | tr ',' '\t' | cut -f 2)
+    echo \${species}
 
-    if [[ ${sketch_file} != "" ]]
-    then
-        echo -e "clade\tmash_dist\test_ANI" > !{prefix}_subtype.txt
-        mash dist ${sketch_file} !{assembly} | sort -nk 3 | awk '{print $1"\t"$3"\t"100*(1-$3)}' | sed 's/.f*$//g' >> !{prefix}_subtype.txt
-    else
-        touch !{prefix}_subtype.txt
-    fi
-    '''
+    subtyper.sh \${species} ${subtype_db} ${assembly} ${prefix}
+    """
 }

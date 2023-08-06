@@ -91,6 +91,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { GAMBIT_QUERY       } from '../modules/local/gambit'
+include { SUBTYPE            } from '../modules/local/subtype'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -185,15 +186,22 @@ workflow CLASSIFY {
     // MODULE: Subtype
     //
 
-    // Join the GAMBIT output and the spades assembly into a single channel
-    GAMBIT
+    // Join the GAMBIT output and the spades assembly into a single channel   
+    SPADES
+        .out
+        .scaffolds
+        .map{ meta, scaffolds -> [meta, scaffolds] }
+        .set{ ch_scaffolds }
+
+    GAMBIT_QUERY
         .out
         .taxa
-        .join(SPADES.out.assembly)
+        .map{ meta, gambit -> [meta, gambit] }
+        .join(ch_scaffolds)
         .set{ ch_gambit_assembly }
 
     // Define path to subtyper files
-    subtype_db = Channel.fromPath($projectDir+"/assets/subtyper_files/")
+    subtype_db = file("$projectDir/assets/subtyper_files/")
 
     SUBTYPE(
         ch_gambit_assembly,
