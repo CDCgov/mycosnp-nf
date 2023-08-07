@@ -7,35 +7,23 @@ process QUAST {
         'biocontainers/quast:5.2.0--py39pl5321h2add14b_1' }"
 
     input:
-    tuple val(meta), path(consensus)
-    path fasta
-    path gff
-    val use_fasta
-    val use_gff
+    tuple val(meta), path(reads), path(ref)
 
     output:
-    path "${prefix}"    , emit: results
-    path '*.tsv'        , emit: tsv
-    path "versions.yml" , emit: versions
+    path "results"    , emit: results
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args   ?: ''
-    prefix   = task.ext.prefix ?: 'quast'
-    def features  = use_gff ? "--features $gff" : ''
-    def reference = use_fasta ? "-r $fasta" : ''
+    prefix   = task.ext.prefix ?: "$meta.id"
     """
     quast.py \\
-        --output-dir $prefix \\
-        $reference \\
-        $features \\
+        --output-dir results \\
         --threads $task.cpus \\
         $args \\
-        ${consensus.join(' ')}
-
-    ln -s ${prefix}/report.tsv
+        $ref
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -93,6 +93,7 @@ include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { GAMBIT_QUERY       } from '../modules/local/gambit'
 include { SUBTYPE            } from '../modules/local/subtype'
 include { GET_QC_REF         } from '../modules/local/get_qc_ref'
+include { QUAST              } from '../modules/local/quast'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -163,9 +164,9 @@ workflow CLASSIFY {
     //
     // MODULE: Run SPAdes
     //
-    FASTP.out.reads.map{ meta, illumina -> [meta, illumina, [], []] }.set{ trmd_reads }
+    FASTP.out.reads.map{ meta, illumina -> [meta, illumina, [], []] }.set{ ch_trmd_reads }
     SPADES (
-        trmd_reads,
+        ch_trmd_reads,
         [],
         []
     )
@@ -215,6 +216,28 @@ workflow CLASSIFY {
 
     GET_QC_REF(
         GAMBIT_QUERY.out.taxa
+    )
+
+    //
+    // MODULE: Run Quast
+    //
+
+    // Combine trimmed reads and the QC reference into single channel
+    FASTP
+        .out
+        .reads
+        .map{ meta, reads -> [meta, reads] }
+        .set{ ch_trmd_reads }
+
+    GET_QC_REF
+        .out
+        .ref
+        .map{ meta, ref -> [meta, ref] }
+        .join(ch_trmd_reads)
+        .set{ ch_quast_input }
+    
+    QUAST(
+        ch_quast_input
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
