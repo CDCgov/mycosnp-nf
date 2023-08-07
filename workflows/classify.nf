@@ -90,12 +90,12 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
-include { SEQKIT_PAIR        } from '../../modules/nf-core/modules/seqkit/pair/main'
-include { FAQCS              } from '../../modules/nf-core/modules/faqcs/main'
+include { SEQKIT_PAIR        } from '../modules/nf-core/modules/seqkit/pair/main'
+include { FAQCS              } from '../modules/nf-core/modules/faqcs/main'
 include { GAMBIT_QUERY       } from '../modules/local/gambit'
 include { SUBTYPE            } from '../modules/local/subtype'
 include { GET_QC_REF         } from '../modules/local/get_qc_ref'
-include { QUAST              } from '../modules/local/quast'
+include { FAST_STATS         } from '../modules/local/fast_stats'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -151,7 +151,7 @@ workflow CLASSIFY {
     //
     // MODULE: Run seqkit to remove unpaired reads
     //
-    SEQKIT_PAIR(reads)
+    SEQKIT_PAIR(ch_all_reads)
 
     //
     // MODULE: Run FAQCs - no downsampling option because a reference cannot be supplied before knowing the species
@@ -222,22 +222,13 @@ workflow CLASSIFY {
     //
 
     // Combine trimmed reads and the QC reference into single channel
-    FAQCS
-        .out
-        .reads
-        .map{ meta, reads -> [meta, reads] }
-        .set{ ch_trmd_reads }
+    GET_QC_REF.out.qc_ref.map{ meta, ref -> [meta, ref] }.set{ ch_qc_ref }
+    FAQCS.out.txt.map{ meta, txt -> [meta, txt] }.set{ ch_faqcs_txt }
 
-    GET_QC_REF
-        .out
-        .ref
-        .map{ meta, ref -> [meta, ref] }
-        .join(ch_trmd_reads)
-        .join(ch_scaffolds)
-        .set{ ch_quast_input }
-    
-    QUAST(
-        ch_quast_input
+    SPADES.out.scaffolds.map{ meta, assembly -> [meta, assembly] }.join(ch_qc_ref).join(ch_faqcs_txt).set{ ch_fast_stats_input }
+
+    FAST_STATS(
+        ch_fast_stats_input
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
