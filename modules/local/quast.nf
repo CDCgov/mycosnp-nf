@@ -7,10 +7,10 @@ process QUAST {
         'biocontainers/quast:5.2.0--py39pl5321h2add14b_1' }"
 
     input:
-    tuple val(meta), path(reads), path(ref)
+    tuple val(meta), path(ref), path(reads), path(assembly) 
 
     output:
-    path "results"    , emit: results
+    path "${prefix}"    , emit: results
 
     when:
     task.ext.when == null || task.ext.when
@@ -20,10 +20,13 @@ process QUAST {
     prefix   = task.ext.prefix ?: "$meta.id"
     """
     quast.py \\
-        --output-dir results \\
+        -r ${ref} \\
+        --output-dir ${prefix} \\
         --threads $task.cpus \\
+        -1 ${reads[0]} \\
+        -2 ${reads[1]} \\
         $args \\
-        $ref
+        $assembly
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

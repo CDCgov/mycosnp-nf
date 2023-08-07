@@ -90,6 +90,8 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
+include { SEQKIT_PAIR        } from '../../modules/nf-core/modules/seqkit/pair/main'
+include { FAQCS              } from '../../modules/nf-core/modules/faqcs/main'
 include { GAMBIT_QUERY       } from '../modules/local/gambit'
 include { SUBTYPE            } from '../modules/local/subtype'
 include { GET_QC_REF         } from '../modules/local/get_qc_ref'
@@ -104,7 +106,6 @@ include { QUAST              } from '../modules/local/quast'
 // MODULE: Installed directly from nf-core/modules
 //
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/modules/fastqc/main'
-include { FASTP as FASTP              } from '../modules/nf-core/modules/fastp/main'
 include { SPADES as SPADES            } from '../modules/nf-core/modules/spades/main'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
@@ -147,24 +148,22 @@ workflow CLASSIFY {
         ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     }
 
+    //
+    // MODULE: Run seqkit to remove unpaired reads
+    //
+    SEQKIT_PAIR(reads)
 
     //
-    // MODULE: Run Fastp
+    // MODULE: Run FAQCs - no downsampling option because a reference cannot be supplied before knowing the species
     //
-    
-    FASTP (
-        ch_all_reads,
-        [],
-        true,
-        true
-
+    FAQCS(
+        SEQKIT_PAIR.out.reads
     )
-    ch_versions = ch_versions.mix(FASTP.out.versions.first())
 
     //
     // MODULE: Run SPAdes
     //
-    FASTP.out.reads.map{ meta, illumina -> [meta, illumina, [], []] }.set{ ch_trmd_reads }
+    FAQCS.out.reads.map{ meta, illumina -> [meta, illumina, [], []] }.set{ ch_trmd_reads }
     SPADES (
         ch_trmd_reads,
         [],
@@ -223,7 +222,7 @@ workflow CLASSIFY {
     //
 
     // Combine trimmed reads and the QC reference into single channel
-    FASTP
+    FAQCS
         .out
         .reads
         .map{ meta, reads -> [meta, reads] }
@@ -234,6 +233,7 @@ workflow CLASSIFY {
         .ref
         .map{ meta, ref -> [meta, ref] }
         .join(ch_trmd_reads)
+        .join(ch_scaffolds)
         .set{ ch_quast_input }
     
     QUAST(
