@@ -94,8 +94,7 @@ include { SEQKIT_PAIR        } from '../modules/nf-core/modules/seqkit/pair/main
 include { FAQCS              } from '../modules/nf-core/modules/faqcs/main'
 include { GAMBIT_QUERY       } from '../modules/local/gambit'
 include { SUBTYPE            } from '../modules/local/subtype'
-include { GET_QC_REF         } from '../modules/local/get_qc_ref'
-include { FAST_STATS         } from '../modules/local/fast_stats'
+include { LINE_SUMMARY       } from '../modules/local/line_summary'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -210,25 +209,18 @@ workflow CLASSIFY {
     )
 
     //
-    // MODULE: Download the QC reference
-    //
-
-    GET_QC_REF(
-        GAMBIT_QUERY.out.taxa
-    )
-
-    //
-    // MODULE: Run Quast
+    // MODULE: Create line summary for each sample
     //
 
     // Combine trimmed reads and the QC reference into single channel
-    GET_QC_REF.out.qc_ref.map{ meta, ref -> [meta, ref] }.set{ ch_qc_ref }
     FAQCS.out.txt.map{ meta, txt -> [meta, txt] }.set{ ch_faqcs_txt }
+    GAMBIT_QUERY.out.taxa.map{ meta, gambit -> [meta, gambit] }.set{ ch_gambit }
+    SUBTYPE.out.subtype.map{ meta, subtype -> [meta, subtype] }.set{ ch_subtype }
 
-    SPADES.out.scaffolds.map{ meta, assembly -> [meta, assembly] }.join(ch_qc_ref).join(ch_faqcs_txt).set{ ch_fast_stats_input }
+    SPADES.out.scaffolds.map{ meta, assembly -> [meta, assembly] }.join(ch_faqcs_txt).join(ch_gambit).join(ch_subtype).set{ ch_line_summary_input }
 
-    FAST_STATS(
-        ch_fast_stats_input
+    LINE_SUMMARY(
+        ch_line_summary_input
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
