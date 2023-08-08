@@ -7,7 +7,7 @@ process COMBINE_SUMMARY {
     path line_summary
 
     output:
-    tuple path("pre-mycosnp-summary.csv")
+    path "pre-mycosnp-summary.csv"
 
     when:
     task.ext.when == null || task.ext.when
