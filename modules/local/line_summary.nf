@@ -8,7 +8,7 @@ process LINE_SUMMARY {
     tuple val(meta), path(assembly), path(faqcs), path(gambit), path(subtype)
 
     output:
-    tuple val(meta), path("*_linesummary.csv")
+    tuple val(meta), path("*_linesummary.csv"), emit: result
 
     when:
     task.ext.when == null || task.ext.when

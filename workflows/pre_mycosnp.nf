@@ -95,6 +95,7 @@ include { FAQCS              } from '../modules/nf-core/modules/faqcs/main'
 include { GAMBIT_QUERY       } from '../modules/local/gambit'
 include { SUBTYPE            } from '../modules/local/subtype'
 include { LINE_SUMMARY       } from '../modules/local/line_summary'
+include { COMBINE_SUMMARY    } from '../modules/local/combine_summary'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -120,7 +121,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 def multiqc_report = []
 
 
-workflow CLASSIFY {
+workflow PRE_MYCOSNP_WF {
 
     ch_versions = Channel.empty()
 
@@ -221,6 +222,13 @@ workflow CLASSIFY {
 
     LINE_SUMMARY(
         ch_line_summary_input
+    )
+
+    //
+    // MODULE: Combine line summaries into single output
+    //
+    COMBINE_SUMMARY(
+        LINE_SUMMARY.out.result.map{ meta, result -> [result] }.collect()
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

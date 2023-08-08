@@ -32,13 +32,13 @@ WorkflowMain.initialise(workflow, params, log)
 ========================================================================================
 */
 
-include { CLASSIFY } from './workflows/classify'
+include { PRE_MYCOSNP_WF } from './workflows/pre_mycosnp'
 
 //
-// WORKFLOW: Run main nf-core/mycosnp analysis pipeline
+// WORKFLOW: Run pre-mycosnp pipeline
 //
-workflow NFCORE_CLASSIFY {
-    CLASSIFY ()
+workflow PRE_MYCOSNP {
+    PRE_MYCOSNP_WF ()
 }
 
 /*
