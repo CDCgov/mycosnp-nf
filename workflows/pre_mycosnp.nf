@@ -6,9 +6,6 @@
 
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
-// Validate input parameters
-WorkflowMycosnp.initialise(params, log)
-
 // Check input path parameters to see if they exist
 def checkPathParamList = [ params.input, params.multiqc_config ] // params.snpeffdb
 if (params.skip_samples_file) { // check for skip_samples_file
