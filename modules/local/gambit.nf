@@ -3,10 +3,8 @@ process GAMBIT_QUERY {
     label 'process_low'
 
     conda (params.enable_conda ? "bioconda::gambit=1.0.0" : null)
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/gambit%3A1.0.0--py39hbf8eff0_0' : 
-        'quay.io/staphb/gambit:1.0.0' }"
-        
+    container 'jdj0303/gambit:1.0.0'
+    
     input:
     tuple val(meta), path(assembly)
     path db_file
