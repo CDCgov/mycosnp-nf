@@ -26,7 +26,7 @@ process SUBTYPE {
     subtyper.sh ${prefix} \${species} ${subtype_db} ${seq}
 
     # check if file was created, if not then create empty file
-    if [ ! -f "*_subtype.csv" ]
+    if [ ! -f "${prefix}_subtype.csv" ]
     then
         touch ${prefix}_subtype.csv
     fi

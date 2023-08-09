@@ -41,7 +41,7 @@ process PRE_MYCOSNP_INDV_SUMMARY {
         > stats_cols
 
     # Extract subtype info if available
-    if [ -f ${subtype} ] && [ -s ${subtype} ]
+    if [ -s "${prefix}_subtype.csv" ]
     then
         subtype_call=\$(head -n 2 ${subtype} | grep -v 'sample,subtype,mash_dist,est_ANI' | tr ',' '\t' | cut -f 2)
         subtype_ani=\$(head -n 2 ${subtype} | grep -v 'sample,subtype,mash_dist,est_ANI' | tr ',' '\t' | cut -f 4)

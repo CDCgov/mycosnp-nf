@@ -1,4 +1,4 @@
-process COMBINE_SUMMARY {
+process PRE_MYCOSNP_COMB_SUMMARY {
     label 'process_low'
     
     container 'ubuntu:jammy'

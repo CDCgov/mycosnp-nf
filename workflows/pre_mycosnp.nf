@@ -92,7 +92,7 @@ include { FAQCS                    } from '../modules/nf-core/modules/faqcs/main
 include { GAMBIT_QUERY             } from '../modules/local/gambit'
 include { SUBTYPE                  } from '../modules/local/subtype'
 include { PRE_MYCOSNP_INDV_SUMMARY } from '../modules/local/pre_mycosnp_indv_summary'
-include { PRE_MYCOSNP_COMB_SUMMARY } from '../modules/local/combine_summary'
+include { PRE_MYCOSNP_COMB_SUMMARY } from '../modules/local/pre_mycosnp_comb_summary'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -198,7 +198,7 @@ workflow PRE_MYCOSNP_WF {
         params.gambit_db,
         params.gambit_h5
     )
-    ch_versions = ch_versions.mix(GAMBIT_Q.out.versions.first())
+    ch_versions = ch_versions.mix(GAMBIT_QUERY.out.versions.first())
 
     //
     // MODULE: Subtype
