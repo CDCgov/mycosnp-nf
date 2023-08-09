@@ -12,6 +12,7 @@ process GAMBIT_QUERY {
 
     output:
     tuple val(meta), path("*_gambit.txt"), emit: taxa
+    path "versions.yml"                  , emit: versions
 
     script:
     def args = task.ext.args ?: '' 

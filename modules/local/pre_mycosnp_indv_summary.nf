@@ -1,4 +1,4 @@
-process LINE_SUMMARY {
+process PRE_MYCOSNP_INDV_SUMMARY {
     label 'process_low'
     
     conda (params.enable_conda ? "bioconda::ncbi-datasets=14.26.0" : null)
@@ -22,7 +22,7 @@ process LINE_SUMMARY {
     rank=\$(cat ${gambit} | tr ',' '\t' | grep -v "predicted.rank" | cut -f 3)
     accession=\$(cat ${gambit} | tr ',' '\t' | grep -v 'closest.description' | cut -f 7 | cut -f 1 -d ' ' | tr -d '[] \t\n\r')
     
-    # Download the Gambit reference for estimating average coverage
+    # Download the Gambit reference for estimating average depth of coverage
     if [[ "\${rank}" == "species" ]]
     then
         echo "datasets download genome accession \${accession}"
@@ -32,7 +32,7 @@ process LINE_SUMMARY {
     fi
 
     # Gather QC stats
-    fast-stats.sh \\
+    pre-mycosnp-stats.sh \\
         ${prefix} \\
         ${assembly} \\
         ref.fa \\
@@ -41,7 +41,7 @@ process LINE_SUMMARY {
         > stats_cols
 
     # Extract subtype info if available
-    if [[ -f ${subtype} ]]
+    if [ -f ${subtype} ] && [ -s ${subtype} ]
     then
         subtype_call=\$(head -n 2 ${subtype} | grep -v 'sample,subtype,mash_dist,est_ANI' | tr ',' '\t' | cut -f 2)
         subtype_ani=\$(head -n 2 ${subtype} | grep -v 'sample,subtype,mash_dist,est_ANI' | tr ',' '\t' | cut -f 4)
@@ -53,6 +53,5 @@ process LINE_SUMMARY {
     # Create line summary
     echo "\${taxa},\${subtype_call},\${subtype_ani},\${accession}" > taxa_cols
     paste -d ',' stats_cols taxa_cols > ${prefix}_linesummary.csv
-    
     """
 }

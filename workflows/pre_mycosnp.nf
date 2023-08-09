@@ -85,14 +85,14 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools'
-include { INPUT_CHECK        } from '../subworkflows/local/input_check'
-include { SEQKIT_PAIR        } from '../modules/nf-core/modules/seqkit/pair/main'
-include { FAQCS              } from '../modules/nf-core/modules/faqcs/main'
-include { GAMBIT_QUERY       } from '../modules/local/gambit'
-include { SUBTYPE            } from '../modules/local/subtype'
-include { LINE_SUMMARY       } from '../modules/local/line_summary'
-include { COMBINE_SUMMARY    } from '../modules/local/combine_summary'
+include { SRA_FASTQ_SRATOOLS       } from '../subworkflows/local/sra_fastq_sratools'
+include { INPUT_CHECK              } from '../subworkflows/local/input_check'
+include { SEQKIT_PAIR              } from '../modules/nf-core/modules/seqkit/pair/main'
+include { FAQCS                    } from '../modules/nf-core/modules/faqcs/main'
+include { GAMBIT_QUERY             } from '../modules/local/gambit'
+include { SUBTYPE                  } from '../modules/local/subtype'
+include { PRE_MYCOSNP_INDV_SUMMARY } from '../modules/local/pre_mycosnp_indv_summary'
+include { PRE_MYCOSNP_COMB_SUMMARY } from '../modules/local/combine_summary'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -104,6 +104,7 @@ include { COMBINE_SUMMARY    } from '../modules/local/combine_summary'
 //
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/modules/fastqc/main'
 include { SPADES as SPADES            } from '../modules/nf-core/modules/spades/main'
+include { SEQTK_SEQ as SEQTK_SEQ      } from '../modules/nf-core/modules/seqtk/seq/main'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
@@ -146,9 +147,20 @@ workflow PRE_MYCOSNP_WF {
     }
 
     //
+    // MODULE: Run Pre-FastQC 
+    //
+    FASTQC_RAW (
+        ch_all_reads
+    )
+    ch_versions = ch_versions.mix(FASTQC_RAW.out.versions.first())
+
+    //
     // MODULE: Run seqkit to remove unpaired reads
     //
-    SEQKIT_PAIR(ch_all_reads)
+    SEQKIT_PAIR(
+        ch_all_reads
+    )
+    ch_versions = ch_versions.mix(SEQKIT_PAIR.out.versions.first())
 
     //
     // MODULE: Run FAQCs - no downsampling option because a reference cannot be supplied before knowing the species
@@ -156,6 +168,7 @@ workflow PRE_MYCOSNP_WF {
     FAQCS(
         SEQKIT_PAIR.out.reads
     )
+    ch_versions = ch_versions.mix(FAQCS.out.versions.first())
 
     //
     // MODULE: Run SPAdes
@@ -169,41 +182,36 @@ workflow PRE_MYCOSNP_WF {
     ch_versions = ch_versions.mix(SPADES.out.versions.first())
 
     //
+    // MODULE: Run seqtk seq to remove small contigs
+    //
+
+    SEQTK_SEQ(
+        SPADES.out.scaffolds
+    )
+    ch_versions = ch_versions.mix(SEQTK_SEQ.out.versions.first())
+
+    //
     // MODULE: Run Gambit
     //
-    gambit_db = file("gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db")
-    gambit_h5 = file("gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5")
-
     GAMBIT_QUERY(
-        SPADES.out.scaffolds,
-        gambit_db,
-        gambit_h5
+        SEQTK_SEQ.out.fastx,
+        params.gambit_db,
+        params.gambit_h5
     )
+    ch_versions = ch_versions.mix(GAMBIT_Q.out.versions.first())
 
     //
     // MODULE: Subtype
     //
 
     // Join the GAMBIT output and the spades assembly into a single channel   
-    SPADES
-        .out
-        .scaffolds
-        .map{ meta, scaffolds -> [meta, scaffolds] }
-        .set{ ch_scaffolds }
-
-    GAMBIT_QUERY
-        .out
-        .taxa
-        .map{ meta, gambit -> [meta, gambit] }
-        .join(ch_scaffolds)
-        .set{ ch_gambit_assembly }
+    SEQTK_SEQ.out.fastx.map{ meta, scaffolds -> [meta, scaffolds] }.set{ ch_scaffolds }
+    GAMBIT_QUERY.out.taxa.map{ meta, gambit -> [meta, gambit] }.join(ch_scaffolds).set{ ch_gambit_assembly }
 
     // Define path to subtyper files
-    subtype_db = file("$projectDir/assets/subtyper_files/")
-
     SUBTYPE(
         ch_gambit_assembly,
-        subtype_db
+        params.subtype_db
     )
 
     //
@@ -214,31 +222,22 @@ workflow PRE_MYCOSNP_WF {
     FAQCS.out.txt.map{ meta, txt -> [meta, txt] }.set{ ch_faqcs_txt }
     GAMBIT_QUERY.out.taxa.map{ meta, gambit -> [meta, gambit] }.set{ ch_gambit }
     SUBTYPE.out.subtype.map{ meta, subtype -> [meta, subtype] }.set{ ch_subtype }
+    SEQTK_SEQ.out.fastx.map{ meta, scaffolds -> [meta, scaffolds] }.join(ch_faqcs_txt).join(ch_gambit).join(ch_subtype).set{ ch_line_summary_input }
 
-    SPADES.out.scaffolds.map{ meta, assembly -> [meta, assembly] }.join(ch_faqcs_txt).join(ch_gambit).join(ch_subtype).set{ ch_line_summary_input }
-
-    LINE_SUMMARY(
+    PRE_MYCOSNP_INDV_SUMMARY(
         ch_line_summary_input
     )
 
     //
     // MODULE: Combine line summaries into single output
     //
-    COMBINE_SUMMARY(
-        LINE_SUMMARY.out.result.map{ meta, result -> [result] }.collect()
+    PRE_MYCOSNP_COMB_SUMMARY(
+        PRE_MYCOSNP_INDV_SUMMARY.out.result.map{ meta, result -> [result] }.collect()
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
-
-    //
-    // MODULE: Run Pre-FastQC 
-    //
-    FASTQC_RAW (
-        ch_all_reads
-    )
-    ch_versions = ch_versions.mix(FASTQC_RAW.out.versions.first())
 
     //
     // MODULE: MultiQC
