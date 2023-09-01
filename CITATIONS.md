@@ -1,5 +1,9 @@
 # nf-core/mycosnp: Citations
 
+## [MycoSNP](https://pubmed.ncbi.nlm.nih.gov/35674957/)
+
+> Bagal UR, Phan J, Welsh RM, Misas E, Wagner D, Gade L, Litvintseva AP, Cuomo CA, Chow NA. MycoSNP: A Portable Workflow for Performing Whole-Genome Sequencing Analysis of Candida auris. Methods Mol Biol. 2022;2517:215-228. doi: 10.1007/978-1-0716-2417-3_17. PMID: 35674957.
+
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
 > Ewels PA, Peltzer A, Fillinger S, Patel H, Alneberg J, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. The nf-core framework for community-curated bioinformatics pipelines. Nat Biotechnol. 2020 Mar;38(3):276-278. doi: 10.1038/s41587-020-0439-x. PubMed PMID: 32055031.

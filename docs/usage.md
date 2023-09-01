@@ -11,6 +11,7 @@
 
 * Nextflow >= 21.10.3
 * Java 8 or later
+* Python 3 or later
 * Bash 3.2 or later
 * Singularity _(Optional/Recommended)_
 * Docker _(Optional/Recommended)_
@@ -140,7 +141,7 @@ B13520,SRR7909394
 ```
 ## VCF file additions
 
-You may provide a list VCF files from previous runs of this pipeline as additional inputs sequences into the pipeline. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. Use the `--add_vcf_file` parameter to specify its location. It has to be plain text file with the full path to the vcf file on each line, and NO header row as shown in the examples below.
+You may provide a listof  VCF files from previous runs of this pipeline as additional inputs sequences into the pipeline. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. These files can be found in the `results/samples/sample_id/variant_calling/haplotypecaller` subfolder. Use the `--add_vcf_file` parameter to specify its location. It has to be plain text file with the full path to the vcf file on each line, and NO header row as shown in the examples below.
 
 ```console
 --add_vcf_file '[path to vcf file: assets/vcf_add.txt]'
@@ -157,7 +158,7 @@ Example File:
 
 ## Pipeline parameters
 
-Sane recommended defaults parameters are used, but full documentation on the default parameters can be viewed in the help documentation or on [mycosnp-nf wiki](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs). You can see full pipeline parameters by using '-help' when running the workflow.
+Same recommended defaults parameters are used, but full documentation on the default parameters can be viewed in the help documentation or on [mycosnp-nf wiki](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs). You can see full pipeline parameters by using '-help' when running the workflow.
 
 ```console
 nextflow run main.nf --help

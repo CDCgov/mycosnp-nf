@@ -4,17 +4,27 @@
 ========================================================================================
 */
 
+
+
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+
+// params.snpeffdb = WorkflowMain.getGenomeAttribute(params, 'snpeffdb')
+params.snpeffconfig = WorkflowMain.getGenomeAttribute(params, 'snpeffconfig')
+
 
 // Validate input parameters
 WorkflowMycosnp.initialise(params, log)
 
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ] // params.snpeffdb
 if (params.skip_samples_file) { // check for skip_samples_file
     checkPathParamList.add(params.skip_samples_file)
 }
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+
+// if (params.snpeffdb == null) { exit 1, 'Input path to snpeffdb not specified!' }
+// if (params.snpeffconfig == null) { exit 1, 'Input snpeff config file not specified' }
+
 
 // Check mandatory parameters
 sra_list = []
@@ -94,6 +104,8 @@ include { BWA_PREPROCESS     } from '../subworkflows/local/bwa-pre-process'
 include { BWA_REFERENCE      } from '../subworkflows/local/bwa-reference'
 include { GATK_VARIANTS      } from '../subworkflows/local/gatk-variants'
 include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny'
+include { SNPEFF_BUILD       } from '../subworkflows/local/snpeff_build'
+include { SNPEFF             } from '../subworkflows/local/snpeff'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -110,6 +122,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 include { GATK4_HAPLOTYPECALLER       } from '../modules/nf-core/modules/gatk4/haplotypecaller/main'
 include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/modules/gatk4/combinegvcfs/main'
 include { SEQKIT_REPLACE              } from '../modules/nf-core/modules/seqkit/replace/main'
+include { SNPDISTS                    } from '../modules/nf-core/modules/snpdists/main'
 include { GATK4_LOCALCOMBINEGVCFS     } from '../modules/local/gatk4_localcombinegvcfs.nf'
 
 /*
@@ -276,6 +289,7 @@ workflow MYCOSNP {
     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
 
+
     ch_vcf_files = Channel.empty()
     if(! params.skip_combined_analysis)
     {
@@ -309,6 +323,10 @@ workflow MYCOSNP {
         
 
         ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
+        
+        if(params.snpeff != false){
+            SNPEFF(GATK_VARIANTS.out.filtered_vcf, params.species)
+        }
 
 /*
 ========================================================================================
@@ -326,9 +344,11 @@ workflow MYCOSNP {
 */
 
         SEQKIT_REPLACE(GATK_VARIANTS.out.snps_fasta) // Swap * for -
+        SNPDISTS(SEQKIT_REPLACE.out.fastx)
         if(! params.skip_phylogeny) {
-            CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '')
+            CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '', SNPDISTS.out.tsv)
         }
+  
     }
 
      CUSTOM_DUMPSOFTWAREVERSIONS (
@@ -367,6 +387,44 @@ workflow MYCOSNP {
     )
     multiqc_report = MULTIQC.out.report.toList()
     ch_versions    = ch_versions.mix(MULTIQC.out.versions)
+
+/*
+========================================================================================
+    //                       SUBWORKFLOW: Run SNPEFF_BUILD 
+    // take:
+    //     fasta
+    //     gff
+
+    // emit:
+    //     snpeffdb     
+    //     snpeffconfig
+========================================================================================
+*/
+
+    // if(params.snpeff_build == true)
+    // {
+    //     SNPEFF_BUILD(
+    //         gff, fasta
+    //     )
+    // }
+
+   /*
+========================================================================================
+                          SUBWORKFLOW: Run SNPEFF 
+    // take:
+    //     ch_snpeff_db
+    //     ch_snpeff_config
+    //     vcf
+    //     fasta (optional)
+
+    // emit:
+    //     csv     
+    //     txt
+    //     html
+    //     tbi
+    //     vcf (gz)
+========================================================================================
+*/
 }
 
 /*

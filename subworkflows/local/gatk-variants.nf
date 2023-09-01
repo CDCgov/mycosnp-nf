@@ -64,7 +64,7 @@ workflow GATK_VARIANTS {
 
     final_vcf_txt = Channel.empty()
     fin_comb_vcf.combine(SPLIT_VCF.out.txt).map{meta1, vcf, meta2, txt -> 
-                    [ meta1, vcf, txt, params.max_amb_samples, params.max_perc_amb_samples]}.set{final_vcf_txt}
+                    [ meta1, vcf, txt, params.max_amb_samples, params.max_perc_amb_samples, params.min_depth ]}.set{final_vcf_txt}
 
     VCF_CONSENSUS(
         BCFTOOLS_VIEW_CONVERT.out.vcf.combine(BCFTOOLS_INDEX.out.csi).map{meta1, vcf, meta2, csi-> [meta1, vcf, csi] },
@@ -88,6 +88,7 @@ workflow GATK_VARIANTS {
     emit:
     snps_fasta = VCF_TO_FASTA.out.fasta  // channel: [ val(meta), fasta ]
     versions = ch_versions               // channel: [ versions.yml ]
+    filtered_vcf       = BCFTOOLS_VIEW_CONVERT.out.vcf
     // filtered_vcf    = BROAD_VCFFILTER.out
     // split_vcf_broad = SPLITVCF.out        --> the broad vcf file
     // variants        = GATK4_SELECTVARIANTS.out

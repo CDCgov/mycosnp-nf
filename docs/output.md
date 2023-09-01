@@ -37,6 +37,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 	- [Sample QC and Processing](#sample-qc-and-processing)
 - [GATK Variants](#gatk-variants)
 	- [Variant calling and analysis](#variant-calling-and-analysis)
+- [Variant Annotation](#variant-annotation)
+	- [snpEff analysis](#snpeff-analysis)
 - [Summary Files](#summary-files) 
 	- [FastQC](#fastqc)
 	- [QC report](#qc-report)
@@ -115,9 +117,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 * Split the filtered VCF file by sample.
 * Select only SNPs from the VCF files (`GATK SelectVariants`).
 * Split the VCF file with SNPs by sample.
-* Create a consensus sequence for each sample (`BCFTools`, `SeqTK`).
 * Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
-* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `RaxML`, `IQTree`)
+* Create distance matrix file using muti-fasta file (`snp-dists`).
+* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `quicksnp`,`RaxML(optional)`, `IQTree(optional)`)
 
 
 **Important output files from this section:**
@@ -127,9 +129,23 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 | Individual VCF Files from HaplotypeCaller |  `(samples/variant_calling/haplotypecaller)` |
 |  Filtered selected variants combined      |  `(combined/finalfiltered)`                  |
 |  Filtered selected variants individual    |  `(combined/splitvcf)`                       |
-|  Individual consensus fasta files         |  `(combined/consensus)`                      |
 |  Selected SNP fasta file                  |  `(combined/vcf-to-fasta)`                   |
 |  Phylogeny files                          |  `(combined/phylogeny/)`                     |
+
+
+## Variant Annotation 
+### snpEff analysis 
+> **Annotate variants within the FKS1 gene using the filtered vcf file and provide output in the form of a report (currently for C.auris B11205 reference only)**
+
+* snpEff annotation(`snpeff`)
+* Create a report file using the snpeff annotated vcf file (`snpeffr`)
+
+**Important output files from this section:**
+
+| File                                      | Path                                         |
+| ---                                       | ---                                          |
+| Annotated vcf file from SnpEff	    | `(combined/snpeff)`			   |
+| Customised report of variants in FKS1     | `(combined/snpeff)`			   |
 
 
 ## Summary Files
@@ -157,9 +173,24 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ### QC Report
 The QC report values are generated from FAQCS text file outputs. The following is an example table:
-| Sample Name | # Reads Before Trimming | GC Before Trimming | Average Phred Before Trimming | Coverage Before Trimming | # Reads After Trimming | # Paired Reads After Trimming | # Unpaired Reads After Trimming | GC After Trimming | Average Phred After Trimming | Coverage After Trimming |
-|-------------|-------------------------|--------------------|-------------------------------|--------------------------|------------------------|-------------------------------|---------------------------------|-------------------|------------------------------|-------------------------|
-| ERR2172265  | 367402                  | 52.44%             | 34.64                         | 16.578758543095503       | 367396                 | 367390 (100.00 %)             | 6 (0.00 %)                      | 52.45%            | 34.64                        | 16.578487797287757      |
+| Sample Name | Reads Before Trimming | GC Before Trimming | Average Q Score Before Trimming | Reference Length Coverage Before Trimming | Reads After Trimming | Paired Reads After Trimming | Unpaired Reads After Trimming | GC After Trimming | Average Q Score After Trimming | Reference Length Coverage After Trimming | Mean Coverage Depth | Reads Mapped    |
+|-------------|-------------------------|--------------------|-------------------------------|--------------------------|------------------------|-------------------------------|---------------------------------|-------------------|------------------------------|-------------------------|------------------------|-----------------|
+| ERR2172265  | 367402                  | 52.44%             | 34.64                         | 16.58                    | 367396 (100.00 %)      | 367390 (100.00 %)             | 6 (0.00 %)                      | 52.45%            | 34.64                        | 16.58                   | 15.59                  | 352513 (96.43%) |
+
+| QC Metric                                  | Source   |
+|--------------------------------------------|----------|
+| Reads Before Trimming                      | FAQCS    |
+| GC Before Trimming                         | FAQCS    |
+| Average Q Score Before Trimming            | FAQCS    |
+| Reference Length Coverage Before Trimming  | FAQCS    |
+| Reads After Trimming                       | FAQCS    |
+| Paired Reads After Trimming                | FAQCS    |
+| Unpaired Reads After Trimming              | FAQCS    |
+| GC After Trimming                          | FAQCS    |
+| Average Q Score After Trimming             | FAQCS    |
+| Reference Length Coverage After Trimming   | FAQCS    |
+| Mean Coverage Depth                        | Qualimap |
+| Reads Mapped                               | Qualimap |
 
 ### MultiQC
 

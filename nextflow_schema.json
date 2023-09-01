@@ -157,6 +157,37 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                },
+                "snpeffconfig": {
+                    "type": "string",
+                    "format": "path",
+                    "default": "",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Full path to snpeff config"
+                },
+                "species": {
+                    "type": "string",
+                    "default": "candida_auris_gca_016772135.1",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Species name"
+                },
+                "positions": {
+                    "type": "string",
+                    "default": "fks1_hs1=221638:221665,fks1_hs2=223782:223805",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "positions"
+                },
+                "genes": {
+                    "type": "string",
+                    "default": "CAB11_002014",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Genes"
+                },
+                "exclude": {
+                    "type": "string",
+                    "default": "synonymous_variant",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "exclude variants"
                 }
             }
         },
@@ -189,6 +220,12 @@
                     "default": true,
                     "description": "Build a tree using the FastTree approximate ML algorithm",
                     "fa_icon": "fas fa-tree"
+                },
+                "snpeff": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Run snpEff on the final VCF file"
                 },
                 "iqtree": {
                     "type": "boolean",
@@ -241,14 +278,9 @@
                 },
                 "coverage": {
                     "type": "integer",
-                    "default": 70,
-                    "description": "If coverage is specified and rate is not specified, coverage is used to calculate a down-sampling rate that results in the specified coverage. For example if coverage 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
+                    "default": 0,
+                    "description": "Coverage is used to calculate a down-sampling rate that results in the specified coverage. For example, if coverage is 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
                     "fa_icon": "fas fa-align-center"
-                },
-                "rate": {
-                    "type": "number",
-                    "description": "If rate is specified, then coverage is ignored. rate specifies the rate for down-sampling FASTQ files. A rate of 1.0 indicates that 100% of reads in the FASTQ files are retained, which effectively \"skips\" down-sampling",
-                    "fa_icon": "fas fa-car-side"
                 },
                 "gvcfs_filter": {
                     "type": "string",
@@ -256,10 +288,10 @@
                     "description": "Filter criteria for variants (GATK)",
                     "fa_icon": "fas fa-filter"
                 },
-                "vcftools_filter": {
+                "gatkgenotypes_filter": {
                     "type": "string",
                     "default": "--min_GQ \"50\" --keep_GQ_0_refs --min_percent_alt_in_AD \"0.8\" --min_total_DP \"10\" --keep_all_ref",
-                    "description": "Filter criteria for VCFTOOLS",
+                    "description": "Filter criteria for script filterGatkGenotypes",
                     "fa_icon": "fas fa-filter"
                 },
                 "max_amb_samples": {
@@ -272,6 +304,12 @@
                     "type": "integer",
                     "default": 10,
                     "description": "Max percent of samples with ambiguous calls for inclusion (GATK)",
+                    "fa_icon": "fas fa-question"
+                },
+                "min_depth": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Min depth for a base to be called as the consensus sequence, otherwise it will be called as an N. Set to 0 to disable.",
                     "fa_icon": "fas fa-question"
                 },
                 "mask": {
@@ -340,7 +378,7 @@
                 "max_cpus": {
                     "type": "integer",
                     "description": "Maximum number of CPUs that can be requested for any single job.",
-                    "default": 8,
+                    "default": 4,
                     "fa_icon": "fas fa-microchip",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
@@ -348,7 +386,7 @@
                 "max_memory": {
                     "type": "string",
                     "description": "Maximum amount of memory that can be requested for any single job.",
-                    "default": "64.GB",
+                    "default": "6.GB",
                     "fa_icon": "fas fa-memory",
                     "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
                     "hidden": true,

@@ -122,6 +122,9 @@
             },
             "seqtk/seq": {
                 "git_sha": "1016c9bd1a7b23e31b8215b8c33095e733080735"
+            },
+            "snpdists": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             }
         }
     }
