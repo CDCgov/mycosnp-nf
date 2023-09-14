@@ -123,6 +123,13 @@ workflow PRE_MYCOSNP_WF {
 
     ch_versions = Channel.empty()
 
+    // Create empty channels for reference files required byt the main workflow
+    fas_file = Channel.empty()
+    fai_file = Channel.empty()
+    bai_file = Channel.empty()
+    dict_file = Channel.empty()
+    meta_val = Channel.empty()
+
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //

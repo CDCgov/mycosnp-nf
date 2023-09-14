@@ -20,10 +20,9 @@ process SUBTYPE {
     """
     # determine species call from Gambit
     species=\$(cat ${gambit_results} | grep -v "predicted.name" | tr ' ' '_' | tr ',' '\t' | cut -f 2)
-    echo \${species}
     
     # run subtyper
-    subtyper.sh ${prefix} \${species} ${subtype_db} ${seq}
+    subtyper.sh ${prefix} \${species} ${subtype_db} ${seq} || true
 
     # check if file was created, if not then create empty file
     if [ ! -f "${prefix}_subtype.csv" ]

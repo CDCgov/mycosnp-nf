@@ -25,7 +25,6 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     # Download the Gambit reference for estimating average depth of coverage
     if [[ "\${rank}" == "species" ]]
     then
-        echo "datasets download genome accession \${accession}"
         datasets download genome accession \${accession} && unzip ncbi_dataset.zip && mv ncbi_dataset/data/*/*.fna ./ref.fa
     else
         echo "Error: Species could not be assigned - check the Gambit output for more details" && exit 1
