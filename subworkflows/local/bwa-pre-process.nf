@@ -41,10 +41,6 @@ workflow BWA_PREPROCESS {
     
 
     SEQKIT_PAIR(reads)
-<<<<<<< HEAD
-	DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, reference[0], params.coverage,params.rate)
-    SEQTK_SAMPLE(SEQKIT_PAIR.out.reads, DOWNSAMPLE_RATE.out.number_to_sample)
-=======
     if (params.coverage == 0) {
     FAQCS(SEQKIT_PAIR.out.reads)
     }
@@ -54,7 +50,6 @@ workflow BWA_PREPROCESS {
         DOWNSAMPLE_RATE.out.downsampled_rate.map{ meta, sr, snr -> [ meta, snr]}
         )
     SEQTK_SAMPLE(ch_seq_samplerate)
->>>>>>> upstream/master
     FAQCS(SEQTK_SAMPLE.out.reads)
     }
     BWA_MEM(FAQCS.out.reads, reference[2], true)
