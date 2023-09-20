@@ -53,23 +53,23 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 * Split the filtered VCF file by sample.
 * Select only SNPs from the VCF files (`GATK SelectVariants`).
 * Split the VCF file with SNPs by sample.
-* Create a consensus sequence for each sample (`BCFTools`, `SeqTK`).
 * Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
-* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `RaxML`, `IQTree`)
+* Create a distance matrix file using multi-fasta file(`SNPdists`).
+* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `quicksnp`, `RaxML(optional)`, `IQTree(optional)`)
 
 ### Variant annotation analysis (currently available for *C. auris* B11205 genome only)
 
 * annotated VCF file (`snpEff`)
-* `SnpEff` combined output report 
-
+* combined output report(`SnpEffR`)
 
 ## Quick Start
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
 
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_
+3. Requires Python version >3.0
 
-3. Download the pipeline and test it on a minimal dataset with a single command:
+4. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```console
     nextflow run CDCgov/mycosnp-nf -profile test,YOURPROFILE
@@ -82,11 +82,13 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     > * If you are using `singularity` and are persistently observing issues downloading Singularity images directly due to timeout or network issues, then you can use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, you can use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
     > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
 
-4. Start running your own analysis!
+5. Start running your own analysis!
 
     ```console
     nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta c_auris.fasta
     ```
+6. It is advisable to delete large temporary or log files after the successful completion of the run. It takes a lot of space and may cause issues in future runs.
+
 ## Pre-configured Nextflow development environment using Gitpod
 
 >[![Open CDCgov/mycosnp-nf in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CDCgov/mycosnp-nf)

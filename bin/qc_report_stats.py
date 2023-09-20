@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from genericpath import sameopenfile
 from importlib.resources import path
 import argparse

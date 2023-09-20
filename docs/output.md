@@ -3,7 +3,8 @@
 ## Introduction
 
 *   MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris.
-*   This method prepares the reference, performs quality control, and calls variants using a reference.
+*   This method prepares the reference, performs quality control, and calls variants using a reference.It requires a reference genome in fasta format.
+*   All the intermittant files are stored for troubleshooting purpose.
 *   MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations.
 
 This document describes the output produced by the pipeline.
@@ -36,6 +37,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 	- [Sample QC and Processing](#sample-qc-and-processing)
 - [GATK Variants](#gatk-variants)
 	- [Variant calling and analysis](#variant-calling-and-analysis)
+- [Variant Annotation](#variant-annotation)
+	- [snpEff analysis](#snpeff-analysis)
 - [Summary Files](#summary-files) 
 	- [FastQC](#fastqc)
 	- [QC report](#qc-report)
@@ -114,9 +117,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 * Split the filtered VCF file by sample.
 * Select only SNPs from the VCF files (`GATK SelectVariants`).
 * Split the VCF file with SNPs by sample.
-* Create a consensus sequence for each sample (`BCFTools`, `SeqTK`).
 * Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
-* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `RaxML`, `IQTree`)
+* Create distance matrix file using muti-fasta file (`snp-dists`).
+* Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `quicksnp`,`RaxML(optional)`, `IQTree(optional)`)
 
 
 **Important output files from this section:**
@@ -126,9 +129,23 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 | Individual VCF Files from HaplotypeCaller |  `(samples/variant_calling/haplotypecaller)` |
 |  Filtered selected variants combined      |  `(combined/finalfiltered)`                  |
 |  Filtered selected variants individual    |  `(combined/splitvcf)`                       |
-|  Individual consensus fasta files         |  `(combined/consensus)`                      |
 |  Selected SNP fasta file                  |  `(combined/vcf-to-fasta)`                   |
 |  Phylogeny files                          |  `(combined/phylogeny/)`                     |
+
+
+## Variant Annotation 
+### snpEff analysis 
+> **Annotate variants within the FKS1 gene using the filtered vcf file and provide output in the form of a report (currently for C.auris B11205 reference only)**
+
+* snpEff annotation(`snpeff`)
+* Create a report file using the snpeff annotated vcf file (`snpeffr`)
+
+**Important output files from this section:**
+
+| File                                      | Path                                         |
+| ---                                       | ---                                          |
+| Annotated vcf file from SnpEff	    | `(combined/snpeff)`			   |
+| Customised report of variants in FKS1     | `(combined/snpeff)`			   |
 
 
 ## Summary Files
