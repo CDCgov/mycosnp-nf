@@ -103,8 +103,7 @@ include { PRE_MYCOSNP_COMB_SUMMARY } from '../modules/local/pre_mycosnp_comb_sum
 // MODULE: Installed directly from nf-core/modules
 //
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/modules/fastqc/main'
-include { SPADES as SPADES            } from '../modules/nf-core/modules/spades/main'
-include { SEQTK_SEQ as SEQTK_SEQ      } from '../modules/nf-core/modules/seqtk/seq/main'
+include { SHOVILL as SHOVILL          } from '../modules/nf-core/modules/shovill/main'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
@@ -178,30 +177,18 @@ workflow PRE_MYCOSNP_WF {
     ch_versions = ch_versions.mix(FAQCS.out.versions.first())
 
     //
-    // MODULE: Run SPAdes
+    // MODULE: Run Shovill
     //
-    FAQCS.out.reads.map{ meta, illumina -> [meta, illumina, [], []] }.set{ ch_trmd_reads }
-    SPADES (
-        ch_trmd_reads,
-        [],
-        []
+    SHOVILL (
+        FAQCS.out.reads
     )
-    ch_versions = ch_versions.mix(SPADES.out.versions.first())
-
-    //
-    // MODULE: Run seqtk seq to remove small contigs
-    //
-
-    SEQTK_SEQ(
-        SPADES.out.scaffolds
-    )
-    ch_versions = ch_versions.mix(SEQTK_SEQ.out.versions.first())
+    ch_versions = ch_versions.mix(SHOVILL.out.versions.first())
 
     //
     // MODULE: Run Gambit
     //
     GAMBIT_QUERY(
-        SEQTK_SEQ.out.fastx,
+        SHOVILL.out.contigs,
         params.gambit_db,
         params.gambit_h5
     )
@@ -212,8 +199,8 @@ workflow PRE_MYCOSNP_WF {
     //
 
     // Join the GAMBIT output and the spades assembly into a single channel   
-    SEQTK_SEQ.out.fastx.map{ meta, scaffolds -> [meta, scaffolds] }.set{ ch_scaffolds }
-    GAMBIT_QUERY.out.taxa.map{ meta, gambit -> [meta, gambit] }.join(ch_scaffolds).set{ ch_gambit_assembly }
+    SHOVILL.out.contigs.map{ meta, contigs -> [meta, contigs] }.set{ ch_contigs }
+    GAMBIT_QUERY.out.taxa.map{ meta, gambit -> [meta, gambit] }.join(ch_contigs).set{ ch_gambit_assembly }
 
     // Define path to subtyper files
     SUBTYPE(
@@ -229,7 +216,7 @@ workflow PRE_MYCOSNP_WF {
     FAQCS.out.txt.map{ meta, txt -> [meta, txt] }.set{ ch_faqcs_txt }
     GAMBIT_QUERY.out.taxa.map{ meta, gambit -> [meta, gambit] }.set{ ch_gambit }
     SUBTYPE.out.subtype.map{ meta, subtype -> [meta, subtype] }.set{ ch_subtype }
-    SEQTK_SEQ.out.fastx.map{ meta, scaffolds -> [meta, scaffolds] }.join(ch_faqcs_txt).join(ch_gambit).join(ch_subtype).set{ ch_line_summary_input }
+    SHOVILL.out.contigs.map{ meta, contigs -> [meta, contigs] }.join(ch_faqcs_txt).join(ch_gambit).join(ch_subtype).set{ ch_line_summary_input }
 
     PRE_MYCOSNP_INDV_SUMMARY(
         ch_line_summary_input
