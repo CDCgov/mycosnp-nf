@@ -22,6 +22,7 @@ process SHOVILL {
     task.ext.when == null || task.ext.when
 
     script:
+    def gsize = params.genome_size ? "--gsize ${params.genome_size}" : ''
     def args = task.ext.args ?: ''
     def memory = task.memory.toGiga()
     """
@@ -29,6 +30,7 @@ process SHOVILL {
         --R1 ${reads[0]} \\
         --R2 ${reads[1]} \\
         $args \\
+        $gsize \\
         --cpus $task.cpus \\
         --ram $memory \\
         --outdir ./ \\
