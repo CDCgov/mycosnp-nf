@@ -18,7 +18,7 @@ process SNPEFFR {
 
 	"""
 	snpeffr.R -f $input \\
-	$args -o ${prefix}.csv
+	$args -o ${prefix}_cauris_refB11205_fks1.csv
 	
 	cat <<-END_VERSIONS > versions.yml
 	"${task.process}":
