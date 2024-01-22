@@ -52,6 +52,7 @@ workflow BWA_PREPROCESS {
     SEQTK_SAMPLE(ch_seq_samplerate)
     FAQCS(SEQTK_SAMPLE.out.reads)
     }
+    
     BWA_MEM(FAQCS.out.reads, reference[2], true)
     PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
     PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam)
