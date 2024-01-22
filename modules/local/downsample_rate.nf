@@ -23,8 +23,10 @@ process DOWNSAMPLE_RATE {
 	
 	SAMPLE_RATE=\$(echo "${coverage} \${READS_LEN} \${REFERENCE_LEN}" | awk '{x=\$1/(\$2/\$3); x=(1<x?1:x)} END {print x}')
 	
+
 	# Calculate number of reads
 	NUM_READS=\$(zcat ${reads[0]}|awk 'END {print NR/4}')	
+	
 	SAMPLED_NUM_READS=\$(echo "\${NUM_READS} \${SAMPLE_RATE}" | awk '{x=\$1*\$2} END {printf "%.0f", x}')
 	"""
 }
