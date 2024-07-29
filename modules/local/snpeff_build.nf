@@ -48,6 +48,7 @@ process SNPEFF_BUILD {
         -dataDir ./snpeff_db \\
         -gff3 \\
         -v \\
+        -nolog \\
         ${basename}
 
     cat <<-END_VERSIONS > versions.yml

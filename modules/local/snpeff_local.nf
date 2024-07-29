@@ -37,6 +37,7 @@ process SNPEFF {
         -v $species \\
         -csvStats ${prefix}.csv \\
         $vcf \\
+        -nolog \\
         > ${prefix}.ann.vcf
 
     cat <<-END_VERSIONS > versions.yml

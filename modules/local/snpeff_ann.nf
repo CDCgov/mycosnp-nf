@@ -41,6 +41,7 @@ process SNPEFF_ANN {
         -dataDir $db \\
         $args \\
         $vcf \\
+        -nolog \\
         -csvStats ${prefix}.snpeff.csv \\
         > ${prefix}.snpeff.vcf
     mv snpEff_summary.html ${prefix}.snpeff.summary.html
