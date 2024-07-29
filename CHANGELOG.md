@@ -4,6 +4,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## v1.6 - [07/29/30]
+### `Fixed`
+
+*   An issue was found with data that is being transmitted from SNPEFF to a third-party website. This patch fixes this issue by employing a '-nolog' feature. It's described here: snpeff security issue nf-core/modules#6024
+
+
+---
+
+
 ## v1.3 Musky Albus - [06/09/2022]
 
 ### `Added`
