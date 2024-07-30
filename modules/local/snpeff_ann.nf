@@ -37,6 +37,7 @@ process SNPEFF_ANN {
     snpEff \\
         -Xmx${avail_mem}g \\
         ${fasta.baseName} \\
+        -noLog \\
         -config $config \\
         -dataDir $db \\
         $args \\
@@ -47,7 +48,7 @@ process SNPEFF_ANN {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        snpeff: \$(echo \$(snpEff -version 2>&1) | cut -f 2 -d ' ')
+        snpeff: \$(echo \$(snpEff -noLog -version 2>&1) | cut -f 2 -d ' ')
     END_VERSIONS
     """
 }
