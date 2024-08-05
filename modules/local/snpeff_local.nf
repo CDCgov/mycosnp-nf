@@ -10,6 +10,9 @@ process SNPEFF {
     input:
     tuple val(meta), path(vcf)
     val species
+    path(config)
+    path(datadir)
+
 
     output:
     tuple val(meta), path("*.ann.vcf"), emit: vcf
@@ -31,10 +34,13 @@ process SNPEFF {
     }
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
+    cp -r $datadir data
+
+    cp $config snpEff.config
+
     snpEff \\
         -Xmx${avail_mem}g \\
-        $args \\
-        -noLog \\
+        -config snpEff.config \\
         -v $species \\
         -csvStats ${prefix}.csv \\
         $vcf \\
@@ -42,7 +48,7 @@ process SNPEFF {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        snpeff: \$(echo \$(snpEff -noLog -version 2>&1) | cut -f 2 -d ' ')
+        snpeff: \$(echo \$(snpEff -version 2>&1) | cut -f 2 -d ' ')
     END_VERSIONS
     """
 }

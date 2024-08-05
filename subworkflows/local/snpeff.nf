@@ -14,6 +14,8 @@ workflow SNPEFF {
     main:
 
     ch_versions = Channel.empty()
+    ch_config = file(params.snpeffconfig)
+    ch_data_dir= Channel.fromPath( params.data_dir, type: 'dir' )
 
     //
     //SNPEFF
@@ -21,7 +23,9 @@ workflow SNPEFF {
 
     SNPEFF_ANN (
         vcf,
-        species
+        species,
+        ch_config,
+        ch_data_dir
     )
     ch_snpeff_vcf    = SNPEFF_ANN.out.vcf
     ch_snpeff_csv    = SNPEFF_ANN.out.report

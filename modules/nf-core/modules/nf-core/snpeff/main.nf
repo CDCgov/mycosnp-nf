@@ -37,14 +37,13 @@ process SNPEFF {
         -Xmx${avail_mem}g \\
         $args \\
         $cache_command \\
-        -noLog \\
         -csvStats ${prefix}.csv \\
         $vcf \\
         > ${prefix}.ann.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        snpeff: \$(echo \$(snpEff -noLog -version 2>&1) | cut -f 2 -d ' ')
+        snpeff: \$(echo \$(snpEff -version 2>&1) | cut -f 2 -d ' ')
     END_VERSIONS
     """
 }

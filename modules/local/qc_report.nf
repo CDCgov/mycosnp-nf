@@ -2,10 +2,10 @@ process QC_REPORT {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::pandas=1.5.2" : null)
+    conda (params.enable_conda ? "bioconda::pandas=1.1.5" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/pandas:1.5.2' : 
-        'quay.io/biocontainers/pandas:1.5.2' }"
+        'https://depot.galaxyproject.org/singularity/pandas:1.1.5' : 
+        'quay.io/biocontainers/pandas:1.1.5' }"
         
     input:
     tuple val(meta), path(txt), path(results) //input values are from channel that joins FAQCS("txt") and QUALIMAP("results") outputs
@@ -18,7 +18,7 @@ process QC_REPORT {
     def args = task.ext.args ?: '' 
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    qc_report_stats.py \\
+    python3 $PWD/mycosnp-nf-1.5/bin/qc_report_stats.py \\
         --sample ${meta.id} \\
         --stats ${meta.id}.stats.txt \\
         --base_content_before_trim qa.${meta.id}.base_content.txt \\

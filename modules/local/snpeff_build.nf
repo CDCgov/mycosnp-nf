@@ -44,7 +44,6 @@ process SNPEFF_BUILD {
     snpEff \\
         -Xmx${avail_mem}g \\
         build \\
-        -noLog \\
         -config snpeff.config \\
         -dataDir ./snpeff_db \\
         -gff3 \\
@@ -53,7 +52,7 @@ process SNPEFF_BUILD {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        snpeff: \$(echo \$(snpEff -noLog -version 2>&1) | cut -f 2 -d ' ')
+        snpeff: \$(echo \$(snpEff -version 2>&1) | cut -f 2 -d ' ')
     END_VERSIONS
     """
 }

@@ -15,7 +15,7 @@ process SAMPLESHEET_CHECK {
 
     script: // This script is bundled with the pipeline, in nf-core/mycosnp/bin/
     """
-    check_samplesheet.py \\
+    python3 $PWD/mycosnp-nf-1.5/bin/check_samplesheet.py \\
         $samplesheet \\
         samplesheet.valid.csv
 

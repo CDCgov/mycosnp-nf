@@ -26,7 +26,7 @@ process FILTER_GATK_GENOTYPES {
         gzip -c -d $vcf > $vcf_name
     fi
 
-    filterGatkGenotypes.py  $vcf_name \\
+    python3 $PWD/mycosnp-nf-1.5/bin/filterGatkGenotypes.py  $vcf_name \\
                             $args \\
                            > ${prefix}.vcf
     gzip ${prefix}.vcf

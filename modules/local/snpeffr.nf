@@ -17,7 +17,7 @@ process SNPEFFR {
 	def prefix = task.ext.prefix ?: "${meta.id}"
 
 	"""
-	snpeffr.R -f $input \\
+	Rscript $PWD/mycosnp-nf-1.5/bin/snpeffr.R -f $input \\
 	$args -o ${prefix}.csv
 	
 	cat <<-END_VERSIONS > versions.yml

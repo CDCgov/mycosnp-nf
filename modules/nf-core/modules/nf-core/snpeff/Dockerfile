@@ -17,7 +17,7 @@ ARG SNPEFF_VERSION=99
 ENV PATH /opt/conda/envs/nf-core-snpeff-${SNPEFF_VERSION}/bin:$PATH
 
 # Download Genome
-RUN snpEff download -noLog -v ${GENOME}.${SNPEFF_CACHE_VERSION}
+RUN snpEff download -v ${GENOME}.${SNPEFF_CACHE_VERSION}
 
 # Dump the details of the installed packages to a file for posterity
 RUN conda env export --name nf-core-snpeff-${SNPEFF_VERSION} > nf-core-snpeff-${SNPEFF_VERSION}.yml
