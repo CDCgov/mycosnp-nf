@@ -26,6 +26,8 @@ process QC_REPORT {
         --qual_scores_before_trim qa.${meta.id}.for_qual_histogram.txt \\
         --qual_scores_after_trim ${meta.id}.for_qual_histogram.txt \\
         --reference ${reference} \\
-        --bam_coverage ${meta.id}/genome_results.txt > ${meta.id}_output.txt
+        --bam_coverage ${meta.id}/genome_results.txt \\
+        --genome_fraction ${meta.id}/raw_data_qualimapReport/genome_fraction_coverage.txt \\
+        --min_depth ${params.min_depth} > ${meta.id}_output.txt
     """
 }
