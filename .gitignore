@@ -4,5 +4,4 @@ results*
 bin/vcfTools.pyc*
 bin/__pycache__/
 tmp/*
-
-!tmp/empty
+!tmp/.gitkeep
