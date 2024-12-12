@@ -16,7 +16,7 @@ nextflow.enable.dsl = 2
 ========================================================================================
 */
 
-//params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
+params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
 
 /*
 ========================================================================================
@@ -25,21 +25,6 @@ nextflow.enable.dsl = 2
 */
 
 WorkflowMain.initialise(workflow, params, log)
-
-/*
-========================================================================================
-    PRE-MYCOSNP
-========================================================================================
-*/
-
-include { PRE_MYCOSNP_WF } from './workflows/pre_mycosnp'
-
-//
-// WORKFLOW: Run pre-mycosnp pipeline
-//
-workflow PRE_MYCOSNP {
-    PRE_MYCOSNP_WF ()
-}
 
 /*
 ========================================================================================
