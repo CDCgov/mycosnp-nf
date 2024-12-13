@@ -35,6 +35,7 @@ process SNPEFF {
     snpEff \\
         -Xmx${avail_mem}g \\
         $args \\
+        -noLog \\
         -config ${snpeffconfig}/snpEff.config \\
         -v $species \\
         -csvStats ${prefix}.csv \\
@@ -43,7 +44,7 @@ process SNPEFF {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        snpeff: \$(echo \$(snpEff -version 2>&1) | cut -f 2 -d ' ')
+        snpeff: \$(echo \$(snpEff -noLog -version 2>&1) | cut -f 2 -d ' ')
     END_VERSIONS
     """
 }
