@@ -137,15 +137,15 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ### snpEff analysis 
 > **Annotate variants within the FKS1 gene using the filtered vcf file and provide output in the form of a report (currently for C.auris B11205 reference only)**
 
-* snpEff annotation(`snpeff`)
+* snpEff annotation (`snpeff`)
 * Create a report file using the snpeff annotated vcf file (`snpeffr`)
 
 **Important output files from this section:**
 
 | File                                      | Path                                         |
 | ---                                       | ---                                          |
-| Annotated vcf file from SnpEff	    | `(combined/snpeff)`			   |
-| Customised report of variants in FKS1     | `(combined/snpeff)`			   |
+| Annotated vcf file from SnpEff	    | `(snpeff/combined.snpeff.vcf.gz)`			   |
+| Customised report of variants in FKS1     | `(snpeff/combined_cauris_refB11205_fks1.csv)`			   |
 
 
 ## Summary Files

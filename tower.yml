@@ -44,5 +44,5 @@ reports:
     display: "VCF QC Report (Combined)"
   "**/combined/vcf-to-fasta/*.fasta":
     display: "VCF to FASTA (Combined)"
-  "**/combined/snpeff/*":
+  "**/snpeff/*":
     display: "SnpEff Results (Combined)"
