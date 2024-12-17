@@ -14,7 +14,7 @@ process SNPEFF {
 
     output:
     tuple val(meta), path("*.ann.vcf"), emit: vcf
-    path "*.csv"                      , emit: report
+    path "snpEff_summary.csv"         , emit: summary_csv
     path "*.html"                     , emit: summary_html
     path "*.genes.txt"                , emit: genes_txt
     path "versions.yml"               , emit: versions
@@ -38,7 +38,7 @@ process SNPEFF {
         -noLog \\
         -config ${snpeffconfig}/snpEff.config \\
         -v $species \\
-        -csvStats ${prefix}.csv \\
+        -csvStats snpEff_summary.csv \\
         $vcf \\
         > ${prefix}.ann.vcf
 
