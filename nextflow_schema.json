@@ -1,558 +1,562 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/nf-core/mycosnp/master/nextflow_schema.json",
-  "title": "nf-core/mycosnp pipeline parameters",
-  "description": "MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations.",
-  "type": "object",
-  "definitions": {
-      "input_output_options": {
-          "title": "Input/output options",
-          "type": "object",
-          "fa_icon": "fas fa-terminal",
-          "description": "Define where the pipeline should find input data and save output data.",
-          "properties": {
-              "input": {
-                  "type": "string",
-                  "format": "file-path",
-                  "mimetype": "text/csv",
-                  "pattern": "^\\S+\\.csv$",
-                  "schema": "assets/schema_input.json",
-                  "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                  "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md#samplesheet-input).",
-                  "fa_icon": "fas fa-file-csv"
-              },
-              "add_sra_file": {
-                  "type": "string",
-                  "format": "file-path",
-                  "mimetype": "text/csv",
-                  "pattern": "^\\S+\\.csv$",
-                  "description": "Path to comma-separated file containing SRA ids to download from NCBI. Format: Name,SRAID",
-                  "help_text": "You will need to create a csv file with information about the sra samples you want to add. Use this parameter to specify its location. It has to be a comma-separated file with 1 or 2 columns. See [usage docs](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md).",
-                  "fa_icon": "fas fa-file-csv"
-              },
-              "add_vcf_file": {
-                  "type": "string",
-                  "format": "file-path",
-                  "mimetype": "text/plain",
-                  "description": "Path to text file containing a list of file paths to vcf files generated from previous runs of this workflow to include in this analysis. They must use the same exact reference. *.tbi file must be in same location. Text file with list in Format: /path/to/vcf/file.gz",
-                  "help_text": "You will need to create a text file with a list of vcf files generated from previous runs of this workflow. One vcf file per line and the tbi file must be in the same location. See [usage docs](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md).",
-                  "fa_icon": "fas fa-file-csv"
-              },
-              "outdir": {
-                  "type": "string",
-                  "description": "Path to the output directory where the results will be saved.",
-                  "default": "./results",
-                  "fa_icon": "fas fa-folder-open"
-              },
-              "email": {
-                  "type": "string",
-                  "description": "Email address for completion summary.",
-                  "fa_icon": "fas fa-envelope",
-                  "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                  "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
-                  "hidden": true
-              },
-              "multiqc_title": {
-                  "type": "string",
-                  "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
-                  "fa_icon": "fas fa-file-signature",
-                  "hidden": true
-              },
-              "publish_dir_mode": {
-                  "type": "string",
-                  "enum": [
-                      "symlink",
-                      "rellink",
-                      "link",
-                      "copy",
-                      "copyNoFollow",
-                      "move"
-                  ],
-                  "default": "copy",
-                  "description": "Method used to save pipeline results to output directory.",
-                  "fa_icon": "fas fa-archive"
-              }
-          }
-      },
-      "reference_genome_options": {
-          "title": "Reference genome options",
-          "type": "object",
-          "fa_icon": "fas fa-dna",
-          "description": "Reference genome related files and options required for the workflow.",
-          "properties": {
-              "genome": {
-                  "type": "string",
-                  "description": "Name of iGenomes reference.",
-                  "fa_icon": "fas fa-book",
-                  "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details.",
-                  "hidden": true
-              },
-              "fasta": {
-                  "type": "string",
-                  "format": "file-path",
-                  "mimetype": "text/plain",
-                  "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                  "description": "Path to FASTA formatted reference genome file.",
-                  "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                  "fa_icon": "far fa-file-code"
-              },
-              "ref_dir": {
-                  "type": "string",
-                  "format": "file-path",
-                  "mimetype": "text/plain",
-                  "pattern": "^\\S+$",
-                  "description": "Path to reference genome masked files/picard dict/samtools fai/bwa index from previous run. If you use this command, it invalidates `--fasta --ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
-                  "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the results/reference directory which includes all relevant files. If you use this command, it invalidates `--fasta --ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
-                  "fa_icon": "far fa-file-code"
-              },
-              "ref_masked_fasta": {
-                  "type": "string",
-                  "format": "file-path",
-                  "mimetype": "text/plain",
-                  "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                  "description": "Path to reference genome masked fasta file. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
-                  "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the masked fasta file. If you use this command, it invalidates `--fasta",
-                  "fa_icon": "far fa-file-code"
-              },
-              "ref_fai": {
-                  "type": "string",
-                  "format": "file-path",
-                  "mimetype": "text/plain",
-                  "pattern": "^\\S+\\.fai$",
-                  "description": "Path to reference genome samtools fai file. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
-                  "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the samtools fai file. If you use this command, it invalidates `--fasta",
-                  "fa_icon": "far fa-file-code"
-              },
-              "ref_dict": {
-                  "type": "string",
-                  "format": "file-path",
-                  "mimetype": "text/plain",
-                  "pattern": "^\\S+\\.dict$",
-                  "description": "Path to reference genome picard tools dict file. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
-                  "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the picard tools dict file. If you use this command, it invalidates `--fasta",
-                  "fa_icon": "far fa-file-code"
-              },
-              "ref_bwa": {
-                  "type": "string",
-                  "format": "file-path",
-                  "mimetype": "text/plain",
-                  "pattern": "^\\S+$",
-                  "description": "Path to reference genome bwatools bwa directory. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
-                  "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the bwa index files directory. If you use this command, it invalidates `--fasta",
-                  "fa_icon": "far fa-file-code"
-              },
-              "igenomes_base": {
-                  "type": "string",
-                  "format": "directory-path",
-                  "description": "Directory / URL base for iGenomes references.",
-                  "default": "s3://ngi-igenomes/igenomes",
-                  "fa_icon": "fas fa-cloud-download-alt",
-                  "hidden": true
-              },
-              "igenomes_ignore": {
-                  "type": "boolean",
-                  "description": "Do not load the iGenomes reference config.",
-                  "fa_icon": "fas fa-ban",
-                  "hidden": true,
-                  "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
-              },
-              "snpeffconfig": {
-                  "type": "string",
-                  "format": "path",
-                  "fa_icon": "fas fa-fast-forward",
-                  "description": "Full path to snpeff config"
-              },
-              "species": {
-                  "type": "string",
-                  "default": "candida_auris_gca_016772135.1",
-                  "fa_icon": "fas fa-fast-forward",
-                  "description": "Species name"
-              },
-              "positions": {
-                  "type": "string",
-                  "default": "fks1_hs1=221638:221665,fks1_hs2=223782:223805",
-                  "fa_icon": "fas fa-fast-forward",
-                  "description": "positions"
-              },
-              "genes": {
-                  "type": "string",
-                  "default": "CAB11_002014",
-                  "fa_icon": "fas fa-fast-forward",
-                  "description": "Genes"
-              },
-              "exclude": {
-                  "type": "string",
-                  "default": "synonymous_variant",
-                  "fa_icon": "fas fa-fast-forward",
-                  "description": "exclude variants"
-              }
-          }
-      },
-      "mycosnp_run_save_skip_options": {
-          "title": "MycoSNP Run/Save/Skip Options",
-          "type": "object",
-          "description": "",
-          "default": "",
-          "properties": {
-              "save_reference": {
-                  "type": "boolean",
-                  "default": true,
-                  "description": "Saves the reference genome/index files to the results folder",
-                  "fa_icon": "fas fa-align-left"
-              },
-              "save_alignment": {
-                  "type": "boolean",
-                  "default": true,
-                  "description": "Saves the reference alignment BAM files to the samples results folder",
-                  "fa_icon": "fas fa-align-right"
-              },
-              "rapidnj": {
-                  "type": "boolean",
-                  "default": true,
-                  "description": "Build a tree using the RapidNJ neighbour-joining algorithm",
-                  "fa_icon": "fab fa-pagelines"
-              },
-              "fasttree": {
-                  "type": "boolean",
-                  "default": true,
-                  "description": "Build a tree using the FastTree approximate ML algorithm",
-                  "fa_icon": "fas fa-tree"
-              },
-              "snpeff": {
-                  "type": "boolean",
-                  "fa_icon": "fas fa-fast-forward",
-                  "description": "Run snpEff on the final VCF file"
-              },
-              "iqtree": {
-                  "type": "boolean",
-                  "description": "Build a tree using the IQ-TREE ML algorithm",
-                  "fa_icon": "fab fa-pagelines"
-              },
-              "raxmlng": {
-                  "type": "boolean",
-                  "description": "Build a tree using the RAxML-NG ML algorithm",
-                  "fa_icon": "fab fa-pagelines"
-              },
-              "save_debug": {
-                  "type": "boolean",
-                  "description": "Save intermediate files for debugging",
-                  "fa_icon": "fas fa-bug"
-              },
-              "skip_samples": {
-                  "type": "string",
-                  "description": "a comma separated list of IDs to skip for variant calling and analysis",
-                  "fa_icon": "fas fa-forward"
-              },
-              "skip_samples_file": {
-                  "type": "string",
-                  "description": "a file with new-line separated list of IDs to skip for variant calling and analysis",
-                  "fa_icon": "fas fa-forward"
-              },
-              "skip_combined_analysis": {
-                  "type": "boolean",
-                  "description": "Skip combined variant analysis (run reference prep and mapping)",
-                  "fa_icon": "fas fa-forward"
-              },
-              "skip_phylogeny": {
-                  "type": "boolean",
-                  "description": "Skip phylogenetic tree creation",
-                  "fa_icon": "fas fa-forward"
-              }
-          }
-      },
-      "mycosnp_run_params": {
-          "title": "MycoSNP Run Params",
-          "type": "object",
-          "description": "",
-          "default": "",
-          "properties": {
-              "sample_ploidy": {
-                  "type": "integer",
-                  "default": 1,
-                  "description": "Ploidy of sample (GATK)",
-                  "fa_icon": "fas fa-dna"
-              },
-              "coverage": {
-                  "type": "integer",
-                  "default": 0,
-                  "description": "Coverage is used to calculate a down-sampling rate that results in the specified coverage. For example, if coverage is 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
-                  "fa_icon": "fas fa-align-center"
-              },
-              "gvcfs_filter": {
-                  "type": "string",
-                  "default": "QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10",
-                  "description": "Filter criteria for variants (GATK)",
-                  "fa_icon": "fas fa-filter"
-              },
-              "gatkgenotypes_filter": {
-                  "type": "string",
-                  "default": "--min_GQ \"50\" --keep_GQ_0_refs --min_percent_alt_in_AD \"0.8\" --min_total_DP \"10\" --keep_all_ref",
-                  "description": "Filter criteria for script filterGatkGenotypes",
-                  "fa_icon": "fas fa-filter"
-              },
-              "max_amb_samples": {
-                  "type": "integer",
-                  "default": 10000000,
-                  "description": "Max number of samples with ambiguous calls for inclusion (GATK)",
-                  "fa_icon": "fas fa-question"
-              },
-              "max_perc_amb_samples": {
-                  "type": "integer",
-                  "default": 10,
-                  "description": "Max percent of samples with ambiguous calls for inclusion (GATK)",
-                  "fa_icon": "fas fa-question"
-              },
-              "min_depth": {
-                  "type": "integer",
-                  "default": 10,
-                  "description": "Min depth for a base to be called as the consensus sequence, otherwise it will be called as an N. Set to 0 to disable.",
-                  "fa_icon": "fas fa-question"
-              },
-              "mask": {
-                  "type": "boolean",
-                  "default": true,
-                  "description": "Perform masking of reference genome before analysis",
-                  "fa_icon": "fas fa-mask"
-              }
-          }
-      },
-      "pre_mycosnp_options": {
-          "title": "Pre-MycoSNP options",
-          "type": "object",
-          "description": "",
-          "default": "",
-          "properties": {
-              "assembler": {
-                  "type": "string",
-                  "default": "skesa",
-                  "description": "Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades' (default: 'skesa')",
-                  "fa_icon": "fas fa-toolbox"
-              },
-              "genome_size": {
-                  "type": "string",
-                  "description": "The approx. genome size of the sample. Will be automatically determined if left blank.",
-                  "fa_icon": "fas fa-question"
-              },
-              "min_contig_cov": {
-                  "type": "integer",
-                  "default": 10,
-                  "description": "Minimum contig depth of coverage for it to be retained in the assembly (default: 10)",
-                  "fa_icon": "fas fa-question"
-              },
-              "min_contig_len": {
-                  "type": "integer",
-                  "default": 300,
-                  "description": "Minimum contig length for it to be retained in the assembly (default: 300)",
-                  "fa_icon": "fas fa-question"
-              },
-              "gambit_h5": {
-                  "type": "string",
-                  "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5",
-                  "fa_icon": "fas fa-database",
-                  "description": "Path to the GAMBIT '.h5' file."
-              },
-              "gambit_db": {
-                  "type": "string",
-                  "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db",
-                  "fa_icon": "fas fa-database",
-                  "description": "Path to the GAMBIT '.db' file."
-              },
-              "subtype_db": {
-                  "type": "string",
-                  "default": "/home/pipelines/mycosnp/mycosnp_installations/mycosnp-nf/assets/subtyper_files/",
-                  "fa_icon": "fas fa-database",
-                  "description": "Path to a directory containing the subtyper files. This directory should contain Mash sketch file(s) built using representatives of each subtype and a comma-separated file describing which sketch files are associated with each species. Species names must be the same as what is reported by GAMBIT."
-              }
-          }
-      },
-      "institutional_config_options": {
-          "title": "Institutional config options",
-          "type": "object",
-          "fa_icon": "fas fa-university",
-          "description": "Parameters used to describe centralised config profiles. These should not be edited.",
-          "help_text": "The centralised nf-core configuration profiles use a handful of pipeline parameters to describe themselves. This information is then printed to the Nextflow log when you run a pipeline. You should not need to change these values when you run a pipeline.",
-          "properties": {
-              "custom_config_version": {
-                  "type": "string",
-                  "description": "Git commit id for Institutional configs.",
-                  "default": "master",
-                  "hidden": true,
-                  "fa_icon": "fas fa-users-cog"
-              },
-              "custom_config_base": {
-                  "type": "string",
-                  "description": "Base directory for Institutional configs.",
-                  "default": "https://raw.githubusercontent.com/nf-core/configs/master",
-                  "hidden": true,
-                  "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
-                  "fa_icon": "fas fa-users-cog"
-              },
-              "config_profile_name": {
-                  "type": "string",
-                  "description": "Institutional config name.",
-                  "hidden": true,
-                  "fa_icon": "fas fa-users-cog"
-              },
-              "config_profile_description": {
-                  "type": "string",
-                  "description": "Institutional config description.",
-                  "hidden": true,
-                  "fa_icon": "fas fa-users-cog"
-              },
-              "config_profile_contact": {
-                  "type": "string",
-                  "description": "Institutional config contact information.",
-                  "hidden": true,
-                  "fa_icon": "fas fa-users-cog"
-              },
-              "config_profile_url": {
-                  "type": "string",
-                  "description": "Institutional config URL link.",
-                  "hidden": true,
-                  "fa_icon": "fas fa-users-cog"
-              }
-          }
-      },
-      "max_job_request_options": {
-          "title": "Max job request options",
-          "type": "object",
-          "fa_icon": "fab fa-acquisitions-incorporated",
-          "description": "Set the top limit for requested resources for any single job.",
-          "help_text": "If you are running on a smaller system, a pipeline step requesting more resources than are available may cause the Nextflow to stop the run with an error. These options allow you to cap the maximum resources requested by any single job so that the pipeline will run on your system.\n\nNote that you can not _increase_ the resources requested by any job using these options. For that you will need your own configuration file. See [the nf-core website](https://nf-co.re/usage/configuration) for details.",
-          "properties": {
-              "max_cpus": {
-                  "type": "integer",
-                  "description": "Maximum number of CPUs that can be requested for any single job.",
-                  "default": 4,
-                  "fa_icon": "fas fa-microchip",
-                  "hidden": true,
-                  "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
-              },
-              "max_memory": {
-                  "type": "string",
-                  "description": "Maximum amount of memory that can be requested for any single job.",
-                  "default": "6.GB",
-                  "fa_icon": "fas fa-memory",
-                  "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                  "hidden": true,
-                  "help_text": "Use to set an upper-limit for the memory requirement for each process. Should be a string in the format integer-unit e.g. `--max_memory '8.GB'`"
-              },
-              "max_time": {
-                  "type": "string",
-                  "description": "Maximum amount of time that can be requested for any single job.",
-                  "default": "240.h",
-                  "fa_icon": "far fa-clock",
-                  "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
-                  "hidden": true,
-                  "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
-              }
-          }
-      },
-      "generic_options": {
-          "title": "Generic options",
-          "type": "object",
-          "fa_icon": "fas fa-file-import",
-          "description": "Less common options for the pipeline, typically set in a config file.",
-          "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
-          "properties": {
-              "help": {
-                  "type": "boolean",
-                  "description": "Display help text.",
-                  "fa_icon": "fas fa-question-circle"
-              },
-              "email_on_fail": {
-                  "type": "string",
-                  "description": "Email address for completion summary, only when pipeline fails.",
-                  "fa_icon": "fas fa-exclamation-triangle",
-                  "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
-                  "help_text": "An email address to send a summary email to when the pipeline is completed - ONLY sent if the pipeline does not exit successfully.",
-                  "hidden": true
-              },
-              "plaintext_email": {
-                  "type": "boolean",
-                  "description": "Send plain-text email instead of HTML.",
-                  "fa_icon": "fas fa-remove-format",
-                  "hidden": true
-              },
-              "max_multiqc_email_size": {
-                  "type": "string",
-                  "description": "File size limit when attaching MultiQC reports to summary emails.",
-                  "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                  "default": "25.MB",
-                  "fa_icon": "fas fa-file-upload",
-                  "hidden": true
-              },
-              "monochrome_logs": {
-                  "type": "boolean",
-                  "description": "Do not use coloured log outputs.",
-                  "fa_icon": "fas fa-palette",
-                  "hidden": true
-              },
-              "multiqc_config": {
-                  "type": "string",
-                  "description": "Custom config file to supply to MultiQC.",
-                  "fa_icon": "fas fa-cog",
-                  "hidden": true
-              },
-              "tracedir": {
-                  "type": "string",
-                  "description": "Directory to keep pipeline Nextflow logs and reports.",
-                  "default": "${params.outdir}/pipeline_info",
-                  "fa_icon": "fas fa-cogs",
-                  "hidden": true
-              },
-              "validate_params": {
-                  "type": "boolean",
-                  "description": "Boolean whether to validate parameters against the schema at runtime",
-                  "default": true,
-                  "fa_icon": "fas fa-check-square",
-                  "hidden": true
-              },
-              "show_hidden_params": {
-                  "type": "boolean",
-                  "fa_icon": "far fa-eye-slash",
-                  "description": "Show all params when using `--help`",
-                  "hidden": true,
-                  "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-              },
-              "enable_conda": {
-                  "type": "boolean",
-                  "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
-                  "hidden": true,
-                  "fa_icon": "fas fa-bacon"
-              },
-              "tmpdir": {
-                  "type": "string",
-                  "default": "/tmp",
-                  "description": "temporary directory for shell and java processes"
-              }
-          }
-      }
-  },
-  "allOf": [
-      {
-          "$ref": "#/definitions/input_output_options"
-      },
-      {
-          "$ref": "#/definitions/reference_genome_options"
-      },
-      {
-          "$ref": "#/definitions/mycosnp_run_save_skip_options"
-      },
-      {
-          "$ref": "#/definitions/mycosnp_run_params"
-      },
-      {
-          "$ref": "#/definitions/pre_mycosnp_options"
-      },
-      {
-          "$ref": "#/definitions/institutional_config_options"
-      },
-      {
-          "$ref": "#/definitions/max_job_request_options"
-      },
-      {
-          "$ref": "#/definitions/generic_options"
-      }
-  ]
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/mycosnp/master/nextflow_schema.json",
+    "title": "nf-core/mycosnp pipeline parameters",
+    "description": "MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations.",
+    "type": "object",
+    "definitions": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "schema": "assets/schema_input.json",
+                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md#samplesheet-input).",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "add_sra_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Path to comma-separated file containing SRA ids to download from NCBI. Format: Name,SRAID",
+                    "help_text": "You will need to create a csv file with information about the sra samples you want to add. Use this parameter to specify its location. It has to be a comma-separated file with 1 or 2 columns. See [usage docs](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md).",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "add_vcf_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "errorMessage": "File name must end in '.csv' cannot contain spaces",
+                    "description": "Path to .csv (only one column) containing a list of file paths to vcf files generated from previous runs of this workflow to include in this analysis. They must use the same exact reference. *.tbi file must be in same location. Each line of .csv file has format: /path/to/vcf/file.gz",
+                    "help_text": "You will need to create a csv file (only one column) with a list of vcf files generated from previous runs of this workflow. One vcf file per line and the tbi file must be in the same location. See [usage docs](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md).",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "outdir": {
+                    "type": "string",
+                    "description": "Path to the output directory where the results will be saved.",
+                    "default": "./results",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "Email address for completion summary.",
+                    "fa_icon": "fas fa-envelope",
+                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+                    "hidden": true
+                },
+                "multiqc_title": {
+                    "type": "string",
+                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
+                    "fa_icon": "fas fa-file-signature",
+                    "hidden": true
+                },
+                "publish_dir_mode": {
+                    "type": "string",
+                    "enum": [
+                        "symlink",
+                        "rellink",
+                        "link",
+                        "copy",
+                        "copyNoFollow",
+                        "move"
+                    ],
+                    "default": "copy",
+                    "description": "Method used to save pipeline results to output directory.",
+                    "fa_icon": "fas fa-archive"
+                }
+            }
+        },
+        "reference_genome_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Reference genome related files and options required for the workflow.",
+            "properties": {
+                "genome": {
+                    "type": "string",
+                    "description": "Name of iGenomes reference.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details.",
+                    "hidden": true
+                },
+                "fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to FASTA formatted reference genome file.",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "ref_dir": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+$",
+                    "description": "Path to reference genome masked files/picard dict/samtools fai/bwa index from previous run. If you use this command, it invalidates `--fasta --ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the results/reference directory which includes all relevant files. If you use this command, it invalidates `--fasta --ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "fa_icon": "far fa-file-code"
+                },
+                "ref_masked_fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to reference genome masked fasta file. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the masked fasta file. If you use this command, it invalidates `--fasta",
+                    "fa_icon": "far fa-file-code"
+                },
+                "ref_fai": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fai$",
+                    "description": "Path to reference genome samtools fai file. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the samtools fai file. If you use this command, it invalidates `--fasta",
+                    "fa_icon": "far fa-file-code"
+                },
+                "ref_dict": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.dict$",
+                    "description": "Path to reference genome picard tools dict file. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the picard tools dict file. If you use this command, it invalidates `--fasta",
+                    "fa_icon": "far fa-file-code"
+                },
+                "ref_bwa": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+$",
+                    "description": "Path to reference genome bwatools bwa directory. If you use this command, must provide all `--ref_masked_fasta --ref_fai --ref_bwa --ref_dict`",
+                    "help_text": "Use this command to re-use reference files generated on a previous run. Provide the path to the bwa index files directory. If you use this command, it invalidates `--fasta",
+                    "fa_icon": "far fa-file-code"
+                },
+                "igenomes_base": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Directory / URL base for iGenomes references.",
+                    "default": "s3://ngi-igenomes/igenomes",
+                    "fa_icon": "fas fa-cloud-download-alt",
+                    "hidden": true
+                },
+                "igenomes_ignore": {
+                    "type": "boolean",
+                    "description": "Do not load the iGenomes reference config.",
+                    "fa_icon": "fas fa-ban",
+                    "hidden": true,
+                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                },
+                "snpeffconfig": {
+                    "type": "string",
+                    "format": "path",
+                    "default": "",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Full path to snpeff config"
+                },
+                "species": {
+                    "type": "string",
+                    "default": "candida_auris_gca_016772135.1",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Species name"
+                },
+                "positions": {
+                    "type": "string",
+                    "default": "fks1_hs1=221638:221665,fks1_hs2=223782:223805",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "positions"
+                },
+                "genes": {
+                    "type": "string",
+                    "default": "CAB11_002014",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Genes"
+                },
+                "exclude": {
+                    "type": "string",
+                    "default": "synonymous_variant",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "exclude variants"
+                }
+            }
+        },
+        "mycosnp_run_save_skip_options": {
+            "title": "MycoSNP Run/Save/Skip Options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "save_reference": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Saves the reference genome/index files to the results folder",
+                    "fa_icon": "fas fa-align-left"
+                },
+                "save_alignment": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Saves the reference alignment BAM files to the samples results folder",
+                    "fa_icon": "fas fa-align-right"
+                },
+                "rapidnj": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Build a tree using the RapidNJ neighbour-joining algorithm",
+                    "fa_icon": "fab fa-pagelines"
+                },
+                "fasttree": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Build a tree using the FastTree approximate ML algorithm",
+                    "fa_icon": "fas fa-tree"
+                },
+                "snpeff": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Run snpEff on the final VCF file"
+                },
+                "iqtree": {
+                    "type": "boolean",
+                    "description": "Build a tree using the IQ-TREE ML algorithm",
+                    "fa_icon": "fab fa-pagelines"
+                },
+                "raxmlng": {
+                    "type": "boolean",
+                    "description": "Build a tree using the RAxML-NG ML algorithm",
+                    "fa_icon": "fab fa-pagelines"
+                },
+                "save_debug": {
+                    "type": "boolean",
+                    "description": "Save intermediate files for debugging",
+                    "fa_icon": "fas fa-bug"
+                },
+                "skip_samples": {
+                    "type": "string",
+                    "description": "a comma separated list of IDs to skip for variant calling and analysis",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_samples_file": {
+                    "type": "string",
+                    "description": "a file with new-line separated list of IDs to skip for variant calling and analysis",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_combined_analysis": {
+                    "type": "boolean",
+                    "description": "Skip combined variant analysis (run reference prep and mapping)",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_phylogeny": {
+                    "type": "boolean",
+                    "description": "Skip phylogenetic tree creation",
+                    "fa_icon": "fas fa-forward"
+                }
+            }
+        },
+        "mycosnp_run_params": {
+            "title": "MycoSNP Run Params",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "sample_ploidy": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Ploidy of sample (GATK)",
+                    "fa_icon": "fas fa-dna"
+                },
+                "coverage": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Coverage is used to calculate a down-sampling rate that results in the specified coverage. For example, if coverage is 70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x coverage",
+                    "fa_icon": "fas fa-align-center"
+                },
+                "gvcfs_filter": {
+                    "type": "string",
+                    "default": "QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10",
+                    "description": "Filter criteria for variants (GATK)",
+                    "fa_icon": "fas fa-filter"
+                },
+                "gatkgenotypes_filter": {
+                    "type": "string",
+                    "default": "--min_GQ \"50\" --keep_GQ_0_refs --min_percent_alt_in_AD \"0.8\" --min_total_DP \"10\" --keep_all_ref",
+                    "description": "Filter criteria for script filterGatkGenotypes",
+                    "fa_icon": "fas fa-filter"
+                },
+                "max_amb_samples": {
+                    "type": "integer",
+                    "default": 10000000,
+                    "description": "Max number of samples with ambiguous calls for inclusion (GATK)",
+                    "fa_icon": "fas fa-question"
+                },
+                "max_perc_amb_samples": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Max percent of samples with ambiguous calls for inclusion (GATK)",
+                    "fa_icon": "fas fa-question"
+                },
+                "min_depth": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Min depth for a base to be called as the consensus sequence, otherwise it will be called as an N. Set to 0 to disable.",
+                    "fa_icon": "fas fa-question"
+                },
+                "mask": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Perform masking of reference genome before analysis",
+                    "fa_icon": "fas fa-mask"
+                }
+            }
+        },
+        "pre_mycosnp_options": {
+            "title": "Pre-MycoSNP options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "assembler": {
+                    "type": "string",
+                    "default": "skesa",
+                    "description": "Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades' (default: 'skesa')",
+                    "fa_icon": "fas fa-toolbox"
+                },
+                "genome_size": {
+                    "type": "string",
+                    "description": "The approx. genome size of the sample. Will be automatically determined if left blank.",
+                    "fa_icon": "fas fa-question"
+                },
+                "min_contig_cov": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Minimum contig depth of coverage for it to be retained in the assembly (default: 10)",
+                    "fa_icon": "fas fa-question"
+                },
+                "min_contig_len": {
+                    "type": "integer",
+                    "default": 300,
+                    "description": "Minimum contig length for it to be retained in the assembly (default: 300)",
+                    "fa_icon": "fas fa-question"
+                },
+                "gambit_h5": {
+                    "type": "string",
+                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to the GAMBIT '.h5' file."
+                },
+                "gambit_db": {
+                    "type": "string",
+                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to the GAMBIT '.db' file."
+                },
+                "subtype_db": {
+                    "type": "string",
+                    "default": "/home/pipelines/mycosnp/mycosnp_installations/mycosnp-nf/assets/subtyper_files/",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to a directory containing the subtyper files. This directory should contain Mash sketch file(s) built using representatives of each subtype and a comma-separated file describing which sketch files are associated with each species. Species names must be the same as what is reported by GAMBIT."
+                }
+            }
+        },
+        "institutional_config_options": {
+            "title": "Institutional config options",
+            "type": "object",
+            "fa_icon": "fas fa-university",
+            "description": "Parameters used to describe centralised config profiles. These should not be edited.",
+            "help_text": "The centralised nf-core configuration profiles use a handful of pipeline parameters to describe themselves. This information is then printed to the Nextflow log when you run a pipeline. You should not need to change these values when you run a pipeline.",
+            "properties": {
+                "custom_config_version": {
+                    "type": "string",
+                    "description": "Git commit id for Institutional configs.",
+                    "default": "master",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "custom_config_base": {
+                    "type": "string",
+                    "description": "Base directory for Institutional configs.",
+                    "default": "https://raw.githubusercontent.com/nf-core/configs/master",
+                    "hidden": true,
+                    "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_name": {
+                    "type": "string",
+                    "description": "Institutional config name.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_description": {
+                    "type": "string",
+                    "description": "Institutional config description.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_contact": {
+                    "type": "string",
+                    "description": "Institutional config contact information.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_url": {
+                    "type": "string",
+                    "description": "Institutional config URL link.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                }
+            }
+        },
+        "max_job_request_options": {
+            "title": "Max job request options",
+            "type": "object",
+            "fa_icon": "fab fa-acquisitions-incorporated",
+            "description": "Set the top limit for requested resources for any single job.",
+            "help_text": "If you are running on a smaller system, a pipeline step requesting more resources than are available may cause the Nextflow to stop the run with an error. These options allow you to cap the maximum resources requested by any single job so that the pipeline will run on your system.\n\nNote that you can not _increase_ the resources requested by any job using these options. For that you will need your own configuration file. See [the nf-core website](https://nf-co.re/usage/configuration) for details.",
+            "properties": {
+                "max_cpus": {
+                    "type": "integer",
+                    "description": "Maximum number of CPUs that can be requested for any single job.",
+                    "default": 4,
+                    "fa_icon": "fas fa-microchip",
+                    "hidden": true,
+                    "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
+                },
+                "max_memory": {
+                    "type": "string",
+                    "description": "Maximum amount of memory that can be requested for any single job.",
+                    "default": "6.GB",
+                    "fa_icon": "fas fa-memory",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
+                    "hidden": true,
+                    "help_text": "Use to set an upper-limit for the memory requirement for each process. Should be a string in the format integer-unit e.g. `--max_memory '8.GB'`"
+                },
+                "max_time": {
+                    "type": "string",
+                    "description": "Maximum amount of time that can be requested for any single job.",
+                    "default": "240.h",
+                    "fa_icon": "far fa-clock",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
+                    "hidden": true,
+                    "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
+                }
+            }
+        },
+        "generic_options": {
+            "title": "Generic options",
+            "type": "object",
+            "fa_icon": "fas fa-file-import",
+            "description": "Less common options for the pipeline, typically set in a config file.",
+            "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
+            "properties": {
+                "help": {
+                    "type": "boolean",
+                    "description": "Display help text.",
+                    "fa_icon": "fas fa-question-circle"
+                },
+                "email_on_fail": {
+                    "type": "string",
+                    "description": "Email address for completion summary, only when pipeline fails.",
+                    "fa_icon": "fas fa-exclamation-triangle",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+                    "help_text": "An email address to send a summary email to when the pipeline is completed - ONLY sent if the pipeline does not exit successfully.",
+                    "hidden": true
+                },
+                "plaintext_email": {
+                    "type": "boolean",
+                    "description": "Send plain-text email instead of HTML.",
+                    "fa_icon": "fas fa-remove-format",
+                    "hidden": true
+                },
+                "max_multiqc_email_size": {
+                    "type": "string",
+                    "description": "File size limit when attaching MultiQC reports to summary emails.",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
+                    "default": "25.MB",
+                    "fa_icon": "fas fa-file-upload",
+                    "hidden": true
+                },
+                "monochrome_logs": {
+                    "type": "boolean",
+                    "description": "Do not use coloured log outputs.",
+                    "fa_icon": "fas fa-palette",
+                    "hidden": true
+                },
+                "multiqc_config": {
+                    "type": "string",
+                    "description": "Custom config file to supply to MultiQC.",
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true
+                },
+                "tracedir": {
+                    "type": "string",
+                    "description": "Directory to keep pipeline Nextflow logs and reports.",
+                    "default": "${params.outdir}/pipeline_info",
+                    "fa_icon": "fas fa-cogs",
+                    "hidden": true
+                },
+                "validate_params": {
+                    "type": "boolean",
+                    "description": "Boolean whether to validate parameters against the schema at runtime",
+                    "default": true,
+                    "fa_icon": "fas fa-check-square",
+                    "hidden": true
+                },
+                "show_hidden_params": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-eye-slash",
+                    "description": "Show all params when using `--help`",
+                    "hidden": true,
+                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
+                "enable_conda": {
+                    "type": "boolean",
+                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-bacon"
+                },
+                "tmpdir": {
+                    "type": "string",
+                    "default": "/tmp",
+                    "description": "temporary directory for shell and java processes"
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/reference_genome_options"
+        },
+        {
+            "$ref": "#/definitions/mycosnp_run_save_skip_options"
+        },
+        {
+            "$ref": "#/definitions/mycosnp_run_params"
+        },
+        {
+            "$ref": "#/definitions/pre_mycosnp_options"
+        },
+        {
+            "$ref": "#/definitions/institutional_config_options"
+        },
+        {
+            "$ref": "#/definitions/max_job_request_options"
+        },
+        {
+            "$ref": "#/definitions/generic_options"
+        }
+    ]
 }

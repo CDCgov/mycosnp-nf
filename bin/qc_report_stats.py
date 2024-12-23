@@ -4,7 +4,7 @@ from importlib.resources import path
 import argparse
 import pandas as pd
 
-# Arguement parser: get arguments from FAQCS text files
+# Argument parser: get arguments from FAQCS and qualimap text files
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--sample")
 parser.add_argument("--stats", type=argparse.FileType("r"))
@@ -14,6 +14,8 @@ parser.add_argument("--qual_scores_before_trim", type=argparse.FileType("r"))
 parser.add_argument("--qual_scores_after_trim", type=argparse.FileType("r"))
 parser.add_argument("--reference", type=argparse.FileType("r"))
 parser.add_argument("--bam_coverage", type=argparse.FileType("r"))
+parser.add_argument("--genome_fraction", type=argparse.FileType("r"))
+parser.add_argument("--min_depth", type=int)
 args = parser.parse_args()
 
 # Sample name variable
@@ -97,6 +99,17 @@ for line in args.bam_coverage:
     if line.__contains__("number of mapped reads"):
         reads_mapped = line.split("= ")[1].replace(",","").strip("\n")
 
+# Parsing genome fraction from qualimap genome_fraction_coverage.txt
+next(args.genome_fraction)
+genome_fraction = "not found at specified min_depth"
+for line in args.genome_fraction:
+    columns = line.strip().split('\t')
+    if float(columns[0]) == float(args.min_depth):
+        genome_fraction = float(columns[1])
+        # Format for qc_report.txt
+        genome_fraction = "{:.2f}".format(genome_fraction) + "%"
+        break
+
 # Preparing output list with variables and then reformatting into a string
 output_list = [
     sample_name,
@@ -111,7 +124,8 @@ output_list = [
     str(phred_avg_after),
     "{:.2f}".format(coverage_after),
     "{:.2f}".format(mean_depth_coverage),
-    str(reads_mapped)
+    str(reads_mapped),
+    genome_fraction
 ]
 
 # Creating tab delimited string for qc report generation

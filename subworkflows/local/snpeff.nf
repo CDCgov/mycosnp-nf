@@ -24,7 +24,8 @@ workflow SNPEFF {
         species
     )
     ch_snpeff_vcf    = SNPEFF_ANN.out.vcf
-    ch_snpeff_csv    = SNPEFF_ANN.out.report
+    ch_snpeff_csv    = SNPEFF_ANN.out.summary_csv
+
     ch_snpeff_txt    = SNPEFF_ANN.out.genes_txt
     ch_snpeff_html   = SNPEFF_ANN.out.summary_html
     ch_versions      = ch_versions.mix(SNPEFF_ANN.out.versions.first())

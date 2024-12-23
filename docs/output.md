@@ -27,22 +27,19 @@ results/
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-- [CDCgov/mycosnp: Output](#cdcgov-mycosnp-output)
-	- [Introduction](#introduction) 
-	- [Pipeline Overview](#pipeline-overview)
 - [BWA Reference](#bwa-reference)
-	- [Reference Preparation](#reference-preparation)
+    - [Reference Preparation](#reference-preparation)
 - [BWA Pre-process](#bwa-pre-process)
-	- [Sample QC and Processing](#sample-qc-and-processing)
+  - [Sample QC and Processing](#sample-qc-and-processing)
 - [GATK Variants](#gatk-variants)
-	- [Variant calling and analysis](#variant-calling-and-analysis)
+  - [Variant calling and analysis](#variant-calling-and-analysis)
 - [Variant Annotation](#variant-annotation)
-	- [snpEff analysis](#snpeff-analysis)
-- [Summary Files](#summary-files) 
-	- [FastQC](#fastqc)
-	- [QC report](#qc-report)
-	- [MultiQC](#multiqc)
-- [Pipeline Information](#pipeline-information)
+  - [snpEff analysis](#snpeff-analysis)
+- [Summary Files](#summary-files)
+  - [FastQC](#fastqc)
+  - [QC Report](#qc-report)
+  - [MultiQC](#multiqc)
+  - [Pipeline information](#pipeline-information)
 
 ## BWA Reference
 
@@ -136,15 +133,15 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ### snpEff analysis 
 > **Annotate variants within the FKS1 gene using the filtered vcf file and provide output in the form of a report (currently for C.auris B11205 reference only)**
 
-* snpEff annotation(`snpeff`)
+* snpEff annotation (`snpeff`)
 * Create a report file using the snpeff annotated vcf file (`snpeffr`)
 
 **Important output files from this section:**
 
 | File                                      | Path                                         |
 | ---                                       | ---                                          |
-| Annotated vcf file from SnpEff	    | `(combined/snpeff)`			   |
-| Customised report of variants in FKS1     | `(combined/snpeff)`			   |
+| Annotated vcf file from SnpEff	    | `(snpeff/combined.snpeff.vcf.gz)`			   |
+| Customised report of variants in FKS1     | `(snpeff/combined_cauris_refB11205_fks1.csv)`			   |
 
 
 ## Summary Files
@@ -171,10 +168,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 > **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
 
 ### QC Report
-The QC report values are generated from FAQCS text file outputs. The following is an example table:
-| Sample Name | Reads Before Trimming | GC Before Trimming | Average Q Score Before Trimming | Reference Length Coverage Before Trimming | Reads After Trimming | Paired Reads After Trimming | Unpaired Reads After Trimming | GC After Trimming | Average Q Score After Trimming | Reference Length Coverage After Trimming | Mean Coverage Depth | Reads Mapped    |
-|-------------|-------------------------|--------------------|-------------------------------|--------------------------|------------------------|-------------------------------|---------------------------------|-------------------|------------------------------|-------------------------|------------------------|-----------------|
-| ERR2172265  | 367402                  | 52.44%             | 34.64                         | 16.58                    | 367396 (100.00 %)      | 367390 (100.00 %)             | 6 (0.00 %)                      | 52.45%            | 34.64                        | 16.58                   | 15.59                  | 352513 (96.43%) |
+The QC report values are generated from FAQCS text file outputs and Qualimap result files. The following is an example table:
+| Sample Name | Reads Before Trimming | GC Before Trimming | Average Q Score Before Trimming | Reference Length Coverage Before Trimming | Reads After Trimming | Paired Reads After Trimming | Unpaired Reads After Trimming | GC After Trimming | Average Q Score After Trimming | Reference Length Coverage After Trimming | Mean Coverage Depth | Reads Mapped     | Genome Fraction at 10X[^1] |
+|-------------|-----------------------|--------------------|---------------------------------|-------------------------------------------|----------------------|-----------------------------|-------------------------------|-------------------|--------------------------------|------------------------------------------|---------------------|------------------|----------------------------|
+| SRR10461157 | 3987618               | 44.73%             | 35.03                           | 80.68                                     | 3987537 (100.00 %)   | 3987456 (100.00 %)          | 81 (0.00 %)                   | 44.73%            | 35.03                          | 80.68                                    | 74.66               | 3789190 (95.31%) | 97.70%                     |
 
 | QC Metric                                  | Source   |
 |--------------------------------------------|----------|
@@ -190,7 +187,9 @@ The QC report values are generated from FAQCS text file outputs. The following i
 | Reference Length Coverage After Trimming   | FAQCS    |
 | Mean Coverage Depth                        | Qualimap |
 | Reads Mapped                               | Qualimap |
+| Genome Fraction at 10X[^1]                 | Qualimap |
 
+[^1]: Genome fraction refers to the percentage of the reference genome that is covered at a specific depth by the sample. This metric will output the genome fraction at the minimum depth (`--min_depth`) parameter used to call bases.
 ### MultiQC
 
 <details markdown="1">
