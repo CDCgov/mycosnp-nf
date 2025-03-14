@@ -21,7 +21,7 @@ Options:
     -f FPATH --fpath=FPATH  path to input vcf file from snpeff
     -p POS --pos=POS        format as named comma separated list
                             of positions (no spaces), i.e. see default
-                            [default: fks1_hs1=221638:221665,fks1_hs2=223782:223805]
+                            [default: fks1_hs1=221637:221663,fks1_hs2=223782:223805,fks1_hs3=221805:221807]
     -g GENES --genes=GENES  a list of comma separated gene names (no spaces) [default: CAB11_002014]
     -e EXCL --exc=EXCL      a quoted regular expression for effects to exclude [default: 'synonymous_variant']
     -o OUT --out=OUT        csv or gz file to save output to [default: out.csv]
