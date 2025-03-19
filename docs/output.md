@@ -20,6 +20,7 @@ results/
 ├── pipeline_info
 ├── reference
 ├── samples
+├── snpeff
 └── stats
 ```
 
