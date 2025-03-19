@@ -173,7 +173,7 @@
                 },
                 "positions": {
                     "type": "string",
-                    "default": "fks1_hs1=221638:221665,fks1_hs2=223782:223805",
+                    "default": "fks1_hs1=221637:221663,fks1_hs2=223782:223805,fks1_hs3=221805:221807",
                     "fa_icon": "fas fa-fast-forward",
                     "description": "positions"
                 },
