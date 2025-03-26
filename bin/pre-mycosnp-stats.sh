@@ -57,6 +57,8 @@ gzip -d "${assembly}" "${ref}" || true
 #----- READ STATS -----#
 # total trimmed reads
 trmd_reads=$(cat "${faqcs_stats}" | grep 'Reads #:' | sed -n 2p | cut -f 3 -d ' ')
+# total trimmed bases
+trmd_bases=$(cat "${faqcs_stats}" | grep 'Total bases:' | sed -n 2p | cut -f 3 -d ' ')
 # average trimmed read Phred score, to 2 decimal places
 avg_phred=$(cat "${faqcs_qual}" | awk '{print $2,$1*$2}' | awk '{reads += $1} {qual += $2} END {printf "%.2f", qual/reads}')
 
@@ -74,7 +76,7 @@ if [[ -n "$ref" ]]; then # Check if ref is provided (not empty)
     ref_gc_perc=$(echo -e "${ref_gc_count}\t${ref_length}" | awk '{printf "%.2f", 100*$1/$2}')
 
     # estimated average depth of coverage, to 1 decimal place
-    est_depth=$(echo "$trmd_reads $ref_length" | awk '{printf "%.1f", $1 / $2}')
+    est_depth=$(echo "$trmd_bases $ref_length" | awk '{printf "%.1f", $1 / $2}')
 else
     # Set variables to empty strings if ref is not provided.
     ref_length=""
