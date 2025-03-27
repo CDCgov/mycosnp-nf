@@ -332,6 +332,12 @@
                     "description": "Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades' (default: 'skesa')",
                     "fa_icon": "fas fa-toolbox"
                 },
+                "shovill_depth": {
+                    "type": "integer",
+                    "default": 70,
+                    "description": "Downsample FASTQ files to this depth before assembly (default: 70)",
+                    "fa_icon": "fas fa-question"
+                },
                 "genome_size": {
                     "type": "string",
                     "description": "The approx. genome size of the sample. Will be automatically determined if left blank.",
