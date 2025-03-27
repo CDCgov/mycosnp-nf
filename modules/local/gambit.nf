@@ -11,7 +11,7 @@ process GAMBIT_QUERY {
     path h5_file
 
     output:
-    tuple val(meta), path("*_gambit.txt"), emit: taxa
+    tuple val(meta), path("*_gambit.csv"), emit: taxa
     path "versions.yml"                  , emit: versions
 
     script:
@@ -21,7 +21,7 @@ process GAMBIT_QUERY {
     gambit \\
         ${args} \\
         -d ./ \\
-        query ${assembly} > ${prefix}_gambit.txt
+        query ${assembly} > ${prefix}_gambit.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
