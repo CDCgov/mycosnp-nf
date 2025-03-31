@@ -40,8 +40,8 @@ process PRE_MYCOSNP_INDV_SUMMARY {
             -r ref.fa \\
             "${prefix}" \\
             "${assembly}" \\
-            *.stats.txt \\
-            *.for_qual_histogram.txt \\
+            "${prefix}.stats.txt" \\
+            "${prefix}.for_qual_histogram.txt" \\
             > stats_cols
 
         # Extract subtype info if available
@@ -61,8 +61,8 @@ process PRE_MYCOSNP_INDV_SUMMARY {
         pre-mycosnp-stats.sh \\
             "${prefix}" \\
             "${assembly}" \\
-            *.stats.txt \\
-            *.for_qual_histogram.txt \\
+            "${prefix}.stats.txt" \\
+            "${prefix}.for_qual_histogram.txt" \\
             > stats_cols
     fi
 
