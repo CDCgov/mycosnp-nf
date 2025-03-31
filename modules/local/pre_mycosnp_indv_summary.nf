@@ -2,8 +2,8 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     tag "$meta.id"
     label 'process_low'
     
-    conda (params.enable_conda ? "bioconda::ncbi-datasets=14.26.0" : null)
-    container 'staphb/ncbi-datasets:15.2.0'
+    conda (params.enable_conda ? "conda-forge::ncbi-datasets-cli=16.41.0" : null)
+    container 'quay.io/staphb/ncbi-datasets:16.41.0'
 
     input:
     tuple val(meta), path(assembly), path(faqcs), path(gambit), path(subtype)
