@@ -26,8 +26,7 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     closest=\$(cat "${gambit}" | grep -v 'closest.description' | cut -f 7 -d ',')
     closest_accession=\$(echo "\${closest}" | cut -f 1 -d ' ' | tr -d '[] \\t\\n\\r')
 
-    subtype_call=""
-    subtype_accession=""
+    subtype_closest_match=""
     subtype_ani=""
 
     if [[ "\${rank}" == "species" ]]; then
@@ -46,14 +45,12 @@ process PRE_MYCOSNP_INDV_SUMMARY {
 
         # Extract subtype info if available
         if [ -s "${prefix}_subtype.csv" ]; then
-            second_col=\$(head -n 2 "${subtype}" | grep -v 'sample,subtype,mash_dist,est_ANI' | cut -f 2 -d ',')
-            subtype_call=\$(echo "\${second_col}" | awk -F'-' '{print substr(\$1, 2)}')
-            subtype_accession=\$(echo "\${second_col}" | awk -F'-' '{print \$2}')
-            subtype_ani=\$(head -n 2 "${subtype}" | grep -v 'sample,subtype,mash_dist,est_ANI' | cut -f 4 -d ',')
+            subtype_closest_match=\$(head -n 2 "${subtype}" | grep -v 'sample,subtype_closest_match,est_ANI' | cut -f 2 -d ',')
+            subtype_ani=\$(head -n 2 "${subtype}" | grep -v 'sample,subtype_closest_match,est_ANI' | cut -f 3 -d ',')
 
             # Check if taxon is "Candida auris" and if subtype_ani is less than 99.7 using awk
             if [[ "\${taxon}" == "Candida auris" ]] && awk -v ani="\${subtype_ani}" 'BEGIN { exit !(ani < 99.7) }'; then
-                subtype_call="ANI is less than the established Candida auris clade separation threshold of 99.7"
+                subtype_closest_match="ANI is less than the established Candida auris clade separation threshold of 99.7"
             fi
         fi
     elif [[ "\${rank}" == "genus" || "\${rank}" == "" ]]; then
@@ -72,7 +69,7 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     fi
 
     # Create line summary. Wrap `closest` in double quotes in case value contains commas.
-    echo "${prefix},\${reported_rank},\${taxon},\${subtype_call},\${subtype_accession},\${subtype_ani},\${closest},\${distance}" > taxon_cols
+    echo "${prefix},\${reported_rank},\${taxon},\${subtype_closest_match},\${subtype_ani},\${closest},\${distance}" > taxon_cols
     paste -d ',' taxon_cols stats_cols > "${prefix}_linesummary.csv"
     """
 }

@@ -371,7 +371,8 @@
                     "type": "string",
                     "default": "/home/pipelines/mycosnp/mycosnp_installations/mycosnp-nf/assets/subtyper_files/",
                     "fa_icon": "fas fa-database",
-                    "description": "Path to a directory containing the subtyper files. This directory should contain Mash sketch file(s) built using representatives of each subtype and a comma-separated file describing which sketch files are associated with each species. Species names must be the same as what is reported by GAMBIT."
+                    "description": "Path to a directory containing the subtyper files. This directory should contain sourmash signature files, each containing multiple sketches for the representative subtypes. This directory should also contain a csv file called sourmash_taxa.csv matching taxa to the sourmash signature files. Taxa names must be the same as what is reported by GAMBIT."
+
                 }
             }
         },
