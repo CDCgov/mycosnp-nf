@@ -1,6 +1,6 @@
 process SNPEFFR {
 	
-	container "ghcr.io/cdcgov/snpeffr:v1.1.0"
+	container "ghcr.io/cdcgov/snpeffr:v1.1.1"
 	
 	input:
 	tuple val(meta), path(input)

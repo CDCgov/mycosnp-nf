@@ -12,9 +12,6 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 params.snpeffconfig = WorkflowMain.getGenomeAttribute(params, 'snpeffconfig')
 
 
-// Validate input parameters
-WorkflowMycosnp.initialise(params, log)
-
 // Check input path parameters to see if they exist
 def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ] // params.snpeffdb
 if (params.skip_samples_file) { // check for skip_samples_file
@@ -136,6 +133,7 @@ def multiqc_report = []
 
 
 workflow MYCOSNP {
+    WorkflowMycosnp.initialise(params, log)
 
     ch_versions = Channel.empty()
 

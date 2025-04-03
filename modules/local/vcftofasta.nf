@@ -1,6 +1,6 @@
 process VCF_TO_FASTA {
     tag "${meta.id}"
-    label 'process_low'
+    label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::scipy=1.1.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
