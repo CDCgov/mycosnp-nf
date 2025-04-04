@@ -63,10 +63,17 @@ workflow NFCORE_MYCOSNP {
 */
 
 //
-// WORKFLOW: Execute a single named workflow for the pipeline
+// WORKFLOW: Execute the specified workflow
 //
 workflow {
-    NFCORE_MYCOSNP ()
+    if (params.workflow == 'PRE_MYCOSNP') {
+        PRE_MYCOSNP()
+    } else if (params.workflow == 'NFCORE_MYCOSNP') {
+        NFCORE_MYCOSNP()
+    } else {
+        log.error "Invalid workflow specified. Use 'PRE_MYCOSNP' or 'NFCORE_MYCOSNP'."
+        exit 1
+    }
 }
 
 /*

@@ -5,6 +5,20 @@
     "description": "MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations.",
     "type": "object",
     "definitions": {
+        "workflow_options": {
+            "title": "Workflow selection options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "workflow": {
+                    "type": "string",
+                    "enum": ["PRE_MYCOSNP", "NFCORE_MYCOSNP"],
+                    "description": "Name of the workflow to run.",
+                    "help_text": "Specify the workflow you want to execute. Options are 'PRE_MYCOSNP' or 'NFCORE_MYCOSNP'."
+                }
+            }
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -541,6 +555,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/workflow_options"
+        },
         {
             "$ref": "#/definitions/input_output_options"
         },
