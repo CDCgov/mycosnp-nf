@@ -175,9 +175,9 @@
                 "snpeffconfig": {
                     "type": "string",
                     "format": "path",
-                    "default": "",
+                    "default": "${projectDir}/assets/snpeffdb/",
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Full path to snpeff config"
+                    "description": "Path to snpeff config"
                 },
                 "species": {
                     "type": "string",
@@ -189,7 +189,7 @@
                     "type": "string",
                     "default": "fks1_hs1=221637:221663,fks1_hs2=223782:223805,fks1_hs3=221805:221807",
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "positions"
+                    "description": "FKS1 hotspot coordinates. Non-synonymous variants in these regions will be included in the snpeffr report (snpeff/combined_cauris_refB11205_fks1.csv)."
                 },
                 "genes": {
                     "type": "string",
@@ -354,19 +354,19 @@
                 },
                 "genome_size": {
                     "type": "string",
-                    "description": "The approx. genome size of the sample. Will be automatically determined if left blank.",
+                    "description": "The approx. genome size of the sample, used by Shovill. Will be automatically determined if left blank.",
                     "fa_icon": "fas fa-question"
                 },
                 "min_contig_cov": {
                     "type": "integer",
                     "default": 10,
-                    "description": "Minimum contig depth of coverage for it to be retained in the assembly (default: 10)",
+                    "description": "Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill (default: 10)",
                     "fa_icon": "fas fa-question"
                 },
                 "min_contig_len": {
                     "type": "integer",
                     "default": 300,
-                    "description": "Minimum contig length for it to be retained in the assembly (default: 300)",
+                    "description": "Minimum contig length for it to be retained in the assembly, used by Shovill (default: 300)",
                     "fa_icon": "fas fa-question"
                 },
                 "gambit_h5": {
@@ -383,9 +383,10 @@
                 },
                 "subtype_db": {
                     "type": "string",
-                    "default": "/home/pipelines/mycosnp/mycosnp_installations/mycosnp-nf/assets/subtyper_files/",
+                    "format": "directory-path",
+                    "default": "${projectDir}/assets/sourmash_db/",
                     "fa_icon": "fas fa-database",
-                    "description": "Path to a directory containing the subtyper files. This directory should contain sourmash signature files, each containing multiple sketches for the representative subtypes. This directory should also contain a csv file called sourmash_taxa.csv matching taxa to the sourmash signature files. Taxa names must be the same as what is reported by GAMBIT."
+                    "description": "Path to a directory containing the subtyper files. This directory should contain sourmash signature files, each containing multiple sketches for the representative subtypes. This directory should also contain a csv file called sourmash_taxa.csv mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is reported by GAMBIT."
 
                 }
             }
