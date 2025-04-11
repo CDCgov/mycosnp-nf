@@ -13,6 +13,7 @@ process SUBTYPE {
 
     output:
     tuple val(meta), path("*_subtype.csv"), emit: subtype
+    path "versions.yml", emit: versions
 
     script:
     def args = task.ext.args ?: '' 
@@ -31,5 +32,10 @@ process SUBTYPE {
     then
         touch ${prefix}_subtype.csv
     fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sourmash: \$(sourmash --version | tr -d "[a-z, ]")
+    END_VERSIONS
     """
 }

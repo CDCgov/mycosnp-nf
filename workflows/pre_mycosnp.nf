@@ -207,6 +207,7 @@ workflow PRE_MYCOSNP_WF {
         ch_gambit_assembly,
         params.subtype_db
     )
+    ch_versions = ch_versions.mix(SUBTYPE.out.versions.first())
 
     //
     // MODULE: Create line summary for each sample
