@@ -16,6 +16,8 @@
 * Singularity _(Optional/Recommended)_
 * Docker _(Optional/Recommended)_
 * Conda _(Optional/Recommended)_
+> [!TIP]
+> Using Apptainer/Singularity with Nextflow version >=23 can result in failures in Linux server environments due to peculiarities with container directory mounting. If you are experiencing `No such file or directory` errors, try running with an earlier version of Nextflow (we've had success with 22.10.6).
 
 ## Installation
 
