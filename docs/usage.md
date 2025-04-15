@@ -1,4 +1,4 @@
-# nf-core/mycosnp: Usage
+# CDCgov/mycosnp-nf: Usage
 
 ## Introduction
 This document describes how to prepare input files and run the pipeline.
