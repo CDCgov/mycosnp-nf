@@ -9,12 +9,12 @@
             "title": "Workflow selection options",
             "type": "object",
             "description": "",
-            "default": "",
             "properties": {
                 "workflow": {
                     "type": "string",
                     "enum": ["PRE_MYCOSNP", "NFCORE_MYCOSNP"],
-                    "description": "Name of the workflow to run.",
+                    "default": "NFCORE_MYCOSNP",
+                    "description": "Name of the workflow to run (`PRE_MYCOSNP` for Pre-MycoSNP workflow | `NFCORE_MYCOSNP` for main MycoSNP workflow).",
                     "help_text": "Specify the workflow you want to execute. Options are 'PRE_MYCOSNP' or 'NFCORE_MYCOSNP'."
                 }
             }
@@ -343,13 +343,13 @@
                 "assembler": {
                     "type": "string",
                     "default": "skesa",
-                    "description": "Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades' (default: 'skesa')",
+                    "description": "Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades'",
                     "fa_icon": "fas fa-toolbox"
                 },
                 "shovill_depth": {
                     "type": "integer",
                     "default": 70,
-                    "description": "Downsample FASTQ files to this depth before assembly (default: 70)",
+                    "description": "Downsample FASTQ files to this depth before assembly",
                     "fa_icon": "fas fa-question"
                 },
                 "genome_size": {
@@ -360,13 +360,13 @@
                 "min_contig_cov": {
                     "type": "integer",
                     "default": 10,
-                    "description": "Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill (default: 10)",
+                    "description": "Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill",
                     "fa_icon": "fas fa-question"
                 },
                 "min_contig_len": {
                     "type": "integer",
                     "default": 300,
-                    "description": "Minimum contig length for it to be retained in the assembly, used by Shovill (default: 300)",
+                    "description": "Minimum contig length for it to be retained in the assembly, used by Shovill",
                     "fa_icon": "fas fa-question"
                 },
                 "gambit_h5": {
