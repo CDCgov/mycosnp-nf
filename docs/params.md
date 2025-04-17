@@ -14,7 +14,8 @@ Typical pipeline command:
   nextflow run CDCgov/mycosnp-nf -profile singularity,test
 
 Workflow selection options
-  --workflow                   [string]  Name of the workflow to run.
+  --workflow                   [string]  Name of the workflow to run (`PRE_MYCOSNP` for Pre-MycoSNP workflow | `NFCORE_MYCOSNP` for main MycoSNP workflow). 
+                                         [default: NFCORE_MYCOSNP] 
 
 Input/output options
   --input                      [string]  Path to comma-separated file containing information about the samples in the experiment.
@@ -74,13 +75,11 @@ MycoSNP Run Params
   --mask                       [boolean] Perform masking of reference genome before analysis [default: true]
 
 Pre-MycoSNP options
-  --assembler                  [string]  Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades' (default: 'skesa') [default: 
-                                         skesa] 
-  --shovill_depth              [integer] Downsample FASTQ files to this depth before assembly (default: 70) [default: 70]
+  --assembler                  [string]  Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades' [default: skesa]
+  --shovill_depth              [integer] Downsample FASTQ files to this depth before assembly [default: 70]
   --genome_size                [string]  The approx. genome size of the sample, used by Shovill. Will be automatically determined if left blank.
-  --min_contig_cov             [integer] Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill (default: 10) [default: 
-                                         10] 
-  --min_contig_len             [integer] Minimum contig length for it to be retained in the assembly, used by Shovill (default: 300) [default: 300]
+  --min_contig_cov             [integer] Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill [default: 10]
+  --min_contig_len             [integer] Minimum contig length for it to be retained in the assembly, used by Shovill [default: 300]
   --gambit_h5                  [string]  Path to the GAMBIT '.h5' file. [default: 
                                          gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5] 
   --gambit_db                  [string]  Path to the GAMBIT '.db' file. [default: 
