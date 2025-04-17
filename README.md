@@ -6,7 +6,7 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 
 ## Introduction
-**CDCgov/mycosnp-nf** is a bioinformatics best-practice analysis pipeline built with the [nf-core](https://nf-co.re/) template. MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including _Candida auris_.
+**MycoSNP** is a bioinformatics pipeline for performing whole genome sequencing analysis of fungal organisms (e.g. _Candida auris_), built with the [nf-core](https://nf-co.re/) template.
 
 This repository contains two workflows that are run independently:
 - **Pre-MycoSNP workflow**: A first-pass workflow for quick answers
@@ -29,11 +29,12 @@ This repository contains two workflows that are run independently:
 
 > [!TIP]
 > Using Apptainer/Singularity with Nextflow version >=23 can result in failures in Linux server environments due to peculiarities with container directory mounting. If you are experiencing `No such file or directory` errors, try running with an earlier version of Nextflow (we've had success with 22.10.6).
-3. Test the main MycoSNP workflow on a minimal dataset with a single command:
-
+3. Test the main MycoSNP workflow on pre-defined minimal test samples with a single command:
     ```console
     nextflow run CDCgov/mycosnp-nf -profile test,YOURPROFILE
     ```
+> [!NOTE]
+> The samples for the test run are bacterial (_N. gonorrhoeae_), not fungal. This is intentional so the test finishes in a few minutes (as opposed to longer for fungal samples with much larger genomes).
 
   > [!TIP]
   > Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -64,7 +65,7 @@ This repository contains two workflows that are run independently:
     - Assembly (with [`SKESA`](https://github.com/ncbi/SKESA) [default], [`SPAdes`](https://github.com/ablab/spades), or [`Megahit`](https://github.com/voutcn/megahit)​)
 1. Taxonomic classification ([`GAMBIT`](https://github.com/jlumpe/gambit​))
     - Classifies isolate to genus/species level, if possible
-    - Uses a fungal database containing these taxa TODO: add link
+    - Uses GAMBIT's fungal database v0.2.0. See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for a list of taxa included in the database.
 1. If isolate classified as _C. auris_…​
     1. Create [`sourmash`](https://github.com/sourmash-bio/sourmash) sketch of sample
     1. Assign _C. auris_ clade with [`sourmash`](https://github.com/sourmash-bio/sourmash)
