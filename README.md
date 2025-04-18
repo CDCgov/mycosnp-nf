@@ -66,10 +66,10 @@ This repository contains two workflows that are run independently:
 1. Taxonomic classification ([`GAMBIT`](https://github.com/jlumpe/gambit​))
     - Classifies isolate to genus/species level, if possible
     - Uses GAMBIT's fungal database v0.2.0. See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for a list of taxa included in the database.
-1. Subtyping [`sourmash`](https://github.com/sourmash-bio/sourmash)
-    - Compares sourmash sketch of sample against sourmash signature file provided in [assets/sourmash_db/](assets/sourmash_db/).
+1. Subtyping ([`sourmash`])(https://github.com/sourmash-bio/sourmash)
+    - Compares sourmash sketch of sample against sourmash signature file provided in [`assets/sourmash_db/`](assets/sourmash_db/).
     - By default, for _C. auris_, Pre-MycoSNP performs clade typing (Clades I-VI).
-1. Report _C. auris_ (w/ clade), or other fungal genus/species
+1. [Summary report](docs/output.md#pre-mycosnp-summary-report) containing genus/species classification, subtype, and read and assembly quality metrics.
 
 ## Main MycoSNP Workflow (Default Workflow): Summary
 

@@ -3,15 +3,37 @@
 ## Introduction
 This document describes how to prepare input files and run the pipeline.
 
+## Table of Contents
+- [Setup and prerequisites](#setup-and-prerequisites)
+    - [Requirements](#requirements)
+    - [Installation](#installation)
+    - [Updating the pipeline](#updating-the-pipeline)
+    - [Reproducibility](#reproducibility)
+- [Parameters](#parameters)
+- [Inputs common to both workflows](#inputs-common-to-both-workflows)
+    - [Samplesheet input](#samplesheet-input)
+    - [Samplesheet creation - automated](#samplesheet-creation---automated)
+    - [SRA sequence file additions](#sra-sequence-file-additions)
+- [Pre-MycoSNP workflow](#pre-mycosnp-workflow)
+    - [Inputs specific to the Pre-MycoSNP workflow](#inputs-specific-to-the-pre-mycosnp-workflow)
+    - [Running the Pre-MycoSNP workflow](#running-the-main-mycosnp-workflow)
+- [Main MycoSNP workflow (default workflow)](#main-mycosnp-workflow-default-workflow)
+    - [Inputs specific to the main MycoSNP workflow](#inputs-specific-to-the-main-mycosnp-workflow)
+    - [Running the main MycoSNP workflow]
+- [General nf-core documentation](#general-nf-core-documentation)
+    - [Core Nextflow arguments](#core-nextflow-arguments)
+    - [Custom configuration](#custom-configuration)
+    - [Running in the background](#running-in-the-background)
+    - [Nextflow memory requirements](#nextflow-memory-requirements)
+
+# Setup and prerequisites
+
 ## Requirements
 
 * Nextflow >= 21.10.3
-* Java 8 or later
-* Python 3 or later
+* Java 17 or later
 * Bash 3.2 or later
-* Singularity _(Optional/Recommended)_
-* Docker _(Optional/Recommended)_
-* Conda _(Optional/Recommended)_
+* [One of the container runtimes supported by Nextflow](https://www.nextflow.io/docs/latest/container.html#container-page) (Docker and Apptainer/Singularity are most popular). You can also use Conda, but this isn't recommended.
 > [!TIP]
 > Using Apptainer/Singularity with Nextflow version >=23 can result in failures in Linux server environments due to peculiarities with container directory mounting. If you are experiencing `No such file or directory` errors, try running with an earlier version of Nextflow (we've had success with 22.10.6).
 
@@ -19,63 +41,57 @@ This document describes how to prepare input files and run the pipeline.
 
 *   mycosnp-nf is written in [Nextflow](https://www.nextflow.io/), and as such requires Nextflow installation to run. Please see [nextflow installation documents](https://www.nextflow.io/docs/latest/install.html) for instructions.
 
-*   Alternatively, you can install nextflow and other dependencies via conda like so:
-
-```console
-conda create -n nextflow -c bioconda -c conda-forge nf-core=2.2 nextflow=21.10.6 git=2.35.0 openjdk=8.0.312 graphviz
-conda activate nextflow
-```
-
-*  To clone [mycosnp-nf github repo](https://github.com/CDCgov/mycosnp-nf)
+*  To clone [mycosnp-nf github repo](https://github.com/CDCgov/mycosnp-nf):
 
 ```console
 git clone https://github.com/CDCgov/mycosnp-nf
 ```
 
-*   Alternatively, `mycosnp-nf` can be pulled from github and run directly like so:
+*   Alternatively, `mycosnp-nf` can be run directly like so. The repo will be cloned in `~/.nextflow/assets/CDCgov/mycosnp-nf/`:
 
 ```console
 nextflow run CDCgov/mycosnp-nf -profile singularity,test
 ```
 
-## Reference input
+## Updating the pipeline
 
-You will need to provide the reference sequence in fasta format. You can pass the location of the fasta file using the `--fasta` argument.
-
-```console
---fasta '[path to fasta file]'
-
-```
-
-Alternatively, you can skip the reference file processing steps by providing the files needed. This can be done in one of two ways.
-
-* First way is by supplying a directory which has all the reference files from a previous mycosnp run using '--ref_dir'.
-* This expects the following directory format:
-** masked fasta in <ref_dir>/masked/\*.fa\*
-** picard dict in <ref dir>/dict/*.dict
-** samtools fai in <ref dir>/fai/*.fai
-** bwa mem index directory in <ref dir>/bwa/bwa
+When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```console
---ref_dir 'results/reference'
-
+nextflow pull CDCgov/mycosnp-nf
 ```
 
-* Second way is by providing each of the files separately.
-  - --ref_masked_fasta path/to/ref.fasta
-  - --ref_fai path/to/fai/file.fai
-  - --ref_bwa path/to/bwa/directory
-  - --ref_dict path/to/picard/dict/file.dict
+## Reproducibility
+
+It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
+
+First, go to the [CDCgov/mycosnp-nf releases page](https://github.com/CDCgov/mycosnp-nf/releases) and find the latest version number (eg. `v1.6.0`). Then specify this when running the pipeline with `-r` (one hyphen) - e.g. `-r v1.6.0`.
+
+This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
+
+# Parameters
+
+Parameter documentation is available [here](params.md). You can also see full pipeline parameters by using `--help` when running the workflow:
 
 ```console
---ref_masked_fasta results-copy/reference/masked/reference.fa --ref_fai results-copy/reference/fai/reference.fa.fai --ref_bwa results-copy/reference/bwa/bwa --ref_dict results-copy/reference/dict/reference.dict
-
+nextflow run main.nf --help
+# Or
+nextflow run CDCgov/mycosnp-nf --help
 ```
 
+Some parameters are hidden, but can be seen by using the `--show_hidden_params` option:
+
+```console
+nextflow run main.nf -help --show_hidden_params
+# Or
+nextflow run CDCgov/mycosnp-nf -help --show_hidden_params
+```
+
+# Inputs common to both workflows
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use the `--input` parameter to specify its location. It has to be a comma-separated file (csv) with at least 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running either workflow. Use the `--input` parameter to specify its location. It has to be a comma-separated file (csv) with at least 3 columns, and a header row as shown in the examples below.
 
 ```console
 --input '[path to samplesheet file]'
@@ -122,7 +138,7 @@ mycosnp-nf/bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samp
 
 ## SRA sequence file additions
 
-You may provide a list of SRA ids as additional inputs sequences into the pipeline. Use the `--add_sra_file` parameter to specify its location. It has to be a comma-separated file (csv) with one or 2 columns, and NO header row as shown in the examples below.
+You may provide a list of SRA ids as additional input sequences into the pipeline. Use the `--add_sra_file` parameter to specify its location. It has to be a comma-separated file (csv) with one or 2 columns, and NO header row as shown in the examples below.
 
 ```console
 --add_sra_file '[path to samplesheet file: assets/sra_small.csv]'
@@ -137,7 +153,44 @@ B12352,SRR7909282
 SRR7909249
 B13520,SRR7909394
 ```
-## VCF file additions
+
+# Pre-MycoSNP workflow
+## Inputs specific to the Pre-MycoSNP workflow
+
+# Main MycoSNP workflow (default workflow)
+
+## Inputs specific to the main MycoSNP workflow
+### Reference input
+
+You will need to provide the reference sequence in fasta format. You can pass the location of the fasta file using the `--fasta` argument.
+
+```console
+--fasta '[path to fasta file]'
+```
+
+Alternatively, you can skip the reference file processing steps by providing the files needed. This can be done in one of two ways.
+
+* First way is by supplying a directory which has all the reference files from a previous mycosnp run using '--ref_dir'. This expects the following directory format:
+    * masked fasta in <ref_dir>/masked/\*.fa\*
+    * picard dict in <ref dir>/dict/*.dict
+    * samtools fai in <ref dir>/fai/*.fai
+    * bwa mem index directory in <ref dir>/bwa/bwa
+
+```console
+--ref_dir 'results/reference'
+```
+
+* Second way is by providing each of the files separately.
+  - --ref_masked_fasta path/to/ref.fasta
+  - --ref_fai path/to/fai/file.fai
+  - --ref_bwa path/to/bwa/directory
+  - --ref_dict path/to/picard/dict/file.dict
+
+```console
+--ref_masked_fasta results-copy/reference/masked/reference.fa --ref_fai results-copy/reference/fai/reference.fa.fai --ref_bwa results-copy/reference/bwa/bwa --ref_dict results-copy/reference/dict/reference.dict
+```
+
+### VCF file additions
 
 You may provide a list of VCF files from previous runs of this pipeline as additional inputs sequences into the pipeline. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. These files can be found in the `results/samples/sample_id/variant_calling/haplotypecaller` subfolder. Use the `--add_vcf_file` parameter to specify its location. It has to be a .csv file (with one column only) with the full path to the vcf file on each line, and NO header row as shown in the examples below.
 
@@ -154,25 +207,7 @@ Example File:
 /mydir/results/samples/B12430/variant_calling/haplotypecaller/B12430.g.vcf.gz
 ```
 
-## Pipeline parameters
-
-Parameter documentation is available [here](params.md). You can also see full pipeline parameters by using `--help` when running the workflow:
-
-```console
-nextflow run main.nf --help
-# Or
-nextflow run CDCgov/mycosnp-nf --help
-```
-
-Some parameters are hidden, but can be seen by using the `--show_hidden_params` option:
-
-```console
-nextflow run main.nf -help --show_hidden_params
-# Or
-nextflow run CDCgov/mycosnp-nf -help --show_hidden_params
-```
-
-## Running the pipeline
+## Running the main MycoSNP workflow
 
 The typical command for running the pipeline is as follows:
 
@@ -220,22 +255,7 @@ This will launch the pipeline with the `singularity` configuration profile. See 
 ># Other nextflow hidden files, eg. history of pipeline runs and old logs.
 >```
 
-### Updating the pipeline
-
-When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
-
-```console
-nextflow pull CDCgov/mycosnp-nf
-```
-
-### Reproducibility
-
-It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
-
-First, go to the [CDCgov/mycosnp-nf releases page](https://github.com/CDCgov/mycosnp-nf/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.0.1`.
-
-This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
-
+# General nf-core documentation
 ## Core Nextflow arguments
 
 > **NB:** These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).

@@ -70,7 +70,7 @@ Output files:
 
 ## Subtyping (sourmash)
 - After the GAMBIT step, Pre-MycoSNP uses [sourmash](https://github.com/sourmash-bio/sourmash) to perform subtyping for taxa that are contained in [`assets/sourmash_db/sourmash_taxa.csv`](/assets/sourmash_db/sourmash_taxa.csv) and have an associated sourmash signature file in [`assets/sourmash_db/signatures/`](/assets/sourmash_db/signatures/).
-- For _Candida auris_, clade prediction (Clades I-VI) is performed with [assets/sourmash_db/signatures/candida_auris_clades.sig](/assets/sourmash_db/signatures/candida_auris_clades.sig).
+- For _Candida auris_, clade prediction (Clades I-VI) is performed with [`assets/sourmash_db/signatures/candida_auris_clades.sig`](/assets/sourmash_db/signatures/candida_auris_clades.sig).
 - Pre-MycoSNP estimates average nucleotide identity (ANI) to the closest match in the signature file using the `--containment` and `--ani` options in [`sourmash compare`](https://sourmash.readthedocs.io/en/latest/command-line.html#sourmash-compare-compare-many-signatures).
 
 Output files:
@@ -81,6 +81,9 @@ Output files:
 Output files: `combined/pre-mycosnp_summary/pre-mycosnp-summary.csv`
 
 #### Header descriptions and comparison to main MycoSNP workflow's [QC report](#qc-report):
+> [!NOTE]
+> If a _C. auris_ sample has a `Subtype_ANI` less than 99.7, the `Subtype_Closest_Match` field is filled with "ANI is less than the established Candida auris clade separation threshold of 99.7." This is based on reliable clade separation thresholds described in the validation [report](https://github.com/CDCgov/mycosnp-nf/wiki/Validation-study:-Pre%E2%80%90MycoSNP-taxonomic-classification-and-subtyping) on the Wiki. _C. auris_ clade predictions with ANI less than 99.7 should be interpreted with caution.
+
 | Column                           | Description                                                                                 | Matching column in main MycoSNP workflow's QC report |
 | -------------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | Sample                           | sample ID                                                                                   | `Sample Name`                                        |
@@ -89,7 +92,7 @@ Output files: `combined/pre-mycosnp_summary/pre-mycosnp-summary.csv`
 | Subtype_Closest_Match            | sourmash closest match (see "Note" below)                                                   |                                                      |
 | Subtype_ANI                      | ANI to closest sourmash match (see "Note" below)                                            |                                                      |
 | Closest_GAMBIT_Entry_Description | Closest entry in the GAMBIT fungal database                                                 |                                                      |
-| Closest_GAMBIT_Entry_Distance    | Jaccard distance (1 - Jaccard index) to closest entry                                       |                                                      |
+| Closest_GAMBIT_Entry_Distance    | Jaccard distance (`1 - Jaccard index`) to closest entry                                     |                                                      |
 | Trimmed_Reads                    | Number of reads after trimming with FaQCs                                                   | `Reads After Trimming`                               |
 | Avg_Read_Quality                 | Average Q score of reads after trimming with FaQCs                                          | `Average Q Score After Trimming`                     |
 | Sample_Assembly_Length           | Length of the Shovill assembly                                                              |                                                      |
@@ -97,9 +100,6 @@ Output files: `combined/pre-mycosnp_summary/pre-mycosnp-summary.csv`
 | Reference_Genome_Length          | Length of the reference genome of the closest GAMBIT entry (if a prediction is made)        |                                                      |
 | Avg_Depth_Coverage               | (Total trimmed bases / `Reference_Genome_Length`)                                           |                                                      |
 | Reference_GC                     | GC percentage of the reference genome of the closest GAMBIT entry (if a prediction is made) |                                                      |
-
-> [!NOTE]
-> If a _C. auris_ sample has a `Subtype_ANI` less than 99.7, the `Subtype_Closest_Match` field is filled with "ANI is less than the established Candida auris clade separation threshold of 99.7." This is based on reliable clade separation thresholds described in the validation [report](https://github.com/CDCgov/mycosnp-nf/wiki/Validation-study:-Pre%E2%80%90MycoSNP-taxonomic-classification-and-subtyping) on the Wiki. _C. auris_ clade predictions with ANI less than 99.7 should be interpreted with caution.
 
 ### MultiQC
 - Outputs follow the same [pattern described for the main MycoSNP workflow](#multiqc-1).
@@ -174,12 +174,12 @@ Outputs follow the same [pattern described for the main MycoSNP workflow](#pipel
 
 **Important output files from this section:**
 
-| File          | Path                                      |
-| ---           | ---                                       |
-| Trimmed Reads |  `(samples/<sample_id>/faqcs/*.fastq.gz)` |
-|  Bam files    |  `(samples/<sample_id>/finalbam)`         |
-|  QC Report    |  `(stats/qc_report)`                      |
-|  MultiQC      |  `(multiqc/)`                             |
+| File                       | Path                                      |
+| ---                        | ---                                       |
+| Trimmed Reads              |  `(samples/<sample_id>/faqcs/*.fastq.gz)` |
+| Bam files                  |  `(samples/<sample_id>/finalbam)`         |
+| [QC Report](#qc-report)    |  `(stats/qc_report/qc_report.txt)`        |
+| [MultiQC](#multiqc-1)      |  `(multiqc/)`                             |
 
 ## GATK Variants
 
@@ -224,7 +224,8 @@ Outputs follow the same [pattern described for the main MycoSNP workflow](#pipel
 | ---                                            | ---                                           |
 | Annotated vcf file from SnpEff	               | `(snpeff/combined.snpeff.vcf.gz)`             |
 | Customized report of variants in FKS1 hotspots | `(snpeff/combined_cauris_refB11205_fks1.csv)` |
-
+> [!NOTE]
+> The "mutation" column in `snpeff/combined_cauris_refB11205_fks1.csv` can contain a value of "undetermined". This occurs when GATK identifies a variant in the individual VCF file for an isolate, but loses the identified variant in the subsequent step when GATK creates a merged VCF file that includes all isolates.
 
 ## Summary Files
 
@@ -244,7 +245,7 @@ Outputs follow the same [pattern described for the main MycoSNP workflow](#pipel
 > [!NOTE]
 > The FastQC plots displayed in the MultiQC report show _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
 
-### QC Report
+### QC Report (`stats/qc_report/qc_report.txt`)
 The QC report values are generated from FAQCS text file outputs and Qualimap result files. The following is an example table:
 | Sample Name | Reads Before Trimming | GC Before Trimming | Average Q Score Before Trimming | Reference Length Coverage Before Trimming | Reads After Trimming | Paired Reads After Trimming | Unpaired Reads After Trimming | GC After Trimming | Average Q Score After Trimming | Reference Length Coverage After Trimming | Mean Coverage Depth[^1] | Reads Mapped     | Genome Fraction at 10X[^2] |
 |-------------|-----------------------|--------------------|---------------------------------|-------------------------------------------|----------------------|-----------------------------|-------------------------------|-------------------|--------------------------------|------------------------------------------|---------------------|------------------|----------------------------|
@@ -267,7 +268,8 @@ The QC report values are generated from FAQCS text file outputs and Qualimap res
 | Genome Fraction at 10X[^2]                 | Qualimap |
 
 [^1]: "Mean Coverage Depth" is a post-alignment metric. Qualimap divides the reference genome into 400 (default) windows. For each window, Qualimap counts the total number of bases that aligned with the window, divided by the number of bases in the window. The Mean Coverage Depth is the average across all of these windows.
-[^2]: "Genome fraction" refers to the percentage of the reference genome that is covered at a specific depth by the sample. This metric will output the genome fraction at the minimum depth (`--min_depth`) parameter used to call bases.
+[^2]: "Genome fraction" refers to the percentage of the reference genome that is covered at a specific depth by the sample. This metric will output the genome fraction at the minimum depth (`--min_depth`) parameter used to call bases (e.g. "Genome Fraction at 10X").
+
 ### MultiQC
 
 <details markdown="1">
