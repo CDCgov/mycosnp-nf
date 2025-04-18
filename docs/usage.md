@@ -156,7 +156,7 @@ Example File:
 
 ## Pipeline parameters
 
-Same recommended defaults parameters are used, but full documentation on the default parameters can be viewed in the help documentation or on [mycosnp-nf wiki](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs). You can see full pipeline parameters by using '-help' when running the workflow.
+Parameter documentation is available [here](params.md). You can also see full pipeline parameters by using `--help` when running the workflow:
 
 ```console
 nextflow run main.nf --help
@@ -177,6 +177,8 @@ nextflow run CDCgov/mycosnp-nf -help --show_hidden_params
 The typical command for running the pipeline is as follows:
 
 For a minimal test run:
+> [!NOTE]
+> The samples for the minimal test run are bacterial (_N. gonorrhoeae_), not fungal. This is intentional so the test finishes in a few minutes (as opposed to longer for fungal samples with much larger genomes).
 
 ```console
 nextflow run main.nf -profile singularity,test

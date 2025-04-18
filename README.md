@@ -6,7 +6,7 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 
 ## Introduction
-**MycoSNP** is a bioinformatics pipeline for performing whole genome sequencing analysis of fungal organisms (e.g. _Candida auris_), built with the [nf-core](https://nf-co.re/) template.
+**MycoSNP** is a bioinformatics pipeline for performing whole genome sequencing analysis of fungal organisms (e.g. _Candida auris_) from Illumina paired-end reads. It is built with the [nf-core](https://nf-co.re/) template.
 
 This repository contains two workflows that are run independently:
 - **Pre-MycoSNP workflow**: A first-pass workflow for quick answers
@@ -62,13 +62,13 @@ This repository contains two workflows that are run independently:
 1. Trim/filter reads ([`FaQCs`](https://github.com/LANL-Bioinformatics/FaQCs))​
 1. De novo assembly ([`Shovill`](https://github.com/tseemann/shovill))
     - Downsampling​ (default 70X)
-    - Assembly (with [`SKESA`](https://github.com/ncbi/SKESA) [default], [`SPAdes`](https://github.com/ablab/spades), or [`Megahit`](https://github.com/voutcn/megahit)​)
+    - Assembly (with [`SKESA`](https://github.com/ncbi/SKESA) [default], [`SPAdes`](https://github.com/ablab/spades), [`Megahit`](https://github.com/voutcn/megahit), or [`Velvet`](https://github.com/dzerbino/velvet​)​)
 1. Taxonomic classification ([`GAMBIT`](https://github.com/jlumpe/gambit​))
     - Classifies isolate to genus/species level, if possible
     - Uses GAMBIT's fungal database v0.2.0. See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for a list of taxa included in the database.
-1. If isolate classified as _C. auris_…​
-    1. Create [`sourmash`](https://github.com/sourmash-bio/sourmash) sketch of sample
-    1. Assign _C. auris_ clade with [`sourmash`](https://github.com/sourmash-bio/sourmash)
+1. Subtyping [`sourmash`](https://github.com/sourmash-bio/sourmash)
+    - Compares sourmash sketch of sample against sourmash signature file provided in [assets/sourmash_db/](assets/sourmash_db/).
+    - By default, for _C. auris_, Pre-MycoSNP performs clade typing (Clades I-VI).
 1. Report _C. auris_ (w/ clade), or other fungal genus/species
 
 ## Main MycoSNP Workflow (Default Workflow): Summary
@@ -119,7 +119,7 @@ This repository contains two workflows that are run independently:
 ### Variant annotation analysis (currently available for *C. auris* B11205 genome only)
 
 * annotated VCF file (`snpEff`)
-* combined output report(`SnpEffR`)
+* [`snpeffr`](https://github.com/CDCgov/snpeffr) report. Non-synonymous variants in FKS1 hotspot regions are included in the report.
 
 ## Pre-configured Nextflow development environment using Gitpod
 
@@ -139,6 +139,7 @@ We thank the following people (alphabetical order by last name) for their code c
 * Lynn Dotrang [@leuthrasp](https://github.com/LeuThrAsp)
 * Jared Johnson [@DOH-JDJ0303](https://github.com/DOH-JDJ0303)
 * Christopher Jossart [@cjjossart](https://github.com/cjjossart)
+* Elizabeth Misas [@AspTryGlu](https://github.com/AspTryGlu)
 * Drewry Morris [@drewry](https://github.com/drewry)
 * Zack Mudge [@zmudge3](https://github.com/zmudge3)
 * Harshil Patel [@drpatelh](https://github.com/drpatelh)
