@@ -80,7 +80,7 @@ Output files:
 ### Pre-MycoSNP summary report
 Output files: `combined/pre-mycosnp_summary/pre-mycosnp-summary.csv`
 
-#### Header descriptions and comparison to main MycoSNP workflow's [QC report](#qc-report):
+#### Header descriptions and comparison to main MycoSNP workflow's [QC report](#qc-report-statsqc_reportqc_reporttxt):
 > [!NOTE]
 > If a _C. auris_ sample has a `Subtype_ANI` less than 99.7, the `Subtype_Closest_Match` field is filled with "ANI is less than the established Candida auris clade separation threshold of 99.7." This is based on reliable clade separation thresholds described in the [validation report](https://github.com/CDCgov/mycosnp-nf/wiki/Validation-study:-Pre%E2%80%90MycoSNP-taxonomic-classification-and-subtyping) on the Wiki. _C. auris_ clade predictions with ANI less than 99.7 should be interpreted with caution.
 
@@ -119,7 +119,7 @@ Outputs follow the same [pattern described for the main MycoSNP workflow](#pipel
   - [snpEff analysis](#snpeff-analysis)
 - [Summary Files](#summary-files-1)
   - [FastQC](#fastqc)
-  - [QC Report](#qc-report)
+  - [QC Report](#qc-report-statsqc_reportqc_reporttxt)
   - [MultiQC](#multiqc-1)
   - [Pipeline information](#pipeline-information-1)
 
@@ -174,12 +174,12 @@ Outputs follow the same [pattern described for the main MycoSNP workflow](#pipel
 
 **Important output files from this section:**
 
-| File                       | Path                                      |
-| ---                        | ---                                       |
-| Trimmed Reads              |  `(samples/<sample_id>/faqcs/*.fastq.gz)` |
-| Bam files                  |  `(samples/<sample_id>/finalbam)`         |
-| [QC Report](#qc-report)    |  `(stats/qc_report/qc_report.txt)`        |
-| [MultiQC](#multiqc-1)      |  `(multiqc/)`                             |
+| File                                               | Path                                      |
+| ---                                                | ---                                       |
+| Trimmed Reads                                      |  `(samples/<sample_id>/faqcs/*.fastq.gz)` |
+| Bam files                                          |  `(samples/<sample_id>/finalbam)`         |
+| [QC Report](#qc-report-statsqc_reportqc_reporttxt) |  `(stats/qc_report/qc_report.txt)`        |
+| [MultiQC](#multiqc-1)                              |  `(multiqc/)`                             |
 
 ## GATK Variants
 
@@ -225,7 +225,7 @@ Outputs follow the same [pattern described for the main MycoSNP workflow](#pipel
 | Annotated vcf file from SnpEff	               | `(snpeff/combined.snpeff.vcf.gz)`             |
 | Customized report of variants in FKS1 hotspots | `(snpeff/combined_cauris_refB11205_fks1.csv)` |
 > [!NOTE]
-> The "mutation" column in `snpeff/combined_cauris_refB11205_fks1.csv` can contain a value of "undetermined". This occurs when GATK identifies a variant in the individual VCF file for an isolate, but loses the identified variant in the subsequent step when GATK creates a merged VCF file that includes all isolates.
+> The "mutation" column in `snpeff/combined_cauris_refB11205_fks1.csv` can contain a value of "undetermined". This occurs when GATK identifies a variant in the individual VCF file for an isolate, but then the identified variant is lost in the subsequent step when GATK creates a merged VCF file that includes all isolates.
 
 ## Summary Files
 

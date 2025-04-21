@@ -10,7 +10,7 @@
 
 This repository contains two workflows that are run independently:
 - **Pre-MycoSNP workflow**: A first-pass workflow for quick answers
-  - Fungal taxonomic classification and _Candida auris_ clade typing from de novo assemblies
+  - Fungal taxonomic classification and _Candida auris_ clade typing, using de novo assemblies
 - **Main MycoSNP workflow (default workflow)**:
   - Reference-based SNP calling
   - Tree building
@@ -45,7 +45,7 @@ This repository contains two workflows that are run independently:
 
 4. Start running your own analysis!
 > [!NOTE]
-> The `workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed. See summaries of each workflow in the next section, or more detailed documentation in the [Full Documentation](docs/README.md).
+> The `--workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed. See summaries of each workflow in the next section, or more detailed documentation in the [Full Documentation](docs/README.md).
   * [Pre-MycoSNP workflow](#pre-mycosnp-workflow-summary):
     ```console
     nextflow run CDCgov/mycosnp-nf --workflow PRE_MYCOSNP -profile <docker/singularity/other/institute> --input samplesheet.csv
@@ -66,7 +66,7 @@ This repository contains two workflows that are run independently:
 1. Taxonomic classification ([`GAMBIT`](https://github.com/jlumpe/gambit​))
     - Classifies isolate to genus/species level, if possible
     - Uses GAMBIT's fungal database v0.2.0. See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for a list of taxa included in the database.
-1. Subtyping ([`sourmash`])(https://github.com/sourmash-bio/sourmash)
+1. Subtyping ([`sourmash`](https://github.com/sourmash-bio/sourmash))
     - Compares sourmash sketch of sample against sourmash signature file provided in [`assets/sourmash_db/`](assets/sourmash_db/).
     - By default, for _C. auris_, Pre-MycoSNP performs clade typing (Clades I-VI).
 1. [Summary report](docs/output.md#pre-mycosnp-summary-report) containing genus/species classification, subtype, and read and assembly quality metrics.

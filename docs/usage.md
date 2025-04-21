@@ -27,9 +27,6 @@ This document describes how to prepare input files and run the pipeline.
     - [Running the main MycoSNP workflow](#running-the-main-mycosnp-workflow)
 - [General nf-core documentation](#general-nf-core-documentation)
     - [Core Nextflow arguments](#core-nextflow-arguments)
-        - [`-profile`](#profile)
-        - [`-resume`](#resume)
-        - [`-c`](#c)
     - [Custom configuration](#custom-configuration)
         - [Resource requests](#resource-requests)
         - [Updating containers](#updating-containers)
@@ -176,7 +173,7 @@ B13520,SRR7909394
 
 ## Running the Pre-MycoSNP workflow
 > [!NOTE]
-> The `workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed.
+> The `--workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed.
 ```console
 nextflow run CDCgov/mycosnp-nf --workflow PRE_MYCOSNP -profile <docker/singularity/other/institute> --input samplesheet.csv
 ```
@@ -241,7 +238,7 @@ Example File:
 
 ## Running the main MycoSNP workflow
 > [!NOTE]
-> The `workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed.
+> The `--workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed.
 
 For a minimal test run:
 > [!NOTE]
@@ -271,7 +268,7 @@ nextflow run CDCgov/mycosnp-nf \
   --input samplesheet.csv \
   --add_sra_file srr.csv
 ```
-This will launch the pipeline with the `singularity` configuration profile. See [below](#profile) for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
 
 > Note: that the pipeline will create the following files in your working directory:
 >
