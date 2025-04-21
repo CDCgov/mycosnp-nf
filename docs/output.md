@@ -82,7 +82,7 @@ Output files: `combined/pre-mycosnp_summary/pre-mycosnp-summary.csv`
 
 #### Header descriptions and comparison to main MycoSNP workflow's [QC report](#qc-report):
 > [!NOTE]
-> If a _C. auris_ sample has a `Subtype_ANI` less than 99.7, the `Subtype_Closest_Match` field is filled with "ANI is less than the established Candida auris clade separation threshold of 99.7." This is based on reliable clade separation thresholds described in the validation [report](https://github.com/CDCgov/mycosnp-nf/wiki/Validation-study:-Pre%E2%80%90MycoSNP-taxonomic-classification-and-subtyping) on the Wiki. _C. auris_ clade predictions with ANI less than 99.7 should be interpreted with caution.
+> If a _C. auris_ sample has a `Subtype_ANI` less than 99.7, the `Subtype_Closest_Match` field is filled with "ANI is less than the established Candida auris clade separation threshold of 99.7." This is based on reliable clade separation thresholds described in the [validation report](https://github.com/CDCgov/mycosnp-nf/wiki/Validation-study:-Pre%E2%80%90MycoSNP-taxonomic-classification-and-subtyping) on the Wiki. _C. auris_ clade predictions with ANI less than 99.7 should be interpreted with caution.
 
 | Column                           | Description                                                                                 | Matching column in main MycoSNP workflow's QC report |
 | -------------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------- |

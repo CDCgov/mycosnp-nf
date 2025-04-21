@@ -52,7 +52,7 @@ This repository contains two workflows that are run independently:
     ```
   * [Main MycoSNP workflow](#main-mycosnp-workflow-default-workflow-summary) (default workflow):
     ```console
-    nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta c_auris.fasta
+    nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference_genome.fasta
     ```
 5. It is advisable to delete large temporary or log files after the successful completion of the run. It takes a lot of space and may cause issues in future runs.
 

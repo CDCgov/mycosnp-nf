@@ -12,17 +12,28 @@ This document describes how to prepare input files and run the pipeline.
 - [Parameters](#parameters)
 - [Inputs common to both workflows](#inputs-common-to-both-workflows)
     - [Samplesheet input](#samplesheet-input)
+        - [Multiple runs of the same sample](#multiple-runs-of-the-same-sample)
+        - [Full samplesheet](#full-samplesheet)
     - [Samplesheet creation - automated](#samplesheet-creation---automated)
     - [SRA sequence file additions](#sra-sequence-file-additions)
 - [Pre-MycoSNP workflow](#pre-mycosnp-workflow)
     - [Inputs specific to the Pre-MycoSNP workflow](#inputs-specific-to-the-pre-mycosnp-workflow)
-    - [Running the Pre-MycoSNP workflow](#running-the-main-mycosnp-workflow)
+        - [Sourmash subtype database](#sourmash-subtype-database)
+    - [Running the Pre-MycoSNP workflow](#running-the-pre-mycosnp-workflow)
 - [Main MycoSNP workflow (default workflow)](#main-mycosnp-workflow-default-workflow)
     - [Inputs specific to the main MycoSNP workflow](#inputs-specific-to-the-main-mycosnp-workflow)
-    - [Running the main MycoSNP workflow]
+        - [Reference input](#reference-input)
+        - [VCF file additions](#vcf-file-additions)
+    - [Running the main MycoSNP workflow](#running-the-main-mycosnp-workflow)
 - [General nf-core documentation](#general-nf-core-documentation)
     - [Core Nextflow arguments](#core-nextflow-arguments)
+        - [`-profile`](#profile)
+        - [`-resume`](#resume)
+        - [`-c`](#c)
     - [Custom configuration](#custom-configuration)
+        - [Resource requests](#resource-requests)
+        - [Updating containers](#updating-containers)
+        - [nf-core/configs](#nf-coreconfigs)
     - [Running in the background](#running-in-the-background)
     - [Nextflow memory requirements](#nextflow-memory-requirements)
 
@@ -71,7 +82,7 @@ This version number will be logged in reports when you run the pipeline, so that
 
 # Parameters
 
-Parameter documentation is available [here](params.md). You can also see full pipeline parameters by using `--help` when running the workflow:
+Parameter documentation is available in [docs/params.md](params.md). You can also see full pipeline parameters by using `--help`:
 
 ```console
 nextflow run main.nf --help
@@ -99,7 +110,7 @@ You will need to create a samplesheet with information about the samples you wou
 
 ### Multiple runs of the same sample
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The workflow will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
 
 ```console
 sample,fastq_1,fastq_2,fastq_3,fastq_4
@@ -108,7 +119,7 @@ CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,A
 
 ### Full samplesheet
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+The workflow will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
 
 A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 4 samples, where `TREATMENT_REP3` has been sequenced twice.
 
@@ -126,11 +137,11 @@ TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,AEG588A6_S6_L003_R2_001.fastq.gz
 | `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 | `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 
-An [example samplesheet](/assets/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](/assets/samplesheet.csv) has been provided with the repository.
 
 ## Samplesheet creation - automated
 
-A script is available to create a samplesheet from a directory of fastq files. The script will search 1 directory deep and attempt to determine sample id names and pairing/multilane information and will automatically create a samplesheet. Please review the samplesheet for accuracy before using it in the pipeline.
+A script is available to create a samplesheet from a directory of fastq files. The script will search 1 directory deep and attempt to determine sample id names and pairing/multilane information and will automatically create a samplesheet. Please review the samplesheet for accuracy before using it.
 
 ```console
 mycosnp-nf/bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samplesheet.csv
@@ -138,7 +149,7 @@ mycosnp-nf/bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samp
 
 ## SRA sequence file additions
 
-You may provide a list of SRA ids as additional input sequences into the pipeline. Use the `--add_sra_file` parameter to specify its location. It has to be a comma-separated file (csv) with one or 2 columns, and NO header row as shown in the examples below.
+You may provide a list of SRA ids as additional input sequences into either workflow. Use the `--add_sra_file` parameter to specify its location. It has to be a comma-separated file (csv) with one or 2 columns, and NO header row as shown in the examples below.
 
 ```console
 --add_sra_file '[path to samplesheet file: assets/sra_small.csv]'
@@ -156,6 +167,27 @@ B13520,SRR7909394
 
 # Pre-MycoSNP workflow
 ## Inputs specific to the Pre-MycoSNP workflow
+### Sourmash subtype database
+* The `--subtype_db` parameter species the path to a directory containing the files necessary for subtyping. The default path is `${projectDir}/assets/sourmash_db`.
+* The directory should contain sourmash signature files, each containing multiple sketches for the representative subtypes.
+* The directory should also contain a csv file called `sourmash_taxa.csv` mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is reported by GAMBIT.
+* See [assets/sourmash_db/](/assets/sourmash_db) for example files and directory structure. This repository comes with a _Candida auris_ signature file ([assets/sourmash_db/signatures/candida_auris_clades.sig](/assets/sourmash_db/signatures/candida_auris_clades.sig)), containing sourmash sketches for the six _C. auris_ clades.
+* You can add as many different signature files as you wish for the subtyper step. Ensure the `gambit_taxon` field in `sourmash_taxa.csv` matches the GAMBIT output exactly.
+
+## Running the Pre-MycoSNP workflow
+> [!NOTE]
+> The `workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed.
+```console
+nextflow run CDCgov/mycosnp-nf --workflow PRE_MYCOSNP -profile <docker/singularity/other/institute> --input samplesheet.csv
+```
+
+Example:
+```console
+nextflow run CDCgov/mycosnp-nf --workflow PRE_MYCOSNP \
+  -profile singularity \
+  --input samplesheet.csv \
+  --add_sra_file srr.csv
+```
 
 # Main MycoSNP workflow (default workflow)
 
@@ -192,7 +224,7 @@ Alternatively, you can skip the reference file processing steps by providing the
 
 ### VCF file additions
 
-You may provide a list of VCF files from previous runs of this pipeline as additional inputs sequences into the pipeline. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. These files can be found in the `results/samples/sample_id/variant_calling/haplotypecaller` subfolder. Use the `--add_vcf_file` parameter to specify its location. It has to be a .csv file (with one column only) with the full path to the vcf file on each line, and NO header row as shown in the examples below.
+You may provide a list of VCF files from previous runs of this workflow as additional inputs sequences into the workflow. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. These files can be found in the `results/samples/sample_id/variant_calling/haplotypecaller` subfolder. Use the `--add_vcf_file` parameter to specify its location. It has to be a .csv file (with one column only) with the full path to the vcf file on each line, and NO header row as shown in the examples below.
 
 ```console
 --add_vcf_file '[path to vcf file: assets/vcf_add.csv]'
@@ -208,50 +240,45 @@ Example File:
 ```
 
 ## Running the main MycoSNP workflow
-
-The typical command for running the pipeline is as follows:
+> [!NOTE]
+> The `workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed.
 
 For a minimal test run:
 > [!NOTE]
 > The samples for the minimal test run are bacterial (_N. gonorrhoeae_), not fungal. This is intentional so the test finishes in a few minutes (as opposed to longer for fungal samples with much larger genomes).
 
 ```console
-nextflow run main.nf -profile singularity,test
+nextflow run CDCgov/mycosnp-nf -profile test,<docker/singularity/other/institute>
 ```
 
 For a full test run:
 
 ```console
-nextflow run main.nf -profile singularity,test_full
+nextflow run CDCgov/mycosnp-nf -profile test_full,<docker/singularity/other/institute>
 ```
 
 For a real run:
 
 ```console
-nextflow run main.nf -profile singularity --input samplesheet.csv --fasta reference_genome.fasta
+nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference_genome.fasta
 ```
 
-Additional examples:
-
+Example:
 ```console
-nextflow run main.nf \
+nextflow run CDCgov/mycosnp-nf \
   -profile singularity \
   --fasta "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/016/772/135/GCA_016772135.1_ASM1677213v1/GCA_016772135.1_ASM1677213v1_genomic.fna.gz" \
-  --custom_config_base ~/nf-core-custom \
-  --publish_dir_mode copy \
-  --add_sra_file assets/sra_ca_controls.csv \
-  --outdir sra_controlsdata
+  --input samplesheet.csv \
+  --add_sra_file srr.csv
 ```
-
-
-This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See [below](#profile) for more information about profiles.
 
 > Note: that the pipeline will create the following files in your working directory:
 >
 >```console
 >work            # Directory containing the nextflow working files
 >results         # Finished results (configurable, see below)
->.nextflow_log   # Log file from Nextflow
+>.nextflow.log   # Log file from Nextflow
 ># Other nextflow hidden files, eg. history of pipeline runs and old logs.
 >```
 
