@@ -23,7 +23,7 @@ reports:
   "**/samples/**/variant_calling/haplotypecaller/*":
     display: "Raw VCF (Per Sample)"
   "**/multiqc/pre-mycosnp/multiqc_report.html":
-    display: "MultiQC Report from pre-MycoSNP workflow (Combined)"
+    display: "MultiQC Report from Pre-MycoSNP workflow (Combined)"
   "**/multiqc/mycosnp/multiqc_report.html":
     display: "MultiQC Report from main MycoSNP workflow (Combined)"
   "**/combined/pre-mycosnp_summary/*":

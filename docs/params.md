@@ -17,16 +17,31 @@ Workflow selection options
   --workflow                   [string]  Name of the workflow to run (`PRE_MYCOSNP` for Pre-MycoSNP workflow | `NFCORE_MYCOSNP` for main MycoSNP workflow). 
                                          [default: NFCORE_MYCOSNP] 
 
+Pre-MycoSNP workflow options
+  --assembler                  [string]  Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades' [default: skesa]
+  --shovill_depth              [integer] Downsample FASTQ files to this depth before assembly [default: 70]
+  --genome_size                [string]  The approx. genome size of the sample, used by Shovill. Will be automatically determined if left blank.
+  --min_contig_cov             [integer] Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill [default: 10]
+  --min_contig_len             [integer] Minimum contig length for it to be retained in the assembly, used by Shovill [default: 300]
+  --gambit_h5                  [string]  Path to the GAMBIT '.h5' file. [default: 
+                                         gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5] 
+  --gambit_db                  [string]  Path to the GAMBIT '.db' file. [default: 
+                                         gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db] 
+  --subtype_db                 [string]  Path to a directory containing the subtyper files. This directory should contain sourmash signature files, each 
+                                         containing multiple sketches for the representative subtypes. This directory should also contain a csv file called 
+                                         sourmash_taxa.csv mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is 
+                                         reported by GAMBIT. [default: ${projectDir}/assets/sourmash_db/] 
+
 Input/output options
   --input                      [string]  Path to comma-separated file containing information about the samples in the experiment.
   --add_sra_file               [string]  Path to comma-separated file containing SRA ids to download from NCBI. Format: Name,SRAID
-  --add_vcf_file               [string]  Path to .csv (only one column) containing a list of file paths to vcf files generated from previous runs of this 
-                                         workflow to include in this analysis. They must use the same exact reference. *.tbi file must be in same location. Each 
-                                         line of .csv file has format: /path/to/vcf/file.gz 
+  --add_vcf_file               [string]  (Main MycoSNP workflow only) Path to .csv (only one column) containing a list of file paths to vcf files generated from 
+                                         previous runs of this workflow to include in this analysis. They must use the same exact reference. *.tbi file must be 
+                                         in same location. Each line of .csv file has format: /path/to/vcf/file.gz 
   --outdir                     [string]  Path to the output directory where the results will be saved. [default: ./results]
   --publish_dir_mode           [string]  Method used to save pipeline results to output directory. [default: copy]
 
-Reference genome options
+Main MycoSNP workflow: reference genome options
   --fasta                      [string]  Path to FASTA formatted reference genome file.
   --ref_dir                    [string]  Path to reference genome masked files/picard dict/samtools fai/bwa index from previous run. If you use this command, it 
                                          invalidates `--fasta --ref_masked_fasta --ref_fai --ref_bwa --ref_dict` 
@@ -46,7 +61,7 @@ Reference genome options
   --genes                      [string]  Genes [default: CAB11_002014]
   --exclude                    [string]  exclude variants [default: synonymous_variant]
 
-MycoSNP Run/Save/Skip Options
+Main MycoSNP workflow: Run/Save/Skip options
   --save_reference             [boolean] Saves the reference genome/index files to the results folder [default: true]
   --save_alignment             [boolean] Saves the reference alignment BAM files to the samples results folder [default: true]
   --rapidnj                    [boolean] Build a tree using the RapidNJ neighbour-joining algorithm [default: true]
@@ -60,7 +75,7 @@ MycoSNP Run/Save/Skip Options
   --skip_combined_analysis     [boolean] Skip combined variant analysis (run reference prep and mapping)
   --skip_phylogeny             [boolean] Skip phylogenetic tree creation
 
-MycoSNP Run Params
+Main MycoSNP workflow: run params
   --sample_ploidy              [integer] Ploidy of sample (GATK) [default: 1]
   --coverage                   [integer] Coverage is used to calculate a down-sampling rate that results in the specified coverage. For example, if coverage is 
                                          70, then FASTQ files are down-sampled such that, when aligned to the reference, the result is approximately 70x 
@@ -74,22 +89,6 @@ MycoSNP Run Params
                                          disable. [default: 10] 
   --mask                       [boolean] Perform masking of reference genome before analysis [default: true]
 
-Pre-MycoSNP options
-  --assembler                  [string]  Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades' [default: skesa]
-  --shovill_depth              [integer] Downsample FASTQ files to this depth before assembly [default: 70]
-  --genome_size                [string]  The approx. genome size of the sample, used by Shovill. Will be automatically determined if left blank.
-  --min_contig_cov             [integer] Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill [default: 10]
-  --min_contig_len             [integer] Minimum contig length for it to be retained in the assembly, used by Shovill [default: 300]
-  --gambit_h5                  [string]  Path to the GAMBIT '.h5' file. [default: 
-                                         gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5] 
-  --gambit_db                  [string]  Path to the GAMBIT '.db' file. [default: 
-                                         gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db] 
-  --subtype_db                 [string]  Path to a directory containing the subtyper files. This directory should contain sourmash signature files, each 
-                                         containing multiple sketches for the representative subtypes. This directory should also contain a csv file called 
-                                         sourmash_taxa.csv mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is 
-                                         reported by GAMBIT. [default: ${projectDir}/assets/sourmash_db/] 
-
 Generic options
   --help                       [boolean] Display help text.
-  --tmpdir                     [string]  temporary directory for shell and java processes [default: /tmp]
 ```
