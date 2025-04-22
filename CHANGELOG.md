@@ -1,30 +1,31 @@
-# nf-core/mycosnp: Changelog
+# CDCgov/mycosnp-nf: Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## v1.6.0 - [04/21/2025]
 
 ### Added
-- Added the "Pre-MycoSNP" workflow for fungal taxonomic classification and _Candida auris_ clade typing (using de novo assemblies)
+- Added the "Pre-MycoSNP" workflow for quick fungal taxonomic classification and _Candida auris_ clade typing (using de novo assemblies)
     - Base workflow development by Jared Johnson [@DOH-JDJ0303](https://github.com/DOH-JDJ0303) (#119)
     - Original sourmash subtyping subworkflow by Charlotte Royer [@royercj](https://github.com/royercj) (#114)
     - Co-development, validation, testing, and documentation by Zack Mudge [@zmudge3](https://github.com/zmudge3)
 - Added the "Genome Fraction" metric to the main MycoSNP workflow's [QC report](/docs/output.md#qc-report-statsqc_reportqc_reporttxt), by CJ Jossart [@cjjossart](https://github.com/cjjossart) (#123, #128)
 - Nextflow Tower / Seqera Cloud functionality, by Jared Johnson [@DOH-JDJ0303](https://github.com/DOH-JDJ0303) (#104)
-- Added FKS1 coordinates for a third hotspot region (single amino acid) associated with echinocandin resistance in _Candida auris_ (for the snpeffr report)
+- Added FKS1 coordinates for a third hotspot region (single amino acid) associated with echinocandin resistance in _Candida auris_ (for the snpeffr report - `results/snpeff/combined_cauris_refB11205_fks1.csv`)
 
 ### Changed
 - Bumped GATK version to 4.5.0.0
 - Changed SnpEff-related config to work with cloud, by Jared Johnson [@DOH-JDJ0303](https://github.com/DOH-JDJ0303) (#103)
-- Updated samplesheet and reference genome links in [test.config](test.config)
+- Updated samplesheet and reference genome links in [test.config](/conf/test.config)
 - Changed filename of `results/snpeff/combined.csv` to `results/snpeff/combined_cauris_refB11205_fks1.csv`
-- Bumped [snpeffr](https://github.com/CDCgov/snpeffr) version to v1.1.1. The "mutation" column in the Snpeffr report (`results/snpeff/combined_cauris_refB11205_fks1.csv`) can now contain a value of "undetermined". This occurs when GATK identifies a variant in the individual VCF file for an isolate, but then the identified variant is lost in the subsequent step when GATK creates a merged VCF file that includes all isolates.
+- Bumped [snpeffr](https://github.com/CDCgov/snpeffr) version to v1.1.1. The "mutation" column in the snpeffr report (`results/snpeff/combined_cauris_refB11205_fks1.csv`) can now contain a value of "undetermined". This occurs when GATK identifies a variant in the individual VCF file for an isolate, but then the identified variant is lost in the subsequent step when GATK creates a merged VCF file that includes all isolates.
+    - Snpeffr v1.1.1 updates by Mal Rajeev [@mrajeev08](https://github.com/mrajeev08)
 
 ### Removed
 - Removed `--tmpdir` parameter and associated config in [nextflow.config](/nextflow.config)
 
 ### Fixed
-- Fixed _Candida auris_ FKS1 hotspot 1 coordinates in [nextflow.config](/nextflow.config) (for the snpeffr report)
+- Fixed _Candida auris_ FKS1 hotspot 1 coordinates in [nextflow.config](/nextflow.config), to include the first nucleotide of F635, and remove two extra nucleotides at the end
 
 ### Deprecated
 - Nextflow `-entry` parameter to run specific workflow is deprecated. Use MycoSNP's `--workflow` parameter instead.
