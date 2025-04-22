@@ -1,4 +1,4 @@
-# ![CDCgov/mycosnp-nf](docs/images/nf-core-mycosnp_logo_light.png#gh-light-mode-only) ![CDCgov/mycosnp-nf](docs/images/nf-core-mycosnp_logo_dark.png#gh-dark-mode-only)
+# 🍄🧬 MycoSNP: Whole Genome Sequencing Analysis of Fungal Isolates
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
@@ -6,13 +6,72 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 
 ## Introduction
+**MycoSNP** is a bioinformatics pipeline for performing whole genome sequencing analysis of fungal organisms (e.g. _Candida auris_) from Illumina paired-end reads. It is built with the [nf-core](https://nf-co.re/) template.
 
+This repository contains two workflows that are run independently:
+- **Pre-MycoSNP workflow**: A first-pass workflow for quick answers
+  - Fungal taxonomic classification and _Candida auris_ clade typing, using de novo assemblies
+- **Main MycoSNP workflow (default workflow)**:
+  - Reference-based SNP calling
+  - Tree building
+  - Identification of antifungal-resistance mutations
 
-**nf-core/mycosnp** is a bioinformatics best-practice analysis pipeline for MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations..
+## 📚 Full Documentation
+- [**Usage**](docs/usage.md): An overview of how MycoSNP works, how to run it and a description of all of the different command-line flags.
+- [**Parameters**](docs/params.md): Options, flags, and inputs.
+- [**Output**](docs/output.md): An overview of the different results produced by MycoSNP and how to interpret them.
 
-The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
+## Quick Start
 
-## Pipeline summary
+1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
+
+2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_. More info on using containers with Nextflow [here](https://www.nextflow.io/docs/latest/container.html#container-page).
+
+> [!TIP]
+> Using Apptainer/Singularity with Nextflow version >=23 can result in failures in Linux server environments due to peculiarities with container directory mounting. If you are experiencing `No such file or directory` errors, try running with an earlier version of Nextflow (we've had success with 22.10.6).
+3. Test the main MycoSNP workflow on pre-defined minimal test samples with a single command:
+    ```console
+    nextflow run CDCgov/mycosnp-nf -profile test,YOURPROFILE
+    ```
+> [!NOTE]
+> The samples for the test run are bacterial (_N. gonorrhoeae_), not fungal. This is intentional so the test finishes in a few minutes (as opposed to longer for fungal samples with much larger genomes).
+
+  > [!TIP]
+  > Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
+  > * The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
+  > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+  > * If you are using `singularity` and are persistently observing issues downloading Singularity images directly due to timeout or network issues, then you can use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, you can use the [`nf-core download`](https://nf-co.re/docs/nf-core-tools/pipelines/download) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/container.html#singularity) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
+  > * If you are using `conda` (not recommended), it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+
+4. Start running your own analysis!
+> [!NOTE]
+> The `--workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed. See summaries of each workflow in the next section, or more detailed documentation in the [Full Documentation](docs/README.md).
+  * [Pre-MycoSNP workflow](#pre-mycosnp-workflow-summary):
+    ```console
+    nextflow run CDCgov/mycosnp-nf --workflow PRE_MYCOSNP -profile <docker/singularity/other/institute> --input samplesheet.csv
+    ```
+  * [Main MycoSNP workflow](#main-mycosnp-workflow-default-workflow-summary) (default workflow):
+    ```console
+    nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference_genome.fasta
+    ```
+5. It is advisable to delete large temporary or log files after the successful completion of the run. It takes a lot of space and may cause issues in future runs.
+
+## Pre-MycoSNP Workflow: Summary
+1. Sequencing reads quality metrics ([`FastQC`](https://github.com/s-andrews/FastQC))
+1. Remove unpaired reads ([`seqkit pair`](https://github.com/shenwei356/seqkit))​
+1. Trim/filter reads ([`FaQCs`](https://github.com/LANL-Bioinformatics/FaQCs))​
+1. De novo assembly ([`Shovill`](https://github.com/tseemann/shovill))
+    - Downsampling​ (default 70X)
+    - Assembly (with [`SKESA`](https://github.com/ncbi/SKESA) [default], [`SPAdes`](https://github.com/ablab/spades), [`Megahit`](https://github.com/voutcn/megahit), or [`Velvet`](https://github.com/dzerbino/velvet​)​)
+1. Taxonomic classification ([`GAMBIT`](https://github.com/jlumpe/gambit​))
+    - Classifies isolate to genus/species level, if possible
+    - Uses GAMBIT's fungal database v0.2.0. See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for a list of taxa included in the database.
+1. Subtyping ([`sourmash`](https://github.com/sourmash-bio/sourmash))
+    - Compares sourmash sketch of sample against sourmash signature file provided in [`assets/sourmash_db/`](assets/sourmash_db/).
+    - By default, for _C. auris_, Pre-MycoSNP performs clade typing (Clades I-VI).
+1. [Summary report](docs/output.md#pre-mycosnp-summary-report) containing genus/species classification, subtype, and read and assembly quality metrics.
+
+## Main MycoSNP Workflow (Default Workflow): Summary
 
 ### Reference Preparation
 
@@ -37,9 +96,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 * Fix mate information in the BAM file (`Picard "FixMateInformation"`).
 * Add read groups to the BAM file (`Picard "AddOrReplaceReadGroups"`).
 * Index the BAM file (`SAMTools`).
-* [FastQC](#fastqc) - Filtered reads QC.
+* FastQC - Filtered reads QC.
 * Qualimap mapping quality report.
-* [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
+* MultiQC - Aggregate report describing results and QC from the whole pipeline
 
 ### Variant calling and analysis
 
@@ -49,73 +108,55 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 * Combine gVCF files from the HaplotypeCaller into a single VCF (`GATK CombineGVCFs`).
 * Call genotypes using the (`GATK GenotypeGVCFs`).
 * Filter the variants (`GATK VariantFiltration`) [default (but customizable) filter: 'QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10'].
-* Run a customized VCF filtering script (`Broad Institute`).
+* Run a customized VCF filtering script (Broad Institute).
 * Split the filtered VCF file by sample.
 * Select only SNPs from the VCF files (`GATK SelectVariants`).
 * Split the VCF file with SNPs by sample.
-* Create a multi-fasta file from the VCF SNP positions using a custom script (`Broad`).
+* Create a multi-fasta file from the VCF SNP positions using a custom script (Broad Institute).
 * Create a distance matrix file using multi-fasta file(`SNPdists`).
 * Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `quicksnp`, `RaxML(optional)`, `IQTree(optional)`)
 
 ### Variant annotation analysis (currently available for *C. auris* B11205 genome only)
 
 * annotated VCF file (`snpEff`)
-* combined output report(`SnpEffR`)
-
-## Quick Start
-
-1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
-
-2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_
-3. Requires Python version >3.0
-
-4. Download the pipeline and test it on a minimal dataset with a single command:
-
-    ```console
-    nextflow run CDCgov/mycosnp-nf -profile test,YOURPROFILE
-    ```
-
-    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
-
-    > * The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
-    > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
-    > * If you are using `singularity` and are persistently observing issues downloading Singularity images directly due to timeout or network issues, then you can use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, you can use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
-    > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
-
-5. Start running your own analysis!
-
-    ```console
-    nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta c_auris.fasta
-    ```
-6. It is advisable to delete large temporary or log files after the successful completion of the run. It takes a lot of space and may cause issues in future runs.
+* [`snpeffr`](https://github.com/CDCgov/snpeffr) report. Non-synonymous variants in FKS1 hotspot regions are included in the report.
 
 ## Pre-configured Nextflow development environment using Gitpod
 
 >[![Open CDCgov/mycosnp-nf in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CDCgov/mycosnp-nf)
 >>Once the pod launches, it will present a VS-Code interface and comes with Nextflow, Conda and Docker pre-installed
-## Documentation
-
-The nf-core/mycosnp pipeline comes with documentation about the pipeline [usage](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md), [parameters](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs) and [output](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/output.md).
 
 ## Credits
 
-nf-core/mycosnp was originally written by CDC.
+nf-core/mycosnp was originally developed at CDC (with contributions from many others in the public health bioinformatics community), and is currently maintained by CDC's Mycotic Diseases Branch.
 
-We thank the following people for their extensive assistance in the development of this pipeline:
+We thank the following people (alphabetical order by last name) for their code contributions or assistance in the development of this pipeline:
 
+* John Arnn [@jwarnn](https://github.com/jwarnn)
+* Ujwal Bagal [@urbagal](https://github.com/urbagal)
+* Arun Boddapati [@arunbodd](https://github.com/arunbodd)
 * Michael Cipriano [@mjcipriano](https://github.com/mjcipriano)
-* Sateesh Peri [@sateeshperi](https://github.com/sateeshperi)
-* Hunter Seabolt [@hseabolt](https://github.com/hseabolt)
-* Chris Sandlin [@cssandlin](https://github.com/cssandlin)
-* Drewry Morris [@drewry](https://github.com/drewry)
 * Lynn Dotrang [@leuthrasp](https://github.com/LeuThrAsp)
+* Jared Johnson [@DOH-JDJ0303](https://github.com/DOH-JDJ0303)
 * Christopher Jossart [@cjjossart](https://github.com/cjjossart)
+* Elizabeth Misas [@AspTryGlu](https://github.com/AspTryGlu)
+* Drewry Morris [@drewry](https://github.com/drewry)
+* Zack Mudge [@zmudge3](https://github.com/zmudge3)
+* Harshil Patel [@drpatelh](https://github.com/drpatelh)
+* Sateesh Peri [@sateeshperi](https://github.com/sateeshperi)
 * Robert A. Petit III [@rpetit3](https://github.com/rpetit3)
+* Malavika Rajeev [@mrajeev08](https://github.com/mrajeev08)
+* Charlotte Royer [@royercj](https://github.com/royercj)
+* Chris Sandlin [@cssandlin](https://github.com/cssandlin)
+* Hunter Seabolt [@hseabolt](https://github.com/hseabolt)
 
-> Special thanks the **Staph-B** Slack workspace for open-source collaborations and discussions.
+> Special thanks to [**StaPH-B**](https://staphb.org/) for open-source collaborations and discussions.
+
+> Special thanks to CDC's Office of Advanced Molecular Detection (OAMD) and the Scientific Computing and Bioinformatics Support (SciComp) team for supporting development and computing infrastructure.
+
 ## Contributions and Support
 
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
+If you would like to contribute to this pipeline, please see the [contributing guidelines](CONTRIBUTING.md).
 
 ## Citations
 
@@ -135,9 +176,7 @@ You can cite the `MycoSNP` and `nf-core` publications as follows:
 >
 > _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
 
-# CDCgov GitHub Organization Open Source Project Template
-
-**Template for clearance: This project serves as a template to aid projects in starting up and moving through clearance procedures. To start, create a new repository and implement the required [open practices](open_practices.md), train on and agree to adhere to the organization's [rules of behavior](rules_of_behavior.md), and [send a request through the create repo form](https://forms.office.com/Pages/ResponsePage.aspx?id=aQjnnNtg_USr6NJ2cHf8j44WSiOI6uNOvdWse4I-C2NUNk43NzMwODJTRzA4NFpCUk1RRU83RTFNVi4u) using language from this template as a Guide.**
+# CDCgov GitHub Organization Open Source Project
 
 **General disclaimer** This repository was created for use by CDC programs to collaborate on public health related projects in support of the [CDC mission](https://www.cdc.gov/about/organization/mission.htm).  GitHub is not hosted by the CDC, but is a third party website used by CDC and its partners to share information and collaborate on software. CDC use of GitHub does not imply an endorsement of any one particular service, product, or enterprise. 
 
@@ -150,7 +189,7 @@ You can cite the `MycoSNP` and `nf-core` publications as follows:
 * [Contribution Notice](CONTRIBUTING.md)
 * [Code of Conduct](code-of-conduct.md)
   
-## Public Domain Standard Notice
+## Public Domain
 This repository constitutes a work of the United States Government and is not
 subject to domestic copyright protection under 17 USC § 105. This repository is in
 the public domain within the United States, and copyright and related rights in
@@ -158,7 +197,7 @@ the work worldwide are waived through the [CC0 1.0 Universal public domain dedic
 All contributions to this repository will be released under the CC0 dedication. By
 submitting a pull request you are agreeing to comply with this waiver of
 copyright interest.
-## License Standard Notice
+## License
 The repository utilizes code licensed under the terms of the Apache Software
 License and therefore is licensed under ASL v2 or later.
 
@@ -175,14 +214,14 @@ program. If not, see http://www.apache.org/licenses/LICENSE-2.0.html
 
 The source code forked from other open source projects will inherit its license.
 
-## Privacy Standard Notice
+## Privacy
 This repository contains only non-sensitive, publicly available data and
 information. All material and community participation is covered by the
 [Disclaimer](https://github.com/CDCgov/template/blob/master/DISCLAIMER.md)
 and [Code of Conduct](https://github.com/CDCgov/template/blob/master/code-of-conduct.md).
 For more information about CDC's privacy policy, please visit [http://www.cdc.gov/other/privacy.html](https://www.cdc.gov/other/privacy.html).
 
-## Contributing Standard Notice
+## Contributing
 Anyone is encouraged to contribute to the repository by [forking](https://help.github.com/articles/fork-a-repo)
 and submitting a pull request. (If you are new to GitHub, you might start with a
 [basic tutorial](https://help.github.com/articles/set-up-git).) By contributing
@@ -194,12 +233,12 @@ later.
 All comments, messages, pull requests, and other submissions received through
 CDC including this GitHub page may be subject to applicable federal law, including but not limited to the Federal Records Act, and may be archived. Learn more at [http://www.cdc.gov/other/privacy.html](http://www.cdc.gov/other/privacy.html).
 
-## Records Management Standard Notice
+## Records Management
 This repository is not a source of government records, but is a copy to increase
 collaboration and collaborative potential. All government records will be
 published through the [CDC web site](http://www.cdc.gov).
 
-## Additional Standard Notices
+## Additional Information
 Please refer to [CDC's Template Repository](https://github.com/CDCgov/template)
 for more information about [contributing to this repository](https://github.com/CDCgov/template/blob/master/CONTRIBUTING.md),
 [public domain notices and disclaimers](https://github.com/CDCgov/template/blob/master/DISCLAIMER.md),

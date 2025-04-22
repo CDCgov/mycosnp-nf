@@ -1,6 +1,6 @@
 process SNPEFFR {
 	
-	container "ghcr.io/cdcgov/snpeffr:master"
+	container "ghcr.io/cdcgov/snpeffr:v1.1.1"
 	
 	input:
 	tuple val(meta), path(input)
@@ -18,7 +18,7 @@ process SNPEFFR {
 
 	"""
 	snpeffr.R -f $input \\
-	$args -o ${prefix}.csv
+	$args -o ${prefix}_cauris_refB11205_fks1.csv
 	
 	cat <<-END_VERSIONS > versions.yml
 	"${task.process}":

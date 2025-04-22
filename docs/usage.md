@@ -1,83 +1,105 @@
-# nf-core/mycosnp: Usage
-
-## :warning: This documentation is available on the mycosnp website: [https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md)
-
+# CDCgov/mycosnp-nf: Usage
 
 ## Introduction
+This document describes how to prepare input files and run the pipeline.
 
-`CDCgov/mycosnp-nf` is a bioinformatics best-practice analysis pipeline written to [nf-core](https://nf-co.re/) standards. MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including _Candida auris_. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those used for phylogenetic tree-building and gene variant annotations. This document will describe how to prepare input files and run the pipeline.
+## Table of Contents
+- [Setup and prerequisites](#setup-and-prerequisites)
+    - [Requirements](#requirements)
+    - [Installation](#installation)
+    - [Updating the pipeline](#updating-the-pipeline)
+    - [Reproducibility](#reproducibility)
+- [Parameters](#parameters)
+- [Inputs common to both workflows](#inputs-common-to-both-workflows)
+    - [Samplesheet input](#samplesheet-input)
+        - [Multiple runs of the same sample](#multiple-runs-of-the-same-sample)
+        - [Full samplesheet](#full-samplesheet)
+    - [Samplesheet creation - automated](#samplesheet-creation---automated)
+    - [SRA sequence file additions](#sra-sequence-file-additions)
+- [Pre-MycoSNP workflow](#pre-mycosnp-workflow)
+    - [Inputs specific to the Pre-MycoSNP workflow](#inputs-specific-to-the-pre-mycosnp-workflow)
+        - [Sourmash subtype database](#sourmash-subtype-database)
+    - [Running the Pre-MycoSNP workflow](#running-the-pre-mycosnp-workflow)
+- [Main MycoSNP workflow (default workflow)](#main-mycosnp-workflow-default-workflow)
+    - [Inputs specific to the main MycoSNP workflow](#inputs-specific-to-the-main-mycosnp-workflow)
+        - [Reference input](#reference-input)
+        - [VCF file additions](#vcf-file-additions)
+    - [Running the main MycoSNP workflow](#running-the-main-mycosnp-workflow)
+- [General nf-core documentation](#general-nf-core-documentation)
+    - [Core Nextflow arguments](#core-nextflow-arguments)
+    - [Custom configuration](#custom-configuration)
+        - [Resource requests](#resource-requests)
+        - [Updating containers](#updating-containers)
+        - [nf-core/configs](#nf-coreconfigs)
+    - [Running in the background](#running-in-the-background)
+    - [Nextflow memory requirements](#nextflow-memory-requirements)
+
+# Setup and prerequisites
 
 ## Requirements
 
 * Nextflow >= 21.10.3
-* Java 8 or later
-* Python 3 or later
+* Java 17 or later
 * Bash 3.2 or later
-* Singularity _(Optional/Recommended)_
-* Docker _(Optional/Recommended)_
-* Conda _(Optional/Recommended)_
+* [One of the container runtimes supported by Nextflow](https://www.nextflow.io/docs/latest/container.html#container-page) (Docker and Apptainer/Singularity are most popular). You can also use Conda, but this isn't recommended.
+> [!TIP]
+> Using Apptainer/Singularity with Nextflow version >=23 can result in failures in Linux server environments due to peculiarities with container directory mounting. If you are experiencing `No such file or directory` errors, try running with an earlier version of Nextflow (we've had success with 22.10.6).
 
 ## Installation
 
-*   mycosnp-nf is written in [Nextflow](https://www.nextflow.io/), and as such requires Nextflow installation to run. Please see [nextflow installation documents](https://www.nextflow.io/docs/latest/getstarted.html#installation) for instructions.
+*   mycosnp-nf is written in [Nextflow](https://www.nextflow.io/), and as such requires Nextflow installation to run. Please see [nextflow installation documents](https://www.nextflow.io/docs/latest/install.html) for instructions.
 
-*   Alternatively, you can install nextflow and other dependencies via conda like so:
-
-```console
-conda create -n nextflow -c bioconda -c conda-forge nf-core=2.2 nextflow=21.10.6 git=2.35.0 openjdk=8.0.312 graphviz
-conda activate nextflow
-```
-
-*  To clone [mycosnp-nf github repo](https://github.com/CDCgov/mycosnp-nf)
+*  To clone [mycosnp-nf github repo](https://github.com/CDCgov/mycosnp-nf):
 
 ```console
 git clone https://github.com/CDCgov/mycosnp-nf
 ```
 
-*   Alternatively, `mycosnp-nf` can be pulled from github and run directly like so:
+*   Alternatively, `mycosnp-nf` can be run directly like so. The repo will be cloned in `~/.nextflow/assets/CDCgov/mycosnp-nf/`:
 
 ```console
 nextflow run CDCgov/mycosnp-nf -profile singularity,test
 ```
 
-## Reference input
+## Updating the pipeline
 
-You will need to provide the reference sequence in fasta format. You can pass the location of the fasta file using the `--fasta` argument.
-
-```console
---fasta '[path to fasta file]'
-
-```
-
-Alternatively, you can skip the reference file processing steps by providing the files needed. This can be done in one of two ways.
-
-* First way is by supplying a directory which has all the reference files from a previous mycosnp run using '--ref_dir'.
-* This expects the following directory format:
-** masked fasta in <ref_dir>/masked/\*.fa\*
-** picard dict in <ref dir>/dict/*.dict
-** samtools fai in <ref dir>/fai/*.fai
-** bwa mem index directory in <ref dir>/bwa/bwa
+When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```console
---ref_dir 'results/reference'
-
+nextflow pull CDCgov/mycosnp-nf
 ```
 
-* Second way is by providing each of the files separately.
-  - --ref_masked_fasta path/to/ref.fasta
-  - --ref_fai path/to/fai/file.fai
-  - --ref_bwa path/to/bwa/directory
-  - --ref_dict path/to/picard/dict/file.dict
+## Reproducibility
+
+It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
+
+First, go to the [CDCgov/mycosnp-nf releases page](https://github.com/CDCgov/mycosnp-nf/releases) and find the latest version number (eg. `v1.6.0`). Then specify this when running the pipeline with `-r` (one hyphen) - e.g. `-r v1.6.0`.
+
+This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
+
+# Parameters
+
+Parameter documentation is available in [docs/params.md](params.md). You can also see full pipeline parameters by using `--help`:
 
 ```console
---ref_masked_fasta results-copy/reference/masked/reference.fa --ref_fai results-copy/reference/fai/reference.fa.fai --ref_bwa results-copy/reference/bwa/bwa --ref_dict results-copy/reference/dict/reference.dict
-
+nextflow run main.nf --help
+# Or
+nextflow run CDCgov/mycosnp-nf --help
 ```
 
+Some parameters are hidden, but can be seen by using the `--show_hidden_params` option:
+
+```console
+nextflow run main.nf -help --show_hidden_params
+# Or
+nextflow run CDCgov/mycosnp-nf -help --show_hidden_params
+```
+
+# Inputs common to both workflows
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use the `--input` parameter to specify its location. It has to be a comma-separated file (csv) with at least 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running either workflow. Use the `--input` parameter to specify its location. It has to be a comma-separated file (csv) with at least 3 columns, and a header row as shown in the examples below.
 
 ```console
 --input '[path to samplesheet file]'
@@ -85,7 +107,7 @@ You will need to create a samplesheet with information about the samples you wou
 
 ### Multiple runs of the same sample
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The workflow will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
 
 ```console
 sample,fastq_1,fastq_2,fastq_3,fastq_4
@@ -94,7 +116,7 @@ CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,A
 
 ### Full samplesheet
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+The workflow will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
 
 A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 4 samples, where `TREATMENT_REP3` has been sequenced twice.
 
@@ -112,11 +134,11 @@ TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,AEG588A6_S6_L003_R2_001.fastq.gz
 | `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 | `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 
-An [example samplesheet](https://github.com/CDCgov/mycosnp-nf/blob/b4216fec5d1ec2e7d8b136539748c3623a02fb45/assets/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](/assets/samplesheet.csv) has been provided with the repository.
 
 ## Samplesheet creation - automated
 
-A script is available to create a samplesheet from a directory of fastq files. The script will search 1 directory deep and attempt to determine sample id names and pairing/multilane information and will automatically create a samplesheet. Please review the samplesheet for accuracy before using it in the pipeline.
+A script is available to create a samplesheet from a directory of fastq files. The script will search 1 directory deep and attempt to determine sample id names and pairing/multilane information and will automatically create a samplesheet. Please review the samplesheet for accuracy before using it.
 
 ```console
 mycosnp-nf/bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samplesheet.csv
@@ -124,7 +146,7 @@ mycosnp-nf/bin/mycosnp_full_samplesheet.sh <directory of fastq files> > new_samp
 
 ## SRA sequence file additions
 
-You may provide a list of SRA ids as additional inputs sequences into the pipeline. Use the `--add_sra_file` parameter to specify its location. It has to be a comma-separated file (csv) with one or 2 columns, and NO header row as shown in the examples below.
+You may provide a list of SRA ids as additional input sequences into either workflow. Use the `--add_sra_file` parameter to specify its location. It has to be a comma-separated file (csv) with one or 2 columns, and NO header row as shown in the examples below.
 
 ```console
 --add_sra_file '[path to samplesheet file: assets/sra_small.csv]'
@@ -139,12 +161,70 @@ B12352,SRR7909282
 SRR7909249
 B13520,SRR7909394
 ```
-## VCF file additions
 
-You may provide a listof  VCF files from previous runs of this pipeline as additional inputs sequences into the pipeline. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. These files can be found in the `results/samples/sample_id/variant_calling/haplotypecaller` subfolder. Use the `--add_vcf_file` parameter to specify its location. It has to be plain text file with the full path to the vcf file on each line, and NO header row as shown in the examples below.
+# Pre-MycoSNP workflow
+## Inputs specific to the Pre-MycoSNP workflow
+### Sourmash subtype database
+* The `--subtype_db` parameter species the path to a directory containing the files necessary for subtyping. The default path is `${projectDir}/assets/sourmash_db`.
+* The directory should contain sourmash signature files, each containing multiple sketches for the representative subtypes.
+* The directory should also contain a csv file called `sourmash_taxa.csv` mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is reported by GAMBIT.
+* See [assets/sourmash_db/](/assets/sourmash_db) for example files and directory structure. This repository comes with a _Candida auris_ signature file ([assets/sourmash_db/signatures/candida_auris_clades.sig](/assets/sourmash_db/signatures/candida_auris_clades.sig)), containing sourmash sketches for the six _C. auris_ clades.
+* You can add as many different signature files as you wish for the subtyper step. Ensure the `gambit_taxon` field in `sourmash_taxa.csv` matches the GAMBIT output exactly.
+
+## Running the Pre-MycoSNP workflow
+> [!NOTE]
+> The `--workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed.
+```console
+nextflow run CDCgov/mycosnp-nf --workflow PRE_MYCOSNP -profile <docker/singularity/other/institute> --input samplesheet.csv
+```
+
+Example:
+```console
+nextflow run CDCgov/mycosnp-nf --workflow PRE_MYCOSNP \
+  -profile singularity \
+  --input samplesheet.csv \
+  --add_sra_file srr.csv
+```
+
+# Main MycoSNP workflow (default workflow)
+
+## Inputs specific to the main MycoSNP workflow
+### Reference input
+
+You will need to provide the reference sequence in fasta format. You can pass the location of the fasta file using the `--fasta` argument.
 
 ```console
---add_vcf_file '[path to vcf file: assets/vcf_add.txt]'
+--fasta '[path to fasta file]'
+```
+
+Alternatively, you can skip the reference file processing steps by providing the files needed. This can be done in one of two ways.
+
+* First way is by supplying a directory which has all the reference files from a previous mycosnp run using '--ref_dir'. This expects the following directory format:
+    * masked fasta in <ref_dir>/masked/\*.fa\*
+    * picard dict in <ref dir>/dict/*.dict
+    * samtools fai in <ref dir>/fai/*.fai
+    * bwa mem index directory in <ref dir>/bwa/bwa
+
+```console
+--ref_dir 'results/reference'
+```
+
+* Second way is by providing each of the files separately.
+  - --ref_masked_fasta path/to/ref.fasta
+  - --ref_fai path/to/fai/file.fai
+  - --ref_bwa path/to/bwa/directory
+  - --ref_dict path/to/picard/dict/file.dict
+
+```console
+--ref_masked_fasta results-copy/reference/masked/reference.fa --ref_fai results-copy/reference/fai/reference.fa.fai --ref_bwa results-copy/reference/bwa/bwa --ref_dict results-copy/reference/dict/reference.dict
+```
+
+### VCF file additions
+
+You may provide a list of VCF files from previous runs of this workflow as additional inputs sequences into the workflow. These VCF file must have used the exact same reference file when they were generated. The *.tbi index file must be within the same directory as the vcf file and have the same name. These files can be found in the `results/samples/sample_id/variant_calling/haplotypecaller` subfolder. Use the `--add_vcf_file` parameter to specify its location. It has to be a .csv file (with one column only) with the full path to the vcf file on each line, and NO header row as shown in the examples below.
+
+```console
+--add_vcf_file '[path to vcf file: assets/vcf_add.csv]'
 ```
 
 Example File:
@@ -156,59 +236,38 @@ Example File:
 /mydir/results/samples/B12430/variant_calling/haplotypecaller/B12430.g.vcf.gz
 ```
 
-## Pipeline parameters
-
-Same recommended defaults parameters are used, but full documentation on the default parameters can be viewed in the help documentation or on [mycosnp-nf wiki](https://github.com/CDCgov/mycosnp-nf/wiki/Parameter-Docs). You can see full pipeline parameters by using '-help' when running the workflow.
-
-```console
-nextflow run main.nf --help
-# Or
-nextflow run CDCgov/mycosnp-nf --help
-```
-
-Some parameters are hidden, but can be seen by using the `--show_hidden_params` option:
-
-```console
-nextflow run main.nf -help --show_hidden_params
-# Or
-nextflow run CDCgov/mycosnp-nf -help --show_hidden_params
-```
-
-## Running the pipeline
-
-The typical command for running the pipeline is as follows:
+## Running the main MycoSNP workflow
+> [!NOTE]
+> The `--workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed.
 
 For a minimal test run:
+> [!NOTE]
+> The samples for the minimal test run are bacterial (_N. gonorrhoeae_), not fungal. This is intentional so the test finishes in a few minutes (as opposed to longer for fungal samples with much larger genomes).
 
 ```console
-nextflow run main.nf -profile singularity,test
+nextflow run CDCgov/mycosnp-nf -profile test,<docker/singularity/other/institute>
 ```
 
 For a full test run:
 
 ```console
-nextflow run main.nf -profile singularity,test_full
+nextflow run CDCgov/mycosnp-nf -profile test_full,<docker/singularity/other/institute>
 ```
 
 For a real run:
 
 ```console
-nextflow run main.nf -profile singularity --input samplesheet.csv --fasta reference_genome.fasta
+nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference_genome.fasta
 ```
 
-Additional examples:
-
+Example:
 ```console
-nextflow run main.nf \
+nextflow run CDCgov/mycosnp-nf \
   -profile singularity \
   --fasta "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/016/772/135/GCA_016772135.1_ASM1677213v1/GCA_016772135.1_ASM1677213v1_genomic.fna.gz" \
-  --custom_config_base ~/nf-core-custom \
-  --publish_dir_mode copy \
-  --add_sra_file assets/sra_ca_controls.csv \
-  --outdir sra_controlsdata
+  --input samplesheet.csv \
+  --add_sra_file srr.csv
 ```
-
-
 This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
 
 > Note: that the pipeline will create the following files in your working directory:
@@ -216,26 +275,11 @@ This will launch the pipeline with the `singularity` configuration profile. See 
 >```console
 >work            # Directory containing the nextflow working files
 >results         # Finished results (configurable, see below)
->.nextflow_log   # Log file from Nextflow
+>.nextflow.log   # Log file from Nextflow
 ># Other nextflow hidden files, eg. history of pipeline runs and old logs.
 >```
 
-### Updating the pipeline
-
-When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
-
-```console
-nextflow pull CDCgov/mycosnp-nf
-```
-
-### Reproducibility
-
-It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
-
-First, go to the [CDCgov/mycosnp-nf releases page](https://github.com/CDCgov/mycosnp-nf/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.0.1`.
-
-This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
-
+# General nf-core documentation
 ## Core Nextflow arguments
 
 > **NB:** These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
@@ -285,7 +329,7 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 ### Resource requests
 
-Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/CDCgov/mycosnp-nf/blob/master/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
+Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](/conf/base.config#L17) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
 For example, if the mycosnp-nf pipeline is failing after multiple re-submissions of the `BWA_PRE_PROCESS:FAQCS` process due to an exit code of `137` this would indicate that there is an out of memory issue:
 
@@ -318,7 +362,7 @@ Work dir:
 Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
 ```
 
-To bypass this error you would need to find exactly which resources are set by the `STAR_ALIGN` process. The quickest way is to search for `process STAR_ALIGN` in the [CDCgov/mycosnp-nf Github repo](https://github.com/CDCgov/mycosnp-nf/search?q=process+FAQCS). We have standardised the structure of Nextflow DSL2 pipelines such that all module files will be present in the `modules/` directory and so based on the search results the file we want is `modules/nf-core/modules/faqcs/main.nf`. If you click on the link to that file you will notice that there is a `label` directive at the top of the module that is set to [`label process_medium`](https://github.com/CDCgov/mycosnp-nf/blob/master/modules/nf-core/modules/faqcs/main.nf#L3). The [Nextflow `label`](https://www.nextflow.io/docs/latest/process.html#label) directive allows us to organize workflow processes in separate groups which can be referenced in a configuration file to select and configure subset of processes having similar computing requirements. The default values for the `process_medium` label are set in the pipeline's [`base.config`](https://github.com/CDCgov/mycosnp-nf/blob/master/conf/base.config#L34-L38) which in this case is defined as 12GB. Providing you haven't set any other standard nf-core parameters to __cap__ the [maximum resources](https://nf-co.re/usage/configuration#max-resources) used by the pipeline then we can try and bypass the `FAQCS` process failure by creating a custom config file that sets at least 12GB of memory, in this case increased to 50GB. The custom config below can then be provided to the pipeline via the [`-c`](#-c) parameter as highlighted in previous sections.
+To bypass this error you would need to find exactly which resources are set by the `STAR_ALIGN` process. The quickest way is to search for `process STAR_ALIGN` in the [CDCgov/mycosnp-nf Github repo](https://github.com/CDCgov/mycosnp-nf/search?q=process+FAQCS). We have standardised the structure of Nextflow DSL2 pipelines such that all module files will be present in the `modules/` directory and so based on the search results the file we want is `modules/nf-core/modules/faqcs/main.nf`. If you click on the link to that file you will notice that there is a `label` directive at the top of the module that is set to [`label process_medium`](/modules/nf-core/modules/faqcs/main.nf#L3). The [Nextflow `label`](https://www.nextflow.io/docs/latest/process.html#label) directive allows us to organize workflow processes in separate groups which can be referenced in a configuration file to select and configure subset of processes having similar computing requirements. The default values for the `process_medium` label are set in the pipeline's [`base.config`](/conf/base.config#L32-L36) which in this case is defined as 16GB. Providing you haven't set any other standard nf-core parameters to __cap__ the [maximum resources](https://nf-co.re/usage/configuration#max-resources) used by the pipeline then we can try and bypass the `FAQCS` process failure by creating a custom config file that sets at least 16GB of memory, in this case increased to 50GB. The custom config below can then be provided to the pipeline via the [`-c`](#-c) parameter as highlighted in previous sections.
 
 ```nextflow
 process {

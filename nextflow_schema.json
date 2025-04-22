@@ -5,13 +5,82 @@
     "description": "MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations.",
     "type": "object",
     "definitions": {
+        "workflow_options": {
+            "title": "Workflow selection options",
+            "type": "object",
+            "description": "",
+            "properties": {
+                "workflow": {
+                    "type": "string",
+                    "enum": ["PRE_MYCOSNP", "NFCORE_MYCOSNP"],
+                    "default": "NFCORE_MYCOSNP",
+                    "description": "Name of the workflow to run (`PRE_MYCOSNP` for Pre-MycoSNP workflow | `NFCORE_MYCOSNP` for main MycoSNP workflow).",
+                    "help_text": "Specify the workflow you want to execute. Options are 'PRE_MYCOSNP' or 'NFCORE_MYCOSNP'."
+                }
+            }
+        },
+        "pre_mycosnp_options": {
+            "title": "Pre-MycoSNP workflow options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "assembler": {
+                    "type": "string",
+                    "default": "skesa",
+                    "description": "Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades'",
+                    "fa_icon": "fas fa-toolbox"
+                },
+                "shovill_depth": {
+                    "type": "integer",
+                    "default": 70,
+                    "description": "Downsample FASTQ files to this depth before assembly",
+                    "fa_icon": "fas fa-question"
+                },
+                "genome_size": {
+                    "type": "string",
+                    "description": "The approx. genome size of the sample, used by Shovill. Will be automatically determined if left blank.",
+                    "fa_icon": "fas fa-question"
+                },
+                "min_contig_cov": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill",
+                    "fa_icon": "fas fa-question"
+                },
+                "min_contig_len": {
+                    "type": "integer",
+                    "default": 300,
+                    "description": "Minimum contig length for it to be retained in the assembly, used by Shovill",
+                    "fa_icon": "fas fa-question"
+                },
+                "gambit_h5": {
+                    "type": "string",
+                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to the GAMBIT '.h5' file."
+                },
+                "gambit_db": {
+                    "type": "string",
+                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to the GAMBIT '.db' file."
+                },
+                "subtype_db": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "${projectDir}/assets/sourmash_db/",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to a directory containing the subtyper files. This directory should contain sourmash signature files, each containing multiple sketches for the representative subtypes. This directory should also contain a csv file called sourmash_taxa.csv mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is reported by GAMBIT."
+
+                }
+            }
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": [
-            ],
             "properties": {
                 "input": {
                     "type": "string",
@@ -35,9 +104,11 @@
                 "add_vcf_file": {
                     "type": "string",
                     "format": "file-path",
-                    "mimetype": "text/plain",
-                    "description": "Path to text file containing a list of file paths to vcf files generated from previous runs of this workflow to include in this analysis. They must use the same exact reference. *.tbi file must be in same location. Text file with list in Format: /path/to/vcf/file.gz",
-                    "help_text": "You will need to create a text file with a list of vcf files generated from previous runs of this workflow. One vcf file per line and the tbi file must be in the same location. See [usage docs](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md).",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "errorMessage": "File name must end in '.csv' cannot contain spaces",
+                    "description": "(Main MycoSNP workflow only) Path to .csv (only one column) containing a list of file paths to vcf files generated from previous runs of this workflow to include in this analysis. They must use the same exact reference. *.tbi file must be in same location. Each line of .csv file has format: /path/to/vcf/file.gz",
+                    "help_text": "You will need to create a csv file (only one column) with a list of vcf files generated from previous runs of this workflow. One vcf file per line and the tbi file must be in the same location. See [usage docs](https://github.com/CDCgov/mycosnp-nf/blob/master/docs/usage.md).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
@@ -77,7 +148,7 @@
             }
         },
         "reference_genome_options": {
-            "title": "Reference genome options",
+            "title": "Main MycoSNP workflow: reference genome options",
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
@@ -161,9 +232,9 @@
                 "snpeffconfig": {
                     "type": "string",
                     "format": "path",
-                    "default": "",
+                    "default": "${projectDir}/assets/snpeffdb/",
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Full path to snpeff config"
+                    "description": "Path to snpeff config"
                 },
                 "species": {
                     "type": "string",
@@ -173,9 +244,9 @@
                 },
                 "positions": {
                     "type": "string",
-                    "default": "fks1_hs1=221638:221665,fks1_hs2=223782:223805",
+                    "default": "fks1_hs1=221637:221663,fks1_hs2=223782:223805,fks1_hs3=221805:221807",
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "positions"
+                    "description": "FKS1 hotspot coordinates. Non-synonymous variants in these regions will be included in the snpeffr report (snpeff/combined_cauris_refB11205_fks1.csv)."
                 },
                 "genes": {
                     "type": "string",
@@ -192,7 +263,7 @@
             }
         },
         "mycosnp_run_save_skip_options": {
-            "title": "MycoSNP Run/Save/Skip Options",
+            "title": "Main MycoSNP workflow: Run/Save/Skip options",
             "type": "object",
             "description": "",
             "default": "",
@@ -265,7 +336,7 @@
             }
         },
         "mycosnp_run_params": {
-            "title": "MycoSNP Run Params",
+            "title": "Main MycoSNP workflow: run params",
             "type": "object",
             "description": "",
             "default": "",
@@ -475,16 +546,14 @@
                     "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
                     "hidden": true,
                     "fa_icon": "fas fa-bacon"
-                },
-                "tmpdir": {
-                    "type": "string",
-                    "default": "/tmp",
-                    "description": "temporary directory for shell and java processes"
                 }
             }
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/workflow_options"
+        },
         {
             "$ref": "#/definitions/input_output_options"
         },
@@ -496,6 +565,9 @@
         },
         {
             "$ref": "#/definitions/mycosnp_run_params"
+        },
+        {
+            "$ref": "#/definitions/pre_mycosnp_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"

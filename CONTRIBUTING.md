@@ -4,7 +4,7 @@ questions or doubts, don't be afraid to send them our way. We appreciate all
 contributions, and we are looking forward to fostering an open, transparent, and
 collaborative environment.
 
-Before contributing, we encourage you to also read or [LICENSE](https://github.com/CDCgov/template/blob/master/LICENSE),
+Before contributing, we encourage you to also read our [LICENSE](https://github.com/CDCgov/template/blob/master/LICENSE),
 [README](https://github.com/CDCgov/template/blob/master/README.md), and
 [code-of-conduct](https://github.com/CDCgov/template/blob/master/code-of-conduct.md)
 files, also found in this repository. If you have any inquiries or questions not
