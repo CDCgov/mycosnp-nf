@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## v1.6.1 - [05/09/2025]
 
 ### Changed
-- Switched Shovill container image to StaPH's Docker image (`quay.io/staphb/shovill:1.1.0-2022Dec`). Addresses issues with pulling image from Docker Hub (#134).
+- Switched Shovill container image to StaPH-B's Docker image (`quay.io/staphb/shovill:1.1.0-2022Dec`). Addresses issues with pulling image from Docker Hub (#134).
 - Reordered params in `nextflow_schema.json` to be more intuitive.
 
 ## v1.6.0 - [04/21/2025]
