@@ -3,9 +3,7 @@ process SHOVILL {
     label 'process_high'
 
     conda "bioconda::shovill=1.1.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/shovill:1.1.0--0' :
-        'biocontainers/shovill:1.1.0--0' }"
+    container 'quay.io/staphb/shovill:1.1.0-2022Dec'
 
     input:
     tuple val(meta), path(reads)
