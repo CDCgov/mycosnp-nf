@@ -7,7 +7,7 @@
   |\ | |__  __ /  ` /  \ |__) |__         }  {
   | \| |       \__, \__/ |  \ |___     \`-._,-`-,
                                         `._,._,'
-  CDCgov/mycosnp-nf v1.6.0
+  CDCgov/mycosnp-nf v1.6.1
 ------------------------------------------------------
 Typical pipeline command:
 
@@ -16,6 +16,15 @@ Typical pipeline command:
 Workflow selection options
   --workflow                   [string]  Name of the workflow to run (`PRE_MYCOSNP` for Pre-MycoSNP workflow | `NFCORE_MYCOSNP` for main MycoSNP workflow). 
                                          [default: NFCORE_MYCOSNP] 
+
+Input/output options
+  --input                      [string]  Path to comma-separated file containing information about the samples in the experiment.
+  --add_sra_file               [string]  Path to comma-separated file containing SRA ids to download from NCBI. Format: Name,SRAID
+  --add_vcf_file               [string]  (Main MycoSNP workflow only) Path to .csv (only one column) containing a list of file paths to vcf files generated from 
+                                         previous runs of this workflow to include in this analysis. They must use the same exact reference. *.tbi file must be 
+                                         in same location. Each line of .csv file has format: /path/to/vcf/file.gz 
+  --outdir                     [string]  Path to the output directory where the results will be saved. [default: ./results]
+  --publish_dir_mode           [string]  Method used to save pipeline results to output directory. [default: copy]
 
 Pre-MycoSNP workflow options
   --assembler                  [string]  Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades' [default: skesa]
@@ -31,15 +40,6 @@ Pre-MycoSNP workflow options
                                          containing multiple sketches for the representative subtypes. This directory should also contain a csv file called 
                                          sourmash_taxa.csv mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is 
                                          reported by GAMBIT. [default: ${projectDir}/assets/sourmash_db/] 
-
-Input/output options
-  --input                      [string]  Path to comma-separated file containing information about the samples in the experiment.
-  --add_sra_file               [string]  Path to comma-separated file containing SRA ids to download from NCBI. Format: Name,SRAID
-  --add_vcf_file               [string]  (Main MycoSNP workflow only) Path to .csv (only one column) containing a list of file paths to vcf files generated from 
-                                         previous runs of this workflow to include in this analysis. They must use the same exact reference. *.tbi file must be 
-                                         in same location. Each line of .csv file has format: /path/to/vcf/file.gz 
-  --outdir                     [string]  Path to the output directory where the results will be saved. [default: ./results]
-  --publish_dir_mode           [string]  Method used to save pipeline results to output directory. [default: copy]
 
 Main MycoSNP workflow: reference genome options
   --fasta                      [string]  Path to FASTA formatted reference genome file.

@@ -19,63 +19,6 @@
                 }
             }
         },
-        "pre_mycosnp_options": {
-            "title": "Pre-MycoSNP workflow options",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "assembler": {
-                    "type": "string",
-                    "default": "skesa",
-                    "description": "Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades'",
-                    "fa_icon": "fas fa-toolbox"
-                },
-                "shovill_depth": {
-                    "type": "integer",
-                    "default": 70,
-                    "description": "Downsample FASTQ files to this depth before assembly",
-                    "fa_icon": "fas fa-question"
-                },
-                "genome_size": {
-                    "type": "string",
-                    "description": "The approx. genome size of the sample, used by Shovill. Will be automatically determined if left blank.",
-                    "fa_icon": "fas fa-question"
-                },
-                "min_contig_cov": {
-                    "type": "integer",
-                    "default": 10,
-                    "description": "Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill",
-                    "fa_icon": "fas fa-question"
-                },
-                "min_contig_len": {
-                    "type": "integer",
-                    "default": 300,
-                    "description": "Minimum contig length for it to be retained in the assembly, used by Shovill",
-                    "fa_icon": "fas fa-question"
-                },
-                "gambit_h5": {
-                    "type": "string",
-                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5",
-                    "fa_icon": "fas fa-database",
-                    "description": "Path to the GAMBIT '.h5' file."
-                },
-                "gambit_db": {
-                    "type": "string",
-                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db",
-                    "fa_icon": "fas fa-database",
-                    "description": "Path to the GAMBIT '.db' file."
-                },
-                "subtype_db": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "default": "${projectDir}/assets/sourmash_db/",
-                    "fa_icon": "fas fa-database",
-                    "description": "Path to a directory containing the subtyper files. This directory should contain sourmash signature files, each containing multiple sketches for the representative subtypes. This directory should also contain a csv file called sourmash_taxa.csv mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is reported by GAMBIT."
-
-                }
-            }
-        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -144,6 +87,63 @@
                     "default": "copy",
                     "description": "Method used to save pipeline results to output directory.",
                     "fa_icon": "fas fa-archive"
+                }
+            }
+        },
+        "pre_mycosnp_options": {
+            "title": "Pre-MycoSNP workflow options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "assembler": {
+                    "type": "string",
+                    "default": "skesa",
+                    "description": "Assembler to use with Shovill. Options are 'skesa', 'velvet', 'megahit', 'spades'",
+                    "fa_icon": "fas fa-toolbox"
+                },
+                "shovill_depth": {
+                    "type": "integer",
+                    "default": 70,
+                    "description": "Downsample FASTQ files to this depth before assembly",
+                    "fa_icon": "fas fa-question"
+                },
+                "genome_size": {
+                    "type": "string",
+                    "description": "The approx. genome size of the sample, used by Shovill. Will be automatically determined if left blank.",
+                    "fa_icon": "fas fa-question"
+                },
+                "min_contig_cov": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill",
+                    "fa_icon": "fas fa-question"
+                },
+                "min_contig_len": {
+                    "type": "integer",
+                    "default": 300,
+                    "description": "Minimum contig length for it to be retained in the assembly, used by Shovill",
+                    "fa_icon": "fas fa-question"
+                },
+                "gambit_h5": {
+                    "type": "string",
+                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to the GAMBIT '.h5' file."
+                },
+                "gambit_db": {
+                    "type": "string",
+                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to the GAMBIT '.db' file."
+                },
+                "subtype_db": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "${projectDir}/assets/sourmash_db/",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to a directory containing the subtyper files. This directory should contain sourmash signature files, each containing multiple sketches for the representative subtypes. This directory should also contain a csv file called sourmash_taxa.csv mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is reported by GAMBIT."
+
                 }
             }
         },
