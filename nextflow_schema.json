@@ -125,17 +125,18 @@
                     "description": "Minimum contig length for it to be retained in the assembly, used by Shovill",
                     "fa_icon": "fas fa-question"
                 },
-                "gambit_h5": {
-                    "type": "string",
-                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5",
-                    "fa_icon": "fas fa-database",
-                    "description": "Path to the GAMBIT '.h5' file."
-                },
                 "gambit_db": {
                     "type": "string",
-                    "default": "gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db",
+                    "default": "${projectDir}/assets/gambit_db/gambit-fungal-metadata-1.0.0-20241213.gdb",
                     "fa_icon": "fas fa-database",
-                    "description": "Path to the GAMBIT '.db' file."
+                    "description": "Path to the GAMBIT '.gdb' or '.db' file containing metadata."
+                },
+                "gambit_h5_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "${projectDir}/assets/gambit_db/signatures/",
+                    "fa_icon": "fas fa-database",
+                    "description": "Full (absolute) path to the directory containing a GAMBIT signature file, which can be split into one or more chunks. Each chunk may be gzipped if preferred. Each chunk must have one of the following extensions: '.gs', '.h5', '.gs.gz' or '.h5.gz'. Refer to Pre-MycoSNP's default database in assets/gambit_db/signatures/ for an example (file is split so each chunk is below GitHub's individual file size limit of 100 MB and warning limit of 50 MB)."
                 },
                 "subtype_db": {
                     "type": "string",

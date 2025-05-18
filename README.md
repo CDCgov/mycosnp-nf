@@ -65,7 +65,7 @@ This repository contains two workflows that are run independently:
     - Assembly (with [`SKESA`](https://github.com/ncbi/SKESA) [default], [`SPAdes`](https://github.com/ablab/spades), [`Megahit`](https://github.com/voutcn/megahit), or [`Velvet`](https://github.com/dzerbino/velvet​)​)
 1. Taxonomic classification ([`GAMBIT`](https://github.com/jlumpe/gambit​))
     - Classifies isolate to genus/species level, if possible
-    - Uses GAMBIT's fungal database v0.2.0. See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for a list of taxa included in the database.
+    - Uses GAMBIT's fungal database v1.0.0. See the [list of taxa included in the database](assets/gambit_db/gambit-1.0.0-20241213-taxa-list.txt). See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for more details about the database.
 1. Subtyping ([`sourmash`](https://github.com/sourmash-bio/sourmash))
     - Compares sourmash sketch of sample against sourmash signature file provided in [`assets/sourmash_db/`](assets/sourmash_db/).
     - By default, for _C. auris_, Pre-MycoSNP performs clade typing (Clades I-VI).

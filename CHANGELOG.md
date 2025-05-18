@@ -2,6 +2,14 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## v1.6.2 - [05/18/2025]
+### Fixed
+- Docker permissions issue with GAMBIT container in some Linux environments (issue [#137](https://github.com/CDCgov/mycosnp-nf/issues/137))
+
+### Changed
+- Bumped GAMBIT fungal database from v0.2.0 to v1.0.0. See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for details about the databases.
+- Bumped GAMBIT version from v1.0.0 to v1.1.0. Database is now included with the repo in `assets/gambit_db/`. Signatures database in `assets/gambit_db/signatures/` (split into chunks so each chunks is below GitHub's file size limit of 100 MB and warning limit of 50 MB). See GAMBIT v1.1.0 [release notes](https://github.com/jlumpe/gambit/releases/tag/v1.1.0) for more info (no functional changes).
+
 ## v1.6.1 - [05/09/2025]
 
 ### Changed
