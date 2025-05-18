@@ -63,7 +63,7 @@ Output files:
 - GAMBIT makes compressed sketches of the k-mer content of an assembly and compares it to sketches in a database.
 - It classifies samples to the species level if possible. If not possible, it attempts to classify to the genus level. If not able to classify to the genus or species levels, it will not make a prediction, but will still report the closest match in the database.
 - GAMBIT reports distances between two sketches with the Jaccard distance (1 - [Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index)).
-- Pre-MycoSNP uses GAMBIT's fungal database v0.2.0. See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for a list of taxa included in the database.
+- Pre-MycoSNP uses GAMBIT's fungal database v1.0.0. See the [list of taxa included in the database](/assets/gambit_db/gambit-1.0.0-20241213-taxa-list.txt). See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for more details about the database.
 
 Output files:
 - `samples/<sample_id>/taxonomy/<sample_id>_gambit.csv`: GAMBIT output

@@ -190,7 +190,7 @@ workflow PRE_MYCOSNP_WF {
     GAMBIT_QUERY(
         SHOVILL.out.contigs,
         params.gambit_db,
-        params.gambit_h5
+        params.gambit_h5_dir
     )
     ch_versions = ch_versions.mix(GAMBIT_QUERY.out.versions.first())
 

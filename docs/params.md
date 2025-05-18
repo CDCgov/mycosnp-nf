@@ -7,7 +7,7 @@
   |\ | |__  __ /  ` /  \ |__) |__         }  {
   | \| |       \__, \__/ |  \ |___     \`-._,-`-,
                                         `._,._,'
-  CDCgov/mycosnp-nf v1.6.1
+  CDCgov/mycosnp-nf v1.6.2
 ------------------------------------------------------
 Typical pipeline command:
 
@@ -32,10 +32,13 @@ Pre-MycoSNP workflow options
   --genome_size                [string]  The approx. genome size of the sample, used by Shovill. Will be automatically determined if left blank.
   --min_contig_cov             [integer] Minimum contig depth of coverage for it to be retained in the assembly, used by Shovill [default: 10]
   --min_contig_len             [integer] Minimum contig length for it to be retained in the assembly, used by Shovill [default: 300]
-  --gambit_h5                  [string]  Path to the GAMBIT '.h5' file. [default: 
-                                         gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.h5] 
-  --gambit_db                  [string]  Path to the GAMBIT '.db' file. [default: 
-                                         gs://theiagen-public-files-rp/terra/theiaeuk-files/gambit/221130-theiagen-fungal-v0.2.db] 
+  --gambit_db                  [string]  Path to the GAMBIT '.gdb' or '.db' file containing metadata. [default: 
+                                         ${projectDir}/assets/gambit_db/gambit-fungal-metadata-1.0.0-20241213.gdb] 
+  --gambit_h5_dir              [string]  Full (absolute) path to the directory containing a GAMBIT signature file, which can be split into one or more chunks. 
+                                         Each chunk may be gzipped if preferred. Each chunk must have one of the following extensions: '.gs', '.h5', '.gs.gz' or 
+                                         '.h5.gz'. Refer to Pre-MycoSNP's default database in assets/gambit_db/signatures/ for an example (file is split so each 
+                                         chunk is below GitHub's individual file size limit of 100 MB and warning limit of 50 MB). [default: 
+                                         ${projectDir}/assets/gambit_db/signatures/] 
   --subtype_db                 [string]  Path to a directory containing the subtyper files. This directory should contain sourmash signature files, each 
                                          containing multiple sketches for the representative subtypes. This directory should also contain a csv file called 
                                          sourmash_taxa.csv mapping each taxon name to a sourmash signature file. Taxon names must be the same as what is 
