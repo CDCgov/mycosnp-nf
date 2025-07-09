@@ -1,3 +1,13 @@
+```md
+Org: NCEZID
+Contact Email: ncezid_shareit@cdc.gov
+Exemption: exemptByAgencySystem
+Exemption Justification: Code is owned by CDC surveillance programs; this repository includes compatibility changes for AMD Platform.
+Status: Maintained
+Keywords: bioinformatics
+Version: 1.5.1
+Contract#: 47QFCA23F0058
+```
 # Mycosnp
 
 [![GitHub Actions CI Status](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/ci.yml/badge.svg)](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/ci.yml)
