@@ -1,0 +1,76 @@
+nextflow_process {
+
+    name "Test Process PICARD_ADDORREPLACEREADGROUPS (local)"
+    tag "modules_local"
+    tag "modules"
+    tag "picard"
+    tag "addorreplacereadgroups"
+    script "../main.nf"
+    process "PICARD_ADDORREPLACEREADGROUPS"
+
+    setup {
+        run("BWA_MEM") {
+            script "../../../../nf-core/bwa/mem/main.nf"
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],
+                    [
+                        file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/fastq/test_1.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/fastq/test_2.fastq.gz', checkIfExists: true)
+                    ]
+                ]
+                input[1] = [ [id:'idx'], file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/bwa/bwa', checkIfExists: true) ]
+                input[2] = [ [id:'ref'], file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true) ]
+                input[3] = true
+                """
+            }
+        }
+    }
+
+    test("Replace RGs from meta when ext.args empty") {
+
+        when {
+            process {
+                """
+                input[0] = [ [ id:'test' ], BWA_MEM.out.bam[0][1] ]
+                input[1] = [[id:'ref'], file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true)]
+                input[2] = [[id:'ref'], file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta.fai', checkIfExists: true)]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.versions).match() }
+            )
+        }
+    }
+
+    test("Respect ext.args if set") {
+
+        when {
+            process {
+                """
+                options {
+                    withName: PICARD_ADDORREPLACEREADGROUPS {
+                        ext.args = "--RGID X --RGSM X --RGLB X --RGPL ILLUMINA --RGPU X"
+                        ext.prefix = "test"
+                    }
+                }
+                input[0] = [ [ id:'test' ], BWA_MEM.out.bam[0][1] ]
+                input[1] = [[id:'ref'], file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true)]
+                input[2] = [[id:'ref'], file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta.fai', checkIfExists: true)]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.versions).match() }
+            )
+        }
+    }
+}

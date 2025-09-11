@@ -1,4 +1,5 @@
 # DISCLAIMER
+
 Use of this service is limited only to **non-sensitive and publicly available
 data**. Users must not use, share, or store any kind of sensitive data like
 health status, provision or payment of healthcare, Personally Identifiable

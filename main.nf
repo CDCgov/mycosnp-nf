@@ -1,57 +1,90 @@
 #!/usr/bin/env nextflow
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    mycosnp
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/cdcent/oamd-bio-fungal-mycosnp
+========================================================================================
+    nf-core/mycosnp
+========================================================================================
+    Github : https://github.com/CDCgov/mycosnp-nf
+    Wiki   : https://github.com/CDCgov/mycosnp-nf/wiki
 ----------------------------------------------------------------------------------------
 */
 
+nextflow.enable.dsl = 2
+
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+========================================================================================
+    GENOME PARAMETER VALUES
+========================================================================================
 */
 
-include { MYCOSNP  } from './workflows/mycosnp'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_mycosnp_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_mycosnp_pipeline'
+//params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
+
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOWS FOR PIPELINE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+========================================================================================
+    VALIDATE & PRINT PARAMETER SUMMARY
+========================================================================================
 */
 
-//
-// WORKFLOW: Run main analysis pipeline depending on type of input
-//
-workflow PHCORE_MYCOSNP {
+//WorkflowMain.initialise(workflow, params, log)
 
+/*
+========================================================================================
+    PRE-MYCOSNP
+========================================================================================
+*/
+
+include { PRE_MYCOSNP_WF          } from './workflows/pre_mycosnp'
+include { MYCOSNP                 } from './workflows/mycosnp'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_mycosnp_pipeline/main'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_mycosnp_pipeline/main'
+
+//
+// WORKFLOW: Run pre-mycosnp pipeline
+//
+workflow PRE_MYCOSNP {
     take:
-    samplesheet // channel: samplesheet read in from --input
+    samplesheet
 
     main:
+    PRE_MYCOSNP_WF(samplesheet)
 
-    //
-    // WORKFLOW: Run pipeline
-    //
-    MYCOSNP (
-        samplesheet
-    )
     emit:
-    multiqc_report = MYCOSNP.out.multiqc_report // channel: /path/to/multiqc_report.html
+    versions = PRE_MYCOSNP_WF.out.versions
+    multiqc_report = PRE_MYCOSNP_WF.out.multiqc_report
+
 }
+
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN MAIN WORKFLOW
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+========================================================================================
+    NAMED WORKFLOW FOR PIPELINE
+========================================================================================
 */
 
-workflow {
+
+//
+// WORKFLOW: Run main nf-core/mycosnp analysis pipeline
+//
+workflow NFCORE_MYCOSNP {
+    take:
+    samplesheet // Define the input parameter
 
     main:
-    //
-    // SUBWORKFLOW: Run initialisation tasks
+    MYCOSNP (samplesheet)
+
+    emit:
+    multiqc_report = MYCOSNP.out.multiqc_report
+}
+
+/*
+========================================================================================
+    RUN ALL WORKFLOWS
+========================================================================================
+*/
+
+//
+// WORKFLOW: Execute the specified workflow
+//
+workflow {
+    main:
     //
     PIPELINE_INITIALISATION (
         params.version,
@@ -62,24 +95,42 @@ workflow {
         params.input
     )
 
-    //
-    // WORKFLOW: Run main workflow
-    //
-    PHCORE_MYCOSNP (
-        PIPELINE_INITIALISATION.out.samplesheet
-    )
-    //
-    // SUBWORKFLOW: Run completion tasks
-    //
+    // Create a default empty channel for multiqc_report
+    multiqc_report = Channel.empty()
+
+    if (params.workflow == 'PRE_MYCOSNP') {
+        PRE_MYCOSNP(PIPELINE_INITIALISATION.out.samplesheet)
+        multiqc_report = PRE_MYCOSNP.out.multiqc_report.ifEmpty([])
+    } else if (params.workflow == 'NFCORE_MYCOSNP') {
+        NFCORE_MYCOSNP(PIPELINE_INITIALISATION.out.samplesheet)
+        multiqc_report = NFCORE_MYCOSNP.out.multiqc_report.ifEmpty([])
+    } else {
+        log.error "Invalid workflow specified. Use 'PRE_MYCOSNP' or 'NFCORE_MYCOSNP'."
+        exit 1
+    }
+
+    // Make sure multiqc_report is always valid
     PIPELINE_COMPLETION (
         params.outdir,
         params.monochrome_logs,
-        PHCORE_MYCOSNP.out.multiqc_report
+        multiqc_report.ifEmpty([]) // Ensure it's never null
     )
 }
 
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+========================================================================================
+    COMPLETION EMAIL AND SUMMARY
+========================================================================================
+*/
+
+workflow.onComplete {
+    def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+    NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+    NfcoreTemplate.summary(workflow, params, log)
+}
+
+/*
+========================================================================================
     THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+========================================================================================
 */

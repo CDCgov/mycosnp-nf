@@ -1,0 +1,6 @@
+name: faqcs-2.10
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - faqcs=2.10

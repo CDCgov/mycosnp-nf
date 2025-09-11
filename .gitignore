@@ -4,6 +4,7 @@ data/
 results/
 .DS_Store
 testing/
-testing*
 *.pyc
 null/
+bin/vcfTools.pyc*
+bin/__pycache__/
