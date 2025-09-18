@@ -243,3 +243,8 @@ Please refer to [CDC's Template Repository](https://github.com/CDCgov/template)
 for more information about [contributing to this repository](https://github.com/CDCgov/template/blob/master/CONTRIBUTING.md),
 [public domain notices and disclaimers](https://github.com/CDCgov/template/blob/master/DISCLAIMER.md),
 and [code of conduct](https://github.com/CDCgov/template/blob/master/code-of-conduct.md).
+
+## SHARE IT Act Metadata
+* Organization: NCEZID/DFWED/MDB
+* Contact Email: ncezid_shareit@cdc.gov
+* Description: Nextflow pipeline for whole genome sequencing analysis of fungal isolates
