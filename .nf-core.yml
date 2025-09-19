@@ -5,11 +5,6 @@ lint:
     - assets/email_template.html
     - assets/sendmail_template.txt
     - assets/email_template.txt
-    - conf/igenomes.config
-    - conf/igenomes_ignored.config
-    - assets/email_template.html
-    - assets/sendmail_template.txt
-    - assets/email_template.txt
     - CODE_OF_CONDUCT.md
     - assets/nf-core-mycosnp_logo_light.png
     - docs/images/nf-core-mycosnp_logo_light.png
@@ -18,11 +13,6 @@ lint:
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
   files_unchanged:
-    - .prettierignore
-    - .prettierignore
-    - .prettierignore
-    - .prettierignore
-    - .prettierignore
     - .prettierignore
     - CODE_OF_CONDUCT.md
     - assets/nf-core-mycosnp_logo_light.png
