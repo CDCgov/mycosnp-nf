@@ -18,7 +18,7 @@ process PRE_MYCOSNP_COMB_SUMMARY {
     script:
     """
     # combine all line summaries into single report
-    echo "Sample,Predicted_Rank,Predicted_Taxon,Subtype_Closest_Match,Subtype_ANI,Closest_GAMBIT_Entry_Description,Closest_GAMBIT_Entry_Distance,Trimmed_Reads,Avg_Read_Quality,Sample_Assembly_Length,Sample_Assembly_GC,Reference_Genome_Length,Avg_Depth_Coverage,Reference_GC" > pre-mycosnp-summary.csv
+    echo "Sample,PM_Predicted_Rank,PM_Predicted_Taxon,PM_Subtype_Closest_Match,PM_Subtype_ANI,PM_Closest_GAMBIT_Entry_Description,PM_Closest_GAMBIT_Entry_Distance,PM_Trimmed_Reads,PM_Avg_Read_Quality,PM_Sample_Assembly_Length,PM_Sample_Assembly_GC,PM_Reference_Genome_Length,PM_Avg_Depth_Coverage,PM_Reference_GC" > pre-mycosnp-summary.csv
     cat *_linesummary.csv >> pre-mycosnp-summary.csv
     """
 }
