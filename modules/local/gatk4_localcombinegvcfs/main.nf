@@ -16,9 +16,9 @@ process GATK4_LOCALCOMBINEGVCFS {
 
     output:
     tuple val(meta), path("*.combined.g.vcf.gz"), path("*.combined.g.vcf.gz.tbi"), emit: combined_gvcf
-    path("*.combined.g.vcf.gz"), emit: gvcf
+    path("*.combined.g.vcf.gz")    , emit: gvcf
     path("*.combined.g.vcf.gz.tbi"), emit: tbi
-    path "versions.yml"                         , emit: versions
+    path  "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -76,9 +76,10 @@ process GATK4_LOCALCOMBINEGVCFS {
           -O ${prefix}.combined.g.vcf.gz \\
           ${args} \\
           ${input_files}
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gatk4: \$(echo \$(gatk --version 2>&1) | sed 's/^.*(GATK) v//; s/ .*\$//')
+        gatk4: \$(gatk --version 2>&1 | grep "The Genome Analysis Toolkit" | sed 's/.*v//')
     END_VERSIONS
     """
 }

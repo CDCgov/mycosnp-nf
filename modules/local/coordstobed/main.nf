@@ -12,12 +12,17 @@ process COORDSTOBED {
 
     output:
     tuple val(meta), path("masked_ref.bed"), emit: bed
-    // path "versions.yml", emit: versions
+    path  "versions.yml"                   , emit: versions
 
     script:
     """
     show-coords -r -T -H $delta > masked_ref_BEFORE_ORDER.bed
     awk '{if (\$1 != \$3 && \$2 != \$4) print \$0}' masked_ref_BEFORE_ORDER.bed > masked_ref_BEFORE_ORDER2.bed
     awk '{print \$8\"\\t\"\$1\"\\t\"\$2}' masked_ref_BEFORE_ORDER2.bed > masked_ref.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mummer: \$(echo "3.23")
+    END_VERSIONS
     """
 }

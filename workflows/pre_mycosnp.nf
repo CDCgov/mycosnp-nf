@@ -176,7 +176,7 @@ workflow PRE_MYCOSNP_WF {
     PRE_MYCOSNP_INDV_SUMMARY(
         ch_line_summary_input
     )
-
+    ch_versions = ch_versions.mix(PRE_MYCOSNP_INDV_SUMMARY.out.versions)
     //
     // MODULE: Combine line summaries into single output
     //
@@ -185,6 +185,7 @@ workflow PRE_MYCOSNP_WF {
             .map{ meta, result -> [result] }
             .collect()
     )
+    ch_versions = ch_versions.mix(PRE_MYCOSNP_COMB_SUMMARY.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique()

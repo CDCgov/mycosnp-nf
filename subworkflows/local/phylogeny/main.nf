@@ -48,6 +48,7 @@ workflow CREATE_PHYLOGENY {
     }
 
     QUICKSNP(snpdists_tsv)
+    ch_versions = ch_versions.mix(QUICKSNP.out.versions)
 
     emit:
     rapidnj_tree      = rapidnj_tree     // channel: [ phylogeny ]

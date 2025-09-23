@@ -10,6 +10,7 @@ process PRE_MYCOSNP_INDV_SUMMARY {
 
     output:
     tuple val(meta), path("*_linesummary.csv"), emit: result
+    path  "versions.yml"                      , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -71,5 +72,10 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     # Create line summary. Wrap `closest` in double quotes in case value contains commas.
     echo "${prefix},\${reported_rank},\${taxon},\${subtype_closest_match},\${subtype_ani},\${closest},\${distance}" > taxon_cols
     paste -d ',' taxon_cols stats_cols > "${prefix}_linesummary.csv"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        ncbi-datasets-cli: \$(datasets --version 2>&1 | sed 's/datasets version: //')
+    END_VERSIONS
     """
 }

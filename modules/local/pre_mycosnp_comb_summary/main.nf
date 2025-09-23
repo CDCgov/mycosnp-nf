@@ -10,7 +10,8 @@ process PRE_MYCOSNP_COMB_SUMMARY {
     path line_summary
 
     output:
-    path "pre-mycosnp-summary.csv"
+    path("pre-mycosnp-summary.csv"), emit: csv
+    path  "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -20,5 +21,10 @@ process PRE_MYCOSNP_COMB_SUMMARY {
     # combine all line summaries into single report
     echo "Sample,PM_Predicted_Rank,PM_Predicted_Taxon,PM_Subtype_Closest_Match,PM_Subtype_ANI,PM_Closest_GAMBIT_Entry_Description,PM_Closest_GAMBIT_Entry_Distance,PM_Trimmed_Reads,PM_Avg_Read_Quality,PM_Sample_Assembly_Length,PM_Sample_Assembly_GC,PM_Reference_Genome_Length,PM_Avg_Depth_Coverage,PM_Reference_GC" > pre-mycosnp-summary.csv
     cat *_linesummary.csv >> pre-mycosnp-summary.csv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        coreutils: \$(cat --version 2>&1 | head -1 | sed 's/.*(GNU coreutils) //' | sed 's/ .*//')
+    END_VERSIONS
     """
 }

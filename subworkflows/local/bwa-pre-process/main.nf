@@ -7,12 +7,12 @@
 include { SEQKIT_PAIR                          } from '../../../modules/nf-core/seqkit/pair/main'
 include { SEQTK_SAMPLE                         } from '../../../modules/local/seqtk_sample/main'
 include { FAQCS                                } from '../../../modules/local/faqcs/main'
-include { BWA_INDEX                            } from '../../../modules/nf-core/bwa/index/main'
+include { BWA_INDEX                            } from '../../../modules/nf-core/bwa/index/main'   //not used here
 include { BWA_MEM                              } from '../../../modules/local/bwa/mem/main'
-include { SAMTOOLS_SORT                        } from '../../../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_SORT                        } from '../../../modules/nf-core/samtools/sort/main' //not used here
 include { PICARD_MARKDUPLICATES                } from '../../../modules/local/picard/markduplicates/main'
 include { PICARD_CLEANSAM                      } from '../../../modules/nf-core/picard/cleansam/main'
-include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM } from '../../../modules/nf-core/samtools/view/main'
+include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM } from '../../../modules/nf-core/samtools/view/main' //not used here
 include { PICARD_FIXMATEINFORMATION            } from '../../../modules/nf-core/picard/fixmateinformation/main'
 include { PICARD_ADDORREPLACEREADGROUPS        } from '../../../modules/local/picard/addorreplacereadgroups/main'
 include { SAMTOOLS_INDEX                       } from '../../../modules/nf-core/samtools/index/main'
@@ -87,10 +87,13 @@ workflow BWA_PREPROCESS {
                                                SAMTOOLS_INDEX.out.versions,
                                                FASTQC_POST.out.versions,
                                                SAMTOOLS_STATS.out.versions,
-                                               QUALIMAP_BAMQC.out.versions
+                                               QUALIMAP_BAMQC.out.versions,
+                                               QC_REPORT.out.versions,
+                                               SAMTOOLS_IDXSTATS.out.versions,
+                                               SAMTOOLS_FLAGSTAT.out.versions
                                             )
     if (params.coverage != 0) {
-        ch_versions.mix(SEQTK_SAMPLE.out.versions)
+        ch_versions = ch_versions.mix(SEQTK_SAMPLE.out.versions)
     }
 
     ch_alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam

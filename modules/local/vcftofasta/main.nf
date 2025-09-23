@@ -13,6 +13,7 @@ process VCF_TO_FASTA {
 
     output:
     tuple val(meta), path("*.fasta"), emit: fasta
+    path "versions.yml"             , emit: versions
 
     script:
     def args = task.ext.args ?: ''
@@ -39,6 +40,9 @@ process VCF_TO_FASTA {
     echo "MAX_AMB_SAMPLES=\$MAX_AMB_SAMPLES" >> log.txt
     echo "MIN_DEPTH=$min_depth" >> log.txt
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
     """
-
 }

@@ -10,13 +10,16 @@ process SAMPLESHEET_MERGE {
     path(samplesheet)
 
     output:
-    path 'samplesheet.system.csv'  , emit: csv
+    path 'samplesheet.system.csv', emit: csv
+    path "versions.yml"          , emit: versions
 
     script: // This script is bundled with the pipeline, in nf-core/mycosnp/bin/
     """
     mycosnp_combine_lanes.pl -i $samplesheet > samplesheet.system.csv
 
-    # TODO: Add version
-
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        perl: \$(perl -v 2>&1 | grep -o 'v[0-9.][0-9.]*' | sed 's/v//')
+    END_VERSIONS
     """
 }

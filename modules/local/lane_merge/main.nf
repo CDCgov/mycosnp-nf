@@ -10,7 +10,7 @@ process LANE_MERGE {
     tuple val(meta), path(reads)
 
     output:
-    tuple val(meta), path("combined/*.fastq.gz")       , emit: reads
+    tuple val(meta), path("combined/*.fastq.gz"), emit: reads
 
     script:
     def reads_list = reads.collect { "'${it.name}'" }.join(' ')
@@ -69,6 +69,4 @@ process LANE_MERGE {
         } | gzip -c > "combined/${meta.id}_R2.fastq.gz"
     fi
     """
-
-
 }

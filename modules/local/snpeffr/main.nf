@@ -6,8 +6,8 @@ process SNPEFFR {
 	tuple val(meta), path(input)
 
 	output:
-	path '*.csv'		,emit: report
-	path "versions.yml"	,emit: versions
+	path '*.csv'	   , emit: report
+	path "versions.yml", emit: versions
 
 	when:
 	task.ext.when == null || task.ext.when

@@ -52,7 +52,7 @@ include { BWA_PREPROCESS     } from '../subworkflows/local/bwa-pre-process/main'
 include { BWA_REFERENCE      } from '../subworkflows/local/bwa-reference/main'
 include { GATK_VARIANTS      } from '../subworkflows/local/gatk-variants/main'
 include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny/main'
-include { SNPEFF_BUILD       } from '../subworkflows/local/snpeff_build/main'
+include { SNPEFF_BUILD       } from '../subworkflows/local/snpeff_build/main'  //not used here
 include { SNPEFF             } from '../subworkflows/local/snpeff/main'
 /*
 ========================================================================================
@@ -68,7 +68,7 @@ include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet/ma
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { GATK4_HAPLOTYPECALLER       } from '../modules/nf-core/gatk4/haplotypecaller/main'
-include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/gatk4/combinegvcfs/main'
+include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/gatk4/combinegvcfs/main' //not used here
 include { SEQKIT_REPLACE              } from '../modules/nf-core/seqkit/replace/main'
 include { SNPDISTS                    } from '../modules/nf-core/snpdists/main'
 include { GATK4_LOCALCOMBINEGVCFS     } from '../modules/local/gatk4_localcombinegvcfs/main'
@@ -285,6 +285,8 @@ workflow MYCOSNP {
             ref_dict_only
         )
 
+        ch_versions = ch_versions.mix(GATK4_LOCALCOMBINEGVCFS.out.versions)
+
         GATK_VARIANTS(
             ref_fasta_only,
             ref_fai_only,
@@ -299,6 +301,7 @@ workflow MYCOSNP {
 
         if(params.snpeff != false){
             SNPEFF(GATK_VARIANTS.out.filtered_vcf, params.species)
+            ch_versions = ch_versions.mix(SNPEFF.out.versions)
         }
 
 /*
@@ -317,17 +320,17 @@ workflow MYCOSNP {
 */
 
         SEQKIT_REPLACE(GATK_VARIANTS.out.snps_fasta) // Swap * for -
+        ch_versions = ch_versions.mix(SEQKIT_REPLACE.out.versions)
 
         SNPDISTS(SEQKIT_REPLACE.out.fastx)
+        ch_versions = ch_versions.mix(SNPDISTS.out.versions)
+
         if(! params.skip_phylogeny) {
             CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '', SNPDISTS.out.tsv)
+            ch_versions = ch_versions.mix(CREATE_PHYLOGENY.out.versions)
         }
 
     }
-
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
 
     //
     // MODULE: Run Pre-FastQC
@@ -336,6 +339,10 @@ workflow MYCOSNP {
         ch_all_reads
     )
     ch_versions = ch_versions.mix(FASTQC_RAW.out.versions.first())
+
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
     //
     // MODULE: MultiQC

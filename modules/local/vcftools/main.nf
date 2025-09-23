@@ -12,7 +12,7 @@ process FILTER_GATK_GENOTYPES {
 
     output:
     tuple val(meta), path("*.vcf.gz"), emit: vcf
-    // path "versions.yml", emit: versions
+    path "versions.yml"              , emit: versions
 
     script:
     def args = task.ext.args ?: ''
@@ -30,6 +30,10 @@ process FILTER_GATK_GENOTYPES {
                             $args \\
                            > ${prefix}.vcf
     gzip ${prefix}.vcf
-    """
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
+    """
 }

@@ -84,7 +84,9 @@ workflow GATK_VARIANTS {
                                     BCFTOOLS_VIEW_CONVERT.out.versions,
                                     BCFTOOLS_INDEX.out.versions,
                                     SPLIT_VCF.out.versions,
-                                    VCF_CONSENSUS.out.versions
+                                    VCF_CONSENSUS.out.versions,
+                                    FILTER_GATK_GENOTYPES.out.versions,
+                                    VCF_TO_FASTA.out.versions
                                 )
 
 

@@ -99,7 +99,9 @@ workflow BWA_REFERENCE {
     ch_versions           = ch_versions.mix( NUCMER.out.versions,
                                              BWA_INDEX.out.versions,
                                              SAMTOOLS_FAIDX.out.versions,
-                                             PICARD_CREATESEQUENCEDICTIONARY.out.versions )
+                                             PICARD_CREATESEQUENCEDICTIONARY.out.versions,
+                                             COORDSTOBED.out.versions,
+                                             BEDTOOLS_MASKFASTA.out.versions )
     ch_masked_fasta       = ch_use_fasta
     ch_samtools_index     = SAMTOOLS_FAIDX.out.fai
     ch_bwa_index          = BWA_INDEX.out.index

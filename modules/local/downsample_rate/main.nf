@@ -8,15 +8,15 @@ process DOWNSAMPLE_RATE {
         'quay.io/biocontainers/python:3.8.3' }"
 
     input:
-        tuple val(meta), path(reads)
-        path(reference_fasta)
-        val(coverage)
+    tuple val(meta), path(reads)
+    path(reference_fasta)
+    val(coverage)
 
     output:
-        tuple val(meta), env(SAMPLE_RATE),  env(SAMPLED_NUM_READS),   emit: downsampled_rate
-	env(SAMPLED_NUM_READS)                                    ,   emit: number_to_sample
+    tuple val(meta), env(SAMPLE_RATE),  env(SAMPLED_NUM_READS)  , emit: downsampled_rate
+	env(SAMPLED_NUM_READS)                                      , emit: number_to_sample
 
-	script:
+    script:
 	"""
 	REFERENCE_LEN=\$(awk '!/^>/ {len+=length(\$0)} END {print len}' < ${reference_fasta})
 	READS_LEN=\$(zcat ${reads} |awk 'NR%4==2 {len +=length(\$0)} END {print len}')
@@ -26,5 +26,5 @@ process DOWNSAMPLE_RATE {
 	# Calculate number of reads
 	NUM_READS=\$(zcat ${reads[0]}|awk 'END {print NR/4}')
 	SAMPLED_NUM_READS=\$(echo "\${NUM_READS} \${SAMPLE_RATE}" | awk '{x=\$1*\$2} END {printf "%.0f", x}')
-	"""
+    """
 }

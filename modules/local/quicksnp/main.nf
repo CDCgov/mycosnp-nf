@@ -12,6 +12,7 @@ process QUICKSNP {
 
     output:
     tuple val(meta), path("*.nwk"), emit: quicksnp_tree
+    path  "versions.yml"          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,5 +23,10 @@ process QUICKSNP {
     QuickSNP.py \\
         --dm ${tsv} \\
         --outtree quicksnp_tree.nwk
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python3 --version | cut -d' ' -f2)
+    END_VERSIONS
     """
 }

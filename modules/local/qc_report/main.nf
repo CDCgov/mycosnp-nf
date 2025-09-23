@@ -13,6 +13,7 @@ process QC_REPORT {
 
     output:
     path("*_output.txt"), emit: qc_line
+    path  "versions.yml", emit: versions
 
     script:
     def args = task.ext.args ?: ''
@@ -29,5 +30,10 @@ process QC_REPORT {
         --bam_coverage ${meta.id}/genome_results.txt \\
         --genome_fraction ${meta.id}/raw_data_qualimapReport/genome_fraction_coverage.txt \\
         --min_depth ${params.min_depth} > ${meta.id}_output.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
     """
 }
