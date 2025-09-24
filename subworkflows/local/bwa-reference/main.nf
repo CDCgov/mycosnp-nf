@@ -10,40 +10,7 @@ include { BEDTOOLS_MASKFASTA              } from '../../../modules/nf-core/bedto
 include { BWA_INDEX                       } from '../../../modules/nf-core/bwa/index/main'
 include { PICARD_CREATESEQUENCEDICTIONARY } from '../../../modules/nf-core/picard/createsequencedictionary/main'
 include { SAMTOOLS_FAIDX                  } from '../../../modules/nf-core/samtools/faidx/main'
-
-process INPUT_PROC {
-
-    conda (params.enable_conda ? "conda-forge::sed=4.7" : null)
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/python:3.8.3' :
-        'quay.io/biocontainers/python:3.8.3' }"
-
-    input:
-    path(fasta)
-
-    output:
-    tuple val(meta), path("reference.fasta", includeInputs: true), path("reference.copy.fasta"), emit: ref_fasta
-
-    script:
-    meta = [
-            "id": 'reference'
-    ]
-    def is_compressed = false
-    if(fasta.getName().endsWith(".gz"))
-    {
-        is_compressed = true
-    }
-    """
-    echo ${meta.id}
-    if [[ ${is_compressed} == "true" ]]; then
-        gunzip -c $fasta > reference.fasta
-    else
-        mv ${fasta} reference.fasta
-    fi
-    cp reference.fasta reference.copy.fasta
-    """
-
-}
+include { INPUT_PROC                      } from '../../../modules/local/input_proc/main'
 
 workflow BWA_REFERENCE {
 
@@ -61,11 +28,11 @@ workflow BWA_REFERENCE {
     ch_versions           = Channel.empty()
 
     INPUT_PROC( fasta )
-    NUCMER( INPUT_PROC.out )
+    NUCMER( INPUT_PROC.out.ref_fasta )
     COORDSTOBED( NUCMER.out.delta )
     // BEDTOOLS_MASKFASTA expects tuple val(meta), path(bed) and a path-only fasta
     // Broadcast fasta path alongside each bed entry to ensure pairing
-    def ref_fasta_path = INPUT_PROC.out.map{ meta, fa, fa2-> fa }
+    def ref_fasta_path = INPUT_PROC.out.ref_fasta.map{ meta, fa, fa2-> fa }
     def bed_with_fasta = COORDSTOBED.out.bed.map{ meta, bed -> [ meta, bed ] }
     BEDTOOLS_MASKFASTA( bed_with_fasta, ref_fasta_path )
 
@@ -100,8 +67,10 @@ workflow BWA_REFERENCE {
                                              BWA_INDEX.out.versions,
                                              SAMTOOLS_FAIDX.out.versions,
                                              PICARD_CREATESEQUENCEDICTIONARY.out.versions,
+                                             INPUT_PROC.out.versions,
                                              COORDSTOBED.out.versions,
                                              BEDTOOLS_MASKFASTA.out.versions )
+    
     ch_masked_fasta       = ch_use_fasta
     ch_samtools_index     = SAMTOOLS_FAIDX.out.fai
     ch_bwa_index          = BWA_INDEX.out.index

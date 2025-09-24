@@ -1,0 +1,53 @@
+name: INPUT_PROC
+description: Preprocess input reference fasta files
+keywords:
+  - preprocess
+  - input
+  - gunzip
+  - rename
+  - copy
+tools:
+  - "python":
+      description:
+        "Python is a programming language that lets you work quickly
+        and integrate systems more effectively."
+      homepage: "https://www.python.org/"
+      documentation: "https://docs.python.org/3/"
+      licence: ["GPL"]
+      identifier: ""
+  - "gunzip":
+      description: |
+        gzip is a file format and a software application used for file compression and decompression.
+      documentation: https://www.gnu.org/software/gzip/manual/gzip.html
+      licence: ["GPL-3.0-or-later"]
+      identifier: ""
+input:
+  - fasta:
+      type: file
+      description: |
+        Compressed or uncompressed FASTA file
+      pattern: "*.fasta{.gz}"
+output:
+  - ref_fasta:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - reference.fasta:
+          type: file
+          description: |
+            Decompressed reference FASTA file
+          pattern: "reference.fasta"
+      - reference.copy.fasta:
+          type: file
+          description: |
+            Copy of decompressed reference FASTA file
+          pattern: "reference.copy.fasta"
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+maintainers:
