@@ -33,7 +33,14 @@ The command used to launch the workflow was as follows:
 
 Pipeline Configuration:
 -----------------------
-<% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
+<%
+summary.each{ k,v ->
+    def keyStr = (k?.toString() ?: 'null')
+    def valStr = (v?.toString() ?: 'null')
+    // Use concatenation / format to avoid embedding raw double-quotes in the generated Groovy source
+    out << String.format(" - %s: %s\n", keyStr.replaceAll("'", "\\\\'"), valStr.replaceAll("'", "\\\\'"))
+}
+%>
 
 --
 nf-core/mycosnp

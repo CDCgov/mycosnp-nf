@@ -1,0 +1,46 @@
+nextflow_process {
+    name "Test Process QC_PARSER"
+    script "../main.nf"
+    process "QC_PARSER"
+
+    tag "modules"
+    tag "modules/local/qc_parser"
+    tag "qc_parser"
+
+    test("QC_PARSER - Output Validation") {
+        config "./nextflow.config"
+        when {
+            process {
+                """
+                input[0] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/qc_parser/qc_report.txt")
+                """
+            }
+        }
+        then {
+            def outFile = file(process.out.qc_fail_pass[0])
+            assertAll(
+                { assert process.success },
+                { assert outFile.exists() }
+            )
+        }
+    }
+
+    test("QC_PARSER - stub test") {
+        options "-stub"
+        config "./nextflow.config"
+        when {
+            process {
+                """
+                input[0] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/qc_parser/qc_report.txt")
+                """
+            }
+        }
+        then {
+            def outFile = file(process.out.qc_fail_pass[0])
+            assertAll(
+                { assert process.success },
+                { assert outFile.exists() }
+            )
+        }
+    }
+}

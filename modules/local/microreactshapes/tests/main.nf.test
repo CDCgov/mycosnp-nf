@@ -1,0 +1,67 @@
+nextflow_process {
+    name "Test Process MICROREACTSHAPES"
+    script "../main.nf"
+    process "MICROREACTSHAPES"
+
+    tag "modules"
+    tag "modules/local/microreactshapes"
+    tag "microreactshapes"
+
+    test("MICROREACTSHAPES - Output Validation") {
+        config "./nextflow.config"
+        when {
+            process {
+                 """
+                // input[0]: tuple(val(meta), path(tree))
+                input[0] = [
+                    [ id: "S1" ],
+                    file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/quicksnp_phylogeny.nwk")
+                ]
+                // input[1]: metadata table
+                input[1] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/metadata.csv")
+                // input[2]: geolocation table
+                input[2] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/geolocation.csv")
+                """
+            }
+        }
+        then {
+            def outTuple = process.out.shapes[0]
+            def metaMap = outTuple[0]
+            def outFile = file(outTuple[1])
+            assertAll(
+                { assert process.success },
+                { assert metaMap.id == "S1" },
+                { assert outFile.name == "microreact_metadata.csv" },
+                { assert outFile.exists() }
+            )
+        }
+    }
+
+    test("MICROREACTSHAPES - stub test") {
+        options "-stub"
+        config "./nextflow.config"
+        when {
+            process {
+                """
+                // input[0]: tuple(val(meta), path(tree))
+                input[0] = [
+                    [ id: "S1" ],
+                    file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/quicksnp_phylogeny.nwk")
+                ]
+                // input[1]: metadata table
+                input[1] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/metadata.csv")
+                // input[2]: geolocation table
+                input[2] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/geolocation.csv")
+                """
+            }
+        }
+        then {
+            def outTuple = process.out.shapes[0]
+            def outFile = file(outTuple[1])
+            assertAll(
+                { assert process.success },
+                { assert outFile.exists() }
+            )
+        }
+    }
+}

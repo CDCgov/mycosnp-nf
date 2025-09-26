@@ -2,11 +2,12 @@
 // Phylogenies subworkflow
 //
 
-include { RAPIDNJ  } from '../../../modules/nf-core/rapidnj/main'
-include { FASTTREE } from '../../../modules/nf-core/fasttree/main'
-include { IQTREE   } from '../../../modules/nf-core/iqtree/main'
-include { RAXMLNG  } from '../../../modules/nf-core/raxmlng/main'
-include { QUICKSNP } from '../../../modules/local/quicksnp/main'
+include { RAPIDNJ          } from '../../../modules/nf-core/rapidnj/main'
+include { FASTTREE         } from '../../../modules/nf-core/fasttree/main'
+include { IQTREE           } from '../../../modules/nf-core/iqtree/main'
+include { RAXMLNG          } from '../../../modules/nf-core/raxmlng/main'
+include { QUICKSNP         } from '../../../modules/local/quicksnp/main'
+include { MICROREACTSHAPES } from '../../../modules/local/microreactshapes/main'
 
 workflow CREATE_PHYLOGENY {
     take:
@@ -47,14 +48,24 @@ workflow CREATE_PHYLOGENY {
         ch_versions = ch_versions.mix(RAXMLNG.out.versions)
     }
 
+    quicksnp_tree = Channel.empty()
     QUICKSNP(snpdists_tsv)
     ch_versions = ch_versions.mix(QUICKSNP.out.versions)
+
+    quicksnp_tree = QUICKSNP.out.quicksnp_tree
+
+    shapes = Channel.empty()
+    if (params.amdp) {
+        MICROREACTSHAPES(quicksnp_tree, params.metadata_csv, params.geolocation_csv)
+        shapes = MICROREACTSHAPES.out.shapes
+    }
 
     emit:
     rapidnj_tree      = rapidnj_tree     // channel: [ phylogeny ]
     fasttree_tree     = fasttree_tree    // channel: [ phylogeny ]
     iqtree_tree       = iqtree_tree      // channel: [ phylogeny ]
     raxmlng_tree      = raxmlng_tree     // channel: [ phylogeny ]
-    //quicksnp_tree     = quicksnp_tree    // channel: [ phylogeny ]
+    quicksnp_tree     = quicksnp_tree    // channel: [ phylogeny ]
+    shapes            = shapes           // channel: [ phylogeny  ]
     versions          = ch_versions      // channel: [ ch_versions ]
 }

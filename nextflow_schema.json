@@ -403,6 +403,52 @@
                     "hidden": true
                 }
             }
+        },
+        "amd_p_options": {
+            "title": "AMD-P Specific Options",
+            "type": "object",
+            "fa_icon": "fas fa-microchip",
+            "description": "Parameters specific to AMD-P enhancements",
+            "properties": {
+                "amdp": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable AMD-P enhancement modules",
+                    "fa_icon": "fas fa-check-square"
+                },
+                "qc_thresholds": {
+                    "type": "string",
+                    "default": "GCrangePct:42-47.5,AvgQscore:28,RefLenCov:20,MeanCovDepth:20",
+                    "description": "Set quality control thresholds",
+                    "fa_icon": "fas fa-sliders-h"
+                },
+                "metadata_csv": {
+                    "type": "string",
+                    "format": "file-path",
+                    "default": "",
+                    "description": "Path to the metadata CSV file for AMD-P.",
+                    "fa_icon": "fas fa-file-csv"
+                 },
+                "geolocation_csv": {
+                    "type": "string",
+                    "format": "file-path",
+                    "default": "",
+                    "description": "Path to the geolocation CSV file for AMD-P.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "test_samples": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Comma-separated sample IDs to appear as stars in the microreact input metadata file",
+                    "fa_icon": "fas fa-vial"
+                 },
+                "percent_n": {
+                    "type": "number",
+                    "default": "8",
+                    "description": "Quality control threshold for the percent of Ns (range 0-100)",
+                    "fa_icon": "fas fa-sliders-h"
+                 }
+            }
         }
     },
     "allOf": [

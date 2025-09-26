@@ -77,32 +77,18 @@ $commandLine</pre
         "
       >
         <tbody style="border-bottom: 1px solid #ddd">
-          <% out << summary.collect{ k,v -> "
-          <tr>
-            <th
-              style="
-                text-align: left;
-                padding: 8px 0;
-                line-height: 1.42857143;
-                vertical-align: top;
-                border-top: 1px solid #ddd;
-              "
-            >
-              $k
-            </th>
-            <td
-              style="
-                text-align: left;
-                padding: 8px;
-                line-height: 1.42857143;
-                vertical-align: top;
-                border-top: 1px solid #ddd;
-              "
-            >
-              <pre style="white-space: pre-wrap; overflow: visible">$v</pre>
-            </td>
-          </tr>
-          " }.join("\n") %>
+          <%
+          summary.each{ k,v ->
+              def keyStr = (k?.toString() ?: 'null')
+              def valStr = (v?.toString() ?: 'null')
+              out << '<tr>' +
+                     '<th style="text-align: left; padding: 8px 0; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #ddd;">' + keyStr + '</th>' +
+                     '<td style="text-align: left; padding: 8px; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #ddd;">' +
+                       '<pre style="white-space: pre-wrap; overflow: visible">' + valStr + '</pre>' +
+                     '</td>' +
+                     '</tr>\n'
+          }
+          %>
         </tbody>
       </table>
 

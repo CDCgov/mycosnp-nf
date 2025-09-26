@@ -1,0 +1,48 @@
+name: microreactshapes
+description: Generate updated Microreact metadata (with shapes/annotations) from base metadata, tree, and geolocation data.
+keywords:
+  - visualization
+  - microreact
+  - metadata
+  - phylogeny
+tools:
+  - pandas:
+      description: Data analysis library used to manipulate metadata tables.
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3-Clause"]
+input:
+  - - tree:
+        type: file
+        description: Newick phylogenetic tree file.
+        pattern: "*.{nwk,newick,tree}"
+  - - MicroreactMetadata:
+        type: file
+        description: Base Microreact metadata CSV/TSV.
+        pattern: "*.{csv,tsv,txt}"
+  - - GeolocationData:
+        type: file
+        description: Supplemental geolocation / shape information.
+        pattern: "*.{csv,tsv,txt}"
+output:
+  - shapes:
+      - "microreact_metadata.csv":
+          type: file
+          description: Updated Microreact metadata including shape annotations.
+          pattern: "microreact_metadata.csv"
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

@@ -71,6 +71,7 @@ include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/gatk4/combinegv
 include { SEQKIT_REPLACE              } from '../modules/nf-core/seqkit/replace/main'
 include { SNPDISTS                    } from '../modules/nf-core/snpdists/main'
 include { GATK4_LOCALCOMBINEGVCFS     } from '../modules/local/gatk4_localcombinegvcfs/main'
+include { QC_PARSER                   } from '../modules/local/qc_parser/main'
 
 /*
 ========================================================================================
@@ -234,6 +235,11 @@ workflow MYCOSNP {
     QC_REPORTSHEET (
         ch_qcreportsheet
     )
+
+    // Conditionally run QC_PARSER if param.amdp is true
+    if (params.amdp) {
+        QC_PARSER(QC_REPORTSHEET.out.qc_reportsheet)
+    }
 
 /*
 ========================================================================================
