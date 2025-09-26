@@ -20,6 +20,8 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
+    set -euo pipefail
+
     ## Extract relevant fields from Gambit output
     taxon=\$(cat "${gambit}" | grep -v "predicted.name" | cut -f 2 -d ',')
     rank=\$(cat "${gambit}" | grep -v "predicted.rank" | cut -f 3 -d ',')
@@ -33,7 +35,27 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     if [[ "\${rank}" == "species" ]]; then
         # Download the Gambit reference for estimating average depth of coverage
         retry_with_backoff.sh -d 15 datasets download genome accession \${closest_accession}
-        unzip ncbi_dataset.zip && mv ncbi_dataset/data/*/*.fna ./ref.fa
+
+        unzip -o ncbi_dataset.zip
+
+        # Find a reference FASTA (layout differs across datasets CLI versions)
+        ref_candidate=\$(find ncbi_dataset -maxdepth 6 -type f \\( -name "*.fna" -o -name "*.fna.gz" -o -name "*.fa" -o -name "*.fa.gz" -o -name "*.fasta" -o -name "*.fasta.gz" \\) | head -n 1)
+
+        if [[ -z "\${ref_candidate}" ]]; then
+            echo "ERROR: Could not locate reference FASTA inside ncbi_dataset.zip for accession \${closest_accession}" >&2
+            exit 1
+        fi
+
+        if [[ "\${ref_candidate}" == *.gz ]]; then
+            gunzip -c "\${ref_candidate}" > ref.fa
+        else
+            cp "\${ref_candidate}" ref.fa
+        fi
+
+        if [[ ! -s ref.fa ]]; then
+            echo "ERROR: ref.fa is missing or empty after extraction." >&2
+            exit 1
+        fi
 
         # Gather QC stats
         pre-mycosnp-stats.sh \\
