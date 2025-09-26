@@ -1,14 +1,8 @@
 /*
 ========================================================================================
-    VALIDATE INPUTS
+    VALIDATE MYCOSNP WORKFLOW SPECIFIC INPUTS
 ========================================================================================
 */
-
-
-def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
-
-// params.snpeffdb = WorkflowMain.getGenomeAttribute(params, 'snpeffdb')
-params.snpeffconfig = WorkflowMain.getGenomeAttribute(params, 'snpeffconfig')
 
 // Check input path parameters to see if they exist
 def checkPathParamList = [
@@ -17,6 +11,7 @@ def checkPathParamList = [
     params.fasta
     // params.snpeffdb
 ]
+
 // check for skip_samples_file
 if (params.skip_samples_file) { checkPathParamList.add(params.skip_samples_file) }
 
@@ -46,14 +41,18 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { SRA_FASTQ_SRATOOLS } from '../subworkflows/local/sra_fastq_sratools/main'
-include { INPUT_CHECK        } from '../subworkflows/local/input_check/main'
-include { BWA_PREPROCESS     } from '../subworkflows/local/bwa-pre-process/main'
-include { BWA_REFERENCE      } from '../subworkflows/local/bwa-reference/main'
-include { GATK_VARIANTS      } from '../subworkflows/local/gatk-variants/main'
-include { CREATE_PHYLOGENY   } from '../subworkflows/local/phylogeny/main'
-include { SNPEFF_BUILD       } from '../subworkflows/local/snpeff_build/main'  //not used here
-include { SNPEFF             } from '../subworkflows/local/snpeff/main'
+
+include { SRA_FASTQ_SRATOOLS   } from '../subworkflows/local/sra_fastq_sratools/main'
+include { INPUT_CHECK          } from '../subworkflows/local/input_check/main'
+include { BWA_PREPROCESS       } from '../subworkflows/local/bwa-pre-process/main'
+include { BWA_REFERENCE        } from '../subworkflows/local/bwa-reference/main'
+include { GATK_VARIANTS        } from '../subworkflows/local/gatk-variants/main'
+include { CREATE_PHYLOGENY     } from '../subworkflows/local/phylogeny/main'
+include { SNPEFF_BUILD         } from '../subworkflows/local/snpeff_build/main'  //not used here
+include { SNPEFF               } from '../subworkflows/local/snpeff/main'
+include { paramsSummaryMultiqc } from '../subworkflows/nf-core/utils_nfcore_pipeline/main'
+include { paramsSummaryMap     } from 'plugin/nf-schema'
+
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -89,8 +88,11 @@ workflow MYCOSNP {
     samplesheet         // New samplesheet combines ingestion for fastq reads, sra accessions, and vcf files for phylogeny
 
     main:
+    if (!params.fasta && !params.ref_dir && !params.ref_masked_fasta && !params.ref_fai && !params.ref_bwa && !params.ref_dict) {
+        log.error "Genome fasta or index files not specified with e.g. '--fasta genome.fa', '--ref_dir genome/' or via a detectable config file."
+        System.exit(1)
+    }
 
-    WorkflowMycosnp.initialise(params, log)
     def ch_versions = Channel.empty()
 
     //
@@ -347,7 +349,8 @@ workflow MYCOSNP {
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowMycosnp.paramsSummaryMultiqc(workflow, summary_params)
+    summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    workflow_summary    = paramsSummaryMultiqc(summary_params)
     ch_workflow_summary = Channel.from(workflow_summary)
 
     def ch_multiqc_files = Channel.empty()
@@ -415,20 +418,6 @@ workflow MYCOSNP {
 ========================================================================================
 */
 }
-
-/*
-========================================================================================
-    COMPLETION EMAIL AND SUMMARY
-========================================================================================
-*/
-
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    }
-    NfcoreTemplate.summary(workflow, params, log)
-}
-
 /*
 ========================================================================================
     THE END

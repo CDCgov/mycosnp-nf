@@ -12,22 +12,6 @@ nextflow.enable.dsl = 2
 
 /*
 ========================================================================================
-    GENOME PARAMETER VALUES
-========================================================================================
-*/
-
-//params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
-
-/*
-========================================================================================
-    VALIDATE & PRINT PARAMETER SUMMARY
-========================================================================================
-*/
-
-//WorkflowMain.initialise(workflow, params, log)
-
-/*
-========================================================================================
     PRE-MYCOSNP
 ========================================================================================
 */
@@ -115,18 +99,6 @@ workflow {
         params.monochrome_logs,
         multiqc_report.ifEmpty([]) // Ensure it's never null
     )
-}
-
-/*
-========================================================================================
-    COMPLETION EMAIL AND SUMMARY
-========================================================================================
-*/
-
-workflow.onComplete {
-    def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
-    NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    NfcoreTemplate.summary(workflow, params, log)
 }
 
 /*
