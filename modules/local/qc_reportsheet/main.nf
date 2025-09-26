@@ -18,4 +18,9 @@ process QC_REPORTSHEET {
     sort ${qc_lines} > sorted.txt
     cat sorted.txt >> qc_report.txt
     """
+
+    stub:
+    """
+    touch qc_report.txt
+    """
 }

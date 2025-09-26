@@ -1,0 +1,54 @@
+name: quicksnp
+description: Generate phylogenetic tree from SNP distance matrix using QuickSNP
+keywords:
+  - phylogeny
+  - tree
+  - snp
+  - distance
+  - matrix
+  - quicksnp
+  - phylogenetic
+  - newick
+tools:
+  - quicksnp:
+      description: |
+        QuickSNP is a tool for rapidly generating phylogenetic trees from SNP distance matrices.
+        It creates neighbor-joining trees from pairwise distance data to visualize
+        evolutionary relationships between samples.
+      homepage: https://github.com/staphb/quicksnp
+      documentation: https://github.com/staphb/quicksnp
+      licence: ["MIT"]
+      identifier: "biotools:quicksnp"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - tsv:
+        type: file
+        description: |
+          Tab-separated values file containing SNP distance matrix with sample
+          identifiers and pairwise distances for phylogenetic tree construction.
+        pattern: "*.{tsv,txt}"
+        ontologies: []
+output:
+  quicksnp_tree:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.nwk":
+          type: file
+          description: |
+            Phylogenetic tree file in Newick format generated from the SNP distance
+            matrix showing evolutionary relationships between samples.
+          pattern: "*.nwk"
+          ontologies:
+            - edam: "http://edamontology.org/data_0872" # Phylogenetic tree
+            - edam: "http://edamontology.org/format_1910" # Newick format
+authors:
+  - "AMD Platform"
+maintainers:
+  - "AMD Platform"

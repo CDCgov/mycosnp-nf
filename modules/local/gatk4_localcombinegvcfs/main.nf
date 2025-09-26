@@ -15,10 +15,11 @@ process GATK4_LOCALCOMBINEGVCFS {
     path fasta_dict
 
     output:
-    tuple val(meta), path("*.combined.g.vcf.gz"), path("*.combined.g.vcf.gz.tbi"), emit: combined_gvcf
-    path("*.combined.g.vcf.gz")    , emit: gvcf
-    path("*.combined.g.vcf.gz.tbi"), emit: tbi
-    path  "versions.yml"           , emit: versions
+
+    tuple val(meta), path("*.combined.g.vcf.gz"), path("*.combined.g.vcf.gz.tbi")   , emit: combined_gvcf
+    path("*.combined.g.vcf.gz")                                                     , emit: gvcf
+    path("*.combined.g.vcf.gz.tbi")                                                 , emit: tbi
+    path "versions.yml"                                                             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -79,7 +80,19 @@ process GATK4_LOCALCOMBINEGVCFS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gatk4: \$(gatk --version 2>&1 | grep "The Genome Analysis Toolkit" | sed 's/.*v//')
+        gatk4: \$(echo \$(gatk --version 2>&1) | sed 's/^.*(GATK) v//; s/ .*\$//')
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.combined.g.vcf.gz
+    touch ${prefix}.combined.g.vcf.gz.tbi 
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gatk4: \$(echo \$(gatk --version 2>&1) | sed 's/^.*(GATK) v//; s/ .*\$//')
     END_VERSIONS
     """
 }

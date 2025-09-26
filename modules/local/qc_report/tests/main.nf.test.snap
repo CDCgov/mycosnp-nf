@@ -1,0 +1,36 @@
+{
+    "QC_REPORT - qc report for a single sample": {
+        "content": [
+            {
+                "0": [
+                    "SRR30604805_output.txt:md5,356f354b05dfff90ae4dd29d259fbfe1"
+                ],
+                "qc_line": [
+                    "SRR30604805_output.txt:md5,356f354b05dfff90ae4dd29d259fbfe1"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-25T09:48:06.11036909"
+    },
+    "QC_REPORT - stub test": {
+        "content": [
+            {
+                "0": [
+                    "SRR30604805_output.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "qc_line": [
+                    "SRR30604805_output.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-25T09:38:07.560317906"
+    }
+}

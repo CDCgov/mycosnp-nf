@@ -23,10 +23,20 @@ process QUICKSNP {
     QuickSNP.py \\
         --dm ${tsv} \\
         --outtree quicksnp_tree.nwk
+    
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python3 --version | sed 's/Python //g')
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch quicksnp_tree.nwk
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(python3 --version | cut -d' ' -f2)
+        python: \$(python3 --version | sed 's/Python //g')
     END_VERSIONS
     """
 }

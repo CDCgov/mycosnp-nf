@@ -1,0 +1,91 @@
+name: gatk4_localcombinegvcfs
+description: Combine multiple GVCF files into a single cohort GVCF using GATK CombineGVCFs
+keywords:
+  - gatk
+  - combinegvcfs
+  - gvcf
+  - variant calling
+  - genomics
+  - cohort
+tools:
+  - gatk4:
+      description: |
+        Genome Analysis Toolkit (GATK) is a collection of command-line tools
+        for analyzing high-throughput sequencing data with a primary focus on
+        variant discovery and genotyping.
+      homepage: https://gatk.broadinstitute.org/hc/en-us
+      documentation: https://gatk.broadinstitute.org/hc/en-us/categories/360002369672s
+      licence: ["Apache-2.0"]
+      identifier: "biotools:gatk"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - vcf:
+        type: file
+        description: List of GVCF files to combine
+        pattern: "*.g.vcf.gz"
+        ontologies:
+          - edam: "http://edamontology.org/format_3016" # VCF
+    - fasta:
+        type: file
+        description: Reference genome in FASTA format
+        pattern: "*.{fasta,fa}"
+        ontologies:
+          - edam: "http://edamontology.org/data_2044" # Sequence
+          - edam: "http://edamontology.org/format_1929" # FASTA
+    - fasta_fai:
+        type: file
+        description: Index file for reference genome FASTA
+        pattern: "*.fai"
+        ontologies: []
+    - fasta_dict:
+        type: file
+        description: Dictionary file for reference genome FASTA
+        pattern: "*.dict"
+        ontologies: []
+output:
+  combined_gvcf:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.combined.g.vcf.gz":
+          type: file
+          description: Combined GVCF file
+          pattern: "*.combined.g.vcf.gz"
+          ontologies:
+            - edam: "http://edamontology.org/format_3016" # VCF
+      - "*.combined.g.vcf.gz.tbi":
+          type: file
+          description: Index file for combined GVCF
+          pattern: "*.combined.g.vcf.gz.tbi"
+          ontologies: []
+  gvcf:
+    - "*.combined.g.vcf.gz":
+        type: file
+        description: Combined GVCF file
+        pattern: "*.combined.g.vcf.gz"
+        ontologies:
+          - edam: "http://edamontology.org/format_3016" # VCF
+  tbi:
+    - "*.combined.g.vcf.gz.tbi":
+        type: file
+        description: Index file for combined GVCF
+        pattern: "*.combined.g.vcf.gz.tbi"
+        ontologies: []
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "AMD Platform"
+maintainers:
+  - "AMD Platform"
+  

@@ -1,0 +1,134 @@
+nextflow_process {
+
+    name "Test Process LANE_MERGE"
+    script "../main.nf"
+    process "LANE_MERGE"
+
+    tag "modules"
+    tag "modules/local/lane_merge"
+    tag "LANE_MERGE"
+
+    test("LANE_MERGE - single file") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_single', single_end: true ],
+                    [ 
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true) 
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+
+    test("LANE_MERGE - paired end files") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_paired', single_end: false ],
+                    [ 
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+
+    test("LANE_MERGE - multiple lane files") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_multi_lane', single_end: false ],
+                    [ 
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_cp_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_cp_R2.paired.fastq.gz', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+
+    test("LANE_MERGE - stub - single end") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_single', single_end: true ],
+                    [ 
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true) 
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+
+    test("LANE_MERGE - stub - paired-end") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_single', single_end: false ],
+                    [ 
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)  
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+}

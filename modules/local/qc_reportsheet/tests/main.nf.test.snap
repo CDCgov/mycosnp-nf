@@ -1,0 +1,36 @@
+{
+    "QC_REPORTSHEET - stub test": {
+        "content": [
+            {
+                "0": [
+                    "qc_report.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "qc_reportsheet": [
+                    "qc_report.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-25T10:28:33.333942595"
+    },
+    "QC_REPORTSHEET - combine qc reports from mutiple samples into a single output file": {
+        "content": [
+            {
+                "0": [
+                    "qc_report.txt:md5,25bface6ced656044b81948296126cd8"
+                ],
+                "qc_reportsheet": [
+                    "qc_report.txt:md5,25bface6ced656044b81948296126cd8"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-25T10:28:12.215607764"
+    }
+}

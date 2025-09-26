@@ -1,0 +1,72 @@
+{
+    "DOWNSAMPLE_RATE - down sample reads from a fastq file": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "1",
+                        "1000"
+                    ]
+                ],
+                "1": [
+                    "1000"
+                ],
+                "downsampled_rate": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "1",
+                        "1000"
+                    ]
+                ],
+                "number_to_sample": [
+                    "1000"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-22T14:06:12.002707595"
+    },
+    "DOWNSAMPLE_RATE - stub test": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "1",
+                        "1000"
+                    ]
+                ],
+                "1": [
+                    "1000"
+                ],
+                "downsampled_rate": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "1",
+                        "1000"
+                    ]
+                ],
+                "number_to_sample": [
+                    "1000"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-22T14:06:32.139671876"
+    }
+}

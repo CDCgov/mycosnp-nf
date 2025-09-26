@@ -1,0 +1,6 @@
+name: gambit-1.1.0
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bioconda::gambit=1.1.0

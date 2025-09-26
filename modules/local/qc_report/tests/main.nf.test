@@ -1,0 +1,99 @@
+nextflow_process {
+
+    name "Test Process QC_REPORT"
+    script "../main.nf"
+    process "QC_REPORT"
+
+    tag "modules"
+    tag "modules/local/qc_report"
+    tag "QC_REPORT"
+
+    test("QC_REPORT - qc report for a single sample") {
+
+        when {
+            process {
+                """
+                def parent_dir = file("\$PWD/SRR30604805")
+                parent_dir.mkdirs()
+
+                def subdir = file("\$PWD/SRR30604805/raw_data_qualimapReport")
+                subdir.mkdirs()
+
+                def source_file1 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/genome_results.txt', checkIfExists: true)
+                def source_file2 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt', checkIfExists: true)
+                
+                def dest_file1 = file("\$PWD/SRR30604805/genome_results.txt")
+                def dest_file2 = file("\$PWD/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt")
+
+                source_file1.copyTo(dest_file1)
+                source_file2.copyTo(dest_file2)
+
+                input[0] = [
+                    [id:"SRR30604805", single_end: false],
+                    [
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.base_content.txt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.stats.txt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/qa.SRR30604805.base_content.txt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/qa.SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                    ],
+                    parent_dir
+                ]
+                input[1] = file(params.modules_testdata_base_path + '/genomics/fungal/reference/test_reference.fasta', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+
+    test("QC_REPORT - stub test") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                def parent_dir = file("\$PWD/SRR30604805")
+                parent_dir.mkdirs()
+
+                def subdir = file("\$PWD/SRR30604805/raw_data_qualimapReport")
+                subdir.mkdirs()
+
+                def source_file1 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/genome_results.txt', checkIfExists: true)
+                def source_file2 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt', checkIfExists: true)
+                def dest_file1 = file("\$PWD/SRR30604805/genome_results.txt")
+                def dest_file2 = file("\$PWD/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt")
+
+                source_file1.copyTo(dest_file1)
+                source_file2.copyTo(dest_file2)
+
+                input[0] = [
+                    [id:"SRR30604805", single_end: false],
+                    [
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.base_content.txt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.stats.txt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/qa.SRR30604805.base_content.txt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/qa.SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                    ],
+                    parent_dir
+                ]
+                input[1] = file(params.modules_testdata_base_path + '/genomics/fungal/reference/test_reference.fasta', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

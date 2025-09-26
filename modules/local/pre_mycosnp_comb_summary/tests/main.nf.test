@@ -1,0 +1,54 @@
+nextflow_process {
+
+    name "Test Process PRE_MYCOSNP_COMB_SUMMARY"
+    script "../main.nf"
+    process "PRE_MYCOSNP_COMB_SUMMARY"
+
+    tag "modules"
+    tag "modules/local/pre_mycosnp_comb_summary"
+    tag "PRE_MYCOSNP_COMB_SUMMARY"
+
+    test("PRE_MYCOSNP_COMB_SUMMARY - combine mutiple sample summary data into single file") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/IFRC2087_linesummary.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805_linesummary.csv', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("PRE_MYCOSNP_COMB_SUMMARY - stub test") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/IFRC2087_linesummary.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805_linesummary.csv', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

@@ -43,4 +43,15 @@ process GAMBIT_QUERY {
         gambit: \$(gambit --version | tr -d "[a-z, ]")
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_gambit.csv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gambit: \$(gambit --version | tr -d "[a-z, ]")
+    END_VERSIONS
+    """
 }

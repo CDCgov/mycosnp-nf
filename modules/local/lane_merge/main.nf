@@ -10,13 +10,12 @@ process LANE_MERGE {
     tuple val(meta), path(reads)
 
     output:
-    tuple val(meta), path("combined/*.fastq.gz"), emit: reads
+    tuple val(meta), path("*.fastq.gz"), emit: reads
 
     script:
     def reads_list = reads.collect { "'${it.name}'" }.join(' ')
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir -p combined
-
     READS=(${reads_list})
     NUM_READS=\${#READS[@]}
 
@@ -30,9 +29,9 @@ process LANE_MERGE {
     if [[ "\$NUM_READS" -eq 1 ]]; then
         f="\${READS[0]}"
         if [[ "\$f" == *.gz ]]; then
-            zcat "\$f" | gzip -c > "combined/${meta.id}.fastq.gz"
+            zcat "\$f" | gzip -c > "${prefix}.fastq.gz"
         else
-            gzip -c "\$f" > "combined/${meta.id}.fastq.gz"
+            gzip -c "\$f" > "${prefix}.fastq.gz"
         fi
     else
         # Split by index cardinality into R1 (0,2,4,...) and R2 (1,3,5,...) assuming given order corresponds to read pair mates
@@ -55,7 +54,7 @@ process LANE_MERGE {
                     cat "\$f"
                 fi
             done
-        } | gzip -c > "combined/${meta.id}_R1.fastq.gz"
+        } | gzip -c > "${prefix}_R1.fastq.gz"
 
         # Combine R2 files (again assumes file cardinality structuring)
         {
@@ -66,7 +65,25 @@ process LANE_MERGE {
                     cat "\$f"
                 fi
             done
-        } | gzip -c > "combined/${meta.id}_R2.fastq.gz"
+        } | gzip -c > "${prefix}_R2.fastq.gz"
+    fi
+    """
+
+    stub:
+    def reads_list = reads.collect { "'${it.name}'" }.join(' ')
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+
+    READS=(${reads_list})
+    NUM_READS=\${#READS[@]}
+
+    if [[ "\$NUM_READS" -eq 1 ]]; then
+        # Single file case - create empty gzipped file
+        echo -n | gzip > "${prefix}.fastq.gz"
+    else
+        # Multiple files case - assume paired-end
+        echo -n | gzip > "${prefix}_R1.fastq.gz"
+        echo -n | gzip > "${prefix}_R2.fastq.gz"
     fi
     """
 }

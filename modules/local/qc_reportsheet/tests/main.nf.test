@@ -1,0 +1,54 @@
+nextflow_process {
+
+    name "Test Process QC_REPORTSHEET"
+    script "../main.nf"
+    process "QC_REPORTSHEET"
+
+    tag "modules"
+    tag "modules/local/qc_reportsheet"
+    tag "QC_REPORTSHEET"
+
+    test("QC_REPORTSHEET - combine qc reports from mutiple samples into a single output file") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.modules_testdata_base_path + '/genomics/fungal/qc_report/IFRC2087_output.txt', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/fungal/qc_report/SRR30604805_output.txt', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+
+    test("QC_REPORTSHEET - stub test") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.modules_testdata_base_path + '/genomics/fungal/qc_report/IFRC2087_output.txt', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/fungal/qc_report/SRR30604805_output.txt', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

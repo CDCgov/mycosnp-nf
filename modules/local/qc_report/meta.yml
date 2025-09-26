@@ -1,0 +1,60 @@
+name: qc_report
+description: Generate quality control report statistics from FAQCS and Qualimap outputs
+keywords:
+  - qc
+  - quality control
+  - statistics
+  - report
+  - faqcs
+  - qualimap
+  - coverage
+  - mapping
+  - reads
+tools:
+  - pandas:
+      description: |
+        pandas is a fast, powerful, flexible and easy to use open source data analysis 
+        and manipulation tool, built on top of the Python programming language.
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3-Clause"]
+      identifier: "biotools:pandas"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - txt:
+        type: file
+        description: |
+          FAQCS statistics text file containing read quality metrics
+        pattern: "*.txt"
+        ontologies: []
+    - results:
+        type: directory
+        description: |
+          Qualimap results directory containing BAM coverage analysis
+        ontologies: []
+  - reference:
+      type: file
+      description: |
+        Reference genome file in FASTA format used for mapping
+      pattern: "*.{fasta,fa,fna}"
+      ontologies:
+        - edam: "http://edamontology.org/data_2044" # Sequence
+        - edam: "http://edamontology.org/format_1929" # FASTA
+output:
+  qc_line:
+    - "*_output.txt":
+        type: file
+        description: |
+          Quality control report line containing comprehensive statistics including
+          read counts, quality scores, GC content, coverage metrics, and genome
+          fraction coverage at specified minimum depth.
+        pattern: "*_output.txt"
+        ontologies: []
+authors:
+  - "AMD Platform"
+maintainers:
+  - "AMD Platform"

@@ -1,0 +1,165 @@
+{
+    "LANE_MERGE - paired end files": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_paired",
+                            "single_end": false
+                        },
+                        [
+                            "test_paired_R1.fastq.gz:md5,6efa899c978aadb22a9b1cb478e8624c",
+                            "test_paired_R2.fastq.gz:md5,776ca112f948f6192faca73395bdbf15"
+                        ]
+                    ]
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": "test_paired",
+                            "single_end": false
+                        },
+                        [
+                            "test_paired_R1.fastq.gz:md5,6efa899c978aadb22a9b1cb478e8624c",
+                            "test_paired_R2.fastq.gz:md5,776ca112f948f6192faca73395bdbf15"
+                        ]
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-25T16:22:44.64382034"
+    },
+    "LANE_MERGE - multiple lane files": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_multi_lane",
+                            "single_end": false
+                        },
+                        [
+                            "test_multi_lane_R1.fastq.gz:md5,495a544b6e8473b2136cf8276ff80c45",
+                            "test_multi_lane_R2.fastq.gz:md5,66d77c291616784ee0f39e3852683630"
+                        ]
+                    ]
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": "test_multi_lane",
+                            "single_end": false
+                        },
+                        [
+                            "test_multi_lane_R1.fastq.gz:md5,495a544b6e8473b2136cf8276ff80c45",
+                            "test_multi_lane_R2.fastq.gz:md5,66d77c291616784ee0f39e3852683630"
+                        ]
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-25T16:23:14.26962737"
+    },
+    "LANE_MERGE - stub - single end": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_single",
+                            "single_end": true
+                        },
+                        "test_single.fastq.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": "test_single",
+                            "single_end": true
+                        },
+                        "test_single.fastq.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-25T16:23:44.156716464"
+    },
+    "LANE_MERGE - stub - paired-end": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_single",
+                            "single_end": false
+                        },
+                        [
+                            "test_single_R1.fastq.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_single_R2.fastq.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": "test_single",
+                            "single_end": false
+                        },
+                        [
+                            "test_single_R1.fastq.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_single_R2.fastq.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-25T16:24:15.195181153"
+    },
+    "LANE_MERGE - single file": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_single",
+                            "single_end": true
+                        },
+                        "test_single.fastq.gz:md5,6efa899c978aadb22a9b1cb478e8624c"
+                    ]
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": "test_single",
+                            "single_end": true
+                        },
+                        "test_single.fastq.gz:md5,6efa899c978aadb22a9b1cb478e8624c"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-09-25T16:22:17.574248921"
+    }
+}

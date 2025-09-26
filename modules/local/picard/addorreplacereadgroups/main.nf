@@ -53,10 +53,8 @@ process PICARD_ADDORREPLACEREADGROUPS {
 
     stub:
     def prefix = task.ext.prefix    ?: "${meta.id}"
-    def suffix = task.ext.suffix    ?: "${reads.getExtension()}"
-    if ("$reads" == "${prefix}.${suffix}") error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
     """
-    touch ${prefix}.${suffix}
+    touch ${prefix}.bam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

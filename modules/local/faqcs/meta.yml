@@ -1,0 +1,129 @@
+name: faqcs
+description: Performs quality control and trimming of FASTQ files using FaQCs
+keywords:
+  - quality control
+  - trimming
+  - fastq
+  - qc
+  - adapter removal
+  - reads
+tools:
+  - faqcs:
+      description: |
+        FaQCs (Fast and Accurate Quality Control and trimming of Sequences) is a 
+        platform independent and ultra-fast FASTQ quality control and trimming tool.
+      homepage: https://github.com/LANL-Bioinformatics/FaQCs
+      documentation: https://github.com/LANL-Bioinformatics/FaQCs
+      licence: ["GPL-3.0"]
+      identifier: "biotools:faqcs"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - reads:
+        type: file
+        description: |
+          List of input FastQ files of size 1 and 2 for single-end and paired-end data,
+          respectively.
+        pattern: "*.{fastq,fq}.gz"
+        ontologies:
+          - edam: "http://edamontology.org/data_2044" # Sequence
+          - edam: "http://edamontology.org/format_1930" # FASTQ
+output:
+  reads:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.trimmed.fastq.gz":
+          type: file
+          description: Trimmed FastQ files
+          pattern: "*.trimmed.fastq.gz"
+          ontologies:
+            - edam: "http://edamontology.org/data_2044" # Sequence
+            - edam: "http://edamontology.org/format_1930" # FASTQ
+  stats:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.stats.txt":
+          type: file
+          description: Statistics file from FaQCs
+          pattern: "*.stats.txt"
+          ontologies: []
+  txt:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.txt":
+          type: file
+          description: Text output files from FaQCs
+          pattern: "*.txt"
+          ontologies: []
+  statspdf:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*_qc_report.pdf":
+          type: file
+          description: Quality control report in PDF format
+          pattern: "*_qc_report.pdf"
+          ontologies: []
+  reads_fail:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.discard.fastq.gz":
+          type: file
+          description: Discarded/failed FastQ reads
+          pattern: "*.discard.fastq.gz"
+          ontologies:
+            - edam: "http://edamontology.org/data_2044" # Sequence
+            - edam: "http://edamontology.org/format_1930" # FASTQ
+  reads_unpaired:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.trimmed.unpaired.fastq.gz":
+          type: file
+          description: Unpaired reads after trimming (paired-end only)
+          pattern: "*.trimmed.unpaired.fastq.gz"
+          ontologies:
+            - edam: "http://edamontology.org/data_2044" # Sequence
+            - edam: "http://edamontology.org/format_1930" # FASTQ
+  log:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.log":
+          type: file
+          description: Log file from FaQCs execution
+          pattern: "*.log"
+          ontologies: []
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "AMD Platform"
+maintainers:
+  - "AMD Platform"
+  

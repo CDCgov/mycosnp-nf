@@ -27,4 +27,9 @@ process PRE_MYCOSNP_COMB_SUMMARY {
         coreutils: \$(cat --version 2>&1 | head -1 | sed 's/.*(GNU coreutils) //' | sed 's/ .*//')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch pre-mycosnp-summary.csv
+    """
 }

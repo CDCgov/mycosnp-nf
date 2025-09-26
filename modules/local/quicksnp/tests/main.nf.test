@@ -1,0 +1,54 @@
+nextflow_process {
+
+    name "Test Process QUICKSNP"
+    script "../main.nf"
+    process "QUICKSNP"
+
+    tag "modules"
+    tag "modules/local/quicksnp"
+    tag "QUICKSNP"
+
+    test("QUICKSNP - create nwk file based on distance matrix TSV file") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [id:'test'],
+                    file(params.modules_testdata_base_path + '/genomics/fungal/quicksnp/test_input_quicksnp.tsv', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+
+    test("QUICKSNP - stub test") {
+
+        options "-stub"
+
+        when {
+            process {
+                 """
+                input[0] = [
+                    [id:'test'],
+                    file(params.modules_testdata_base_path + '/genomics/fungal/quicksnp/test_input_quicksnp.tsv', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

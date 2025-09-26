@@ -1,0 +1,106 @@
+nextflow_process {
+
+    name "Test Process FAQCS"
+    script "../main.nf"
+    process "FAQCS"
+
+    tag "modules"
+    tag "modules/local/faqcs"
+    tag "FAQCS"
+
+    test("Single-end") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sample', single_end:true],
+                    file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+
+            assertAll(
+                { assert process.success },
+                // { assert !process.out.reads_fail || process.out.reads_fail.size() > 0 },
+                // { assert !process.out.reads_unpaired || process.out.reads_unpaired.size() > 0 },
+                { assert process.out.statspdf.size() > 0 },
+                { assert snapshot(
+                    process.out.reads,
+                    process.out.stats,
+                    process.out.txt,
+                    process.out.reads_fail,
+                    process.out.reads_unpaired,
+                    process.out.log,
+                    process.out.versions
+                    ).match()
+                }
+            )
+        }
+    }
+
+    test("Paired-end") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sample', single_end:false],
+                    [
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                // { assert !process.out.reads_fail || process.out.reads_fail.size() > 0 },
+                // { assert !process.out.reads_unpaired || process.out.reads_unpaired.size() > 0 },
+                { assert process.out.statspdf.size() > 0 },
+                { assert snapshot(
+                    process.out.reads,
+                    process.out.stats,
+                    process.out.txt,
+                    process.out.reads_fail,
+                    process.out.reads_unpaired,
+                    process.out.log,
+                    process.out.versions
+                    ).match()
+                }
+            )
+        }
+    }
+
+    test("Paired-end - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sample', single_end:false],
+                    [
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+}
