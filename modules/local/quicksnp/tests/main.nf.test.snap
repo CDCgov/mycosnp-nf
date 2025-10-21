@@ -10,6 +10,9 @@
                         "quicksnp_tree.nwk:md5,6da5ce8fc15f1a3b23afb80ec0bf47e4"
                     ]
                 ],
+                "1": [
+                    "versions.yml:md5,2166e171fa0ee68cb66db0b352579c6a"
+                ],
                 "quicksnp_tree": [
                     [
                         {
@@ -17,6 +20,9 @@
                         },
                         "quicksnp_tree.nwk:md5,6da5ce8fc15f1a3b23afb80ec0bf47e4"
                     ]
+                ],
+                "versions": [
+                    "versions.yml:md5,2166e171fa0ee68cb66db0b352579c6a"
                 ]
             }
         ],
@@ -24,7 +30,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-09-25T10:53:24.377826358"
+        "timestamp": "2025-09-29T10:27:53.640685895"
     },
     "QUICKSNP - stub test": {
         "content": [
@@ -37,6 +43,9 @@
                         "quicksnp_tree.nwk:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "1": [
+                    "versions.yml:md5,2166e171fa0ee68cb66db0b352579c6a"
+                ],
                 "quicksnp_tree": [
                     [
                         {
@@ -44,6 +53,9 @@
                         },
                         "quicksnp_tree.nwk:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "versions": [
+                    "versions.yml:md5,2166e171fa0ee68cb66db0b352579c6a"
                 ]
             }
         ],
@@ -51,6 +63,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-09-25T10:53:48.137716364"
+        "timestamp": "2025-09-29T10:28:08.133231645"
     }
 }

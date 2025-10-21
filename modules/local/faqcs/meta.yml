@@ -10,7 +10,7 @@ keywords:
 tools:
   - faqcs:
       description: |
-        FaQCs (Fast and Accurate Quality Control and trimming of Sequences) is a 
+        FaQCs (Fast and Accurate Quality Control and trimming of Sequences) is a
         platform independent and ultra-fast FASTQ quality control and trimming tool.
       homepage: https://github.com/LANL-Bioinformatics/FaQCs
       documentation: https://github.com/LANL-Bioinformatics/FaQCs
@@ -126,4 +126,3 @@ authors:
   - "AMD Platform"
 maintainers:
   - "AMD Platform"
-  

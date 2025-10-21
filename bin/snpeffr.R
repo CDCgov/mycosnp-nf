@@ -48,8 +48,31 @@ if(!is.list(pos) || length(pos) < 1) {
 # deal with quoting of regular expression
 argus$exc <- substr(argus$exc, 2, nchar(argus$exc) - 1)
 
-# run parser
-out <- snpeffr::snpeffr(vcf_path = argus$fpath,
+
+
+
+# --- VCF header removal logic (keep #CHROM header, remove only ## meta-info) ---
+vcf_in <- argus$fpath
+vcf_is_gz <- grepl("\\.gz$", vcf_in)
+tmp_vcf <- tempfile(fileext = ".vcf")
+
+if (vcf_is_gz) {
+  in_con <- gzfile(vcf_in, "rt")
+} else {
+  in_con <- file(vcf_in, "rt")
+}
+out_con <- file(tmp_vcf, "wt")
+while (length(one_line <- readLines(in_con, n = 1, warn = FALSE)) > 0) {
+  # Keep #CHROM header and all data lines, remove only lines starting with '##'
+  if (!grepl("^##", one_line)) {
+    writeLines(one_line, out_con)
+  }
+}
+close(in_con)
+close(out_con)
+
+# run parser on headerless VCF
+out <- snpeffr::snpeffr(vcf_path = tmp_vcf,
                         positions = pos,
                         genes = genes,
                         exclude_effects = argus$exc)

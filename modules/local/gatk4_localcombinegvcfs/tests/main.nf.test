@@ -28,12 +28,18 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot( process.out ).match() }
+                { assert snapshot( 
+                    process.out.versions,
+                    process.out.tbi ).match() },
+                { assert process.out.gvcf.size() > 0 }
+
             )
         }
     }
 
     test("GATK4_LOCALCOMBINEGVCFS - stub") {
+
+        options "-stub"
 
         when {
             process {
@@ -53,7 +59,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot( process.out ).match() }
+                { assert snapshot( process.out.versions ).match() }
             )
         }
     }

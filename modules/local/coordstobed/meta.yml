@@ -10,8 +10,8 @@ keywords:
 tools:
   - mummer:
       description: |
-        MUMmer is a system for rapidly aligning entire genomes, whether in complete 
-        or draft form. It can align complete genomes in a matter of seconds, and can 
+        MUMmer is a system for rapidly aligning entire genomes, whether in complete
+        or draft form. It can align complete genomes in a matter of seconds, and can
         find extensive local alignments for incomplete genomes.
       homepage: http://mummer.sourceforge.net/
       documentation: http://mummer.sourceforge.net/manual/
@@ -51,4 +51,3 @@ authors:
   - "AMD Platform"
 maintainers:
   - "AMD Platform"
-  

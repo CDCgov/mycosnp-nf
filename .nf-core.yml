@@ -23,6 +23,7 @@ lint:
     - .github/PULL_REQUEST_TEMPLATE.md
     - assets/email_template.txt
     - docs/README.md
+    - assets/email_template.html
   multiqc_config:
     - report_comment
   nextflow_config:
@@ -36,11 +37,12 @@ nf_core_version: 3.3.2
 repository_type: pipeline
 template:
   author: CDC
-  description: MycoSNP is a portable workflow for performing whole genome sequencing
-    analysis of fungal organisms, including Candida auris. This method prepares the
-    reference, performs quality control, and calls variants using a reference. MycoSNP
-    generates several output files that are compatible with downstream analytic tools,
-    such as those for used for phylogenetic tree-building and gene variant annotations.
+  description: MycoSNP is a portable workflow for performing whole genome
+    sequencing analysis of fungal organisms, including Candida auris. This
+    method prepares the reference, performs quality control, and calls variants
+    using a reference. MycoSNP generates several output files that are
+    compatible with downstream analytic tools, such as those for used for
+    phylogenetic tree-building and gene variant annotations.
   force: false
   is_nfcore: false
   name: mycosnp
@@ -51,4 +53,4 @@ template:
     - email
     - adaptivecard
     - slackreport
-  version: 1.0.0dev
+  version: 1.6.4dev

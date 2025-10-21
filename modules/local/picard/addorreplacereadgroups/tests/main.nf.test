@@ -13,8 +13,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = [ 
-                    [ id:'test' ], 
+                input[0] = [
+                    [ id:'test' ],
                     file(params.nfcore_modules_testdata_base_path + '/genomics/sarscov2/illumina/bam/test.paired_end.sorted.bam', checkIfExists: true)
                 ]
                 """
@@ -36,8 +36,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = [ 
-                    [ id:'test' ], 
+                input[0] = [
+                    [ id:'test' ],
                     file(params.nfcore_modules_testdata_base_path + '/genomics/sarscov2/illumina/bam/test.paired_end.sorted.bam', checkIfExists: true)
                 ]
                 """
@@ -59,8 +59,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = [ 
-                    [ id:'test' ], 
+                input[0] = [
+                    [ id:'test' ],
                     file(params.nfcore_modules_testdata_base_path + '/genomics/sarscov2/illumina/bam/test.paired_end.sorted.bam', checkIfExists: true)
                 ]
                 """

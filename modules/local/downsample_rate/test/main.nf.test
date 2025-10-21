@@ -13,8 +13,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = [ 
-                    [ id:'test_sample'], 
+                input[0] = [
+                    [ id:'test_sample'],
                     [
                         file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
                         file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
@@ -41,8 +41,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = [ 
-                    [ id:'test_sample'], 
+                input[0] = [
+                    [ id:'test_sample'],
                     [
                         file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
                         file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)

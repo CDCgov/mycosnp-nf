@@ -113,24 +113,12 @@
             "description": "Options for configuring the MycoSNP analysis workflow.",
             "fa_icon": "fas fa-dna",
             "properties": {
-                "workflow": {
+                "mode": {
                     "type": "string",
                     "description": "Specify which workflow to run.",
                     "enum": ["PRE_MYCOSNP", "NFCORE_MYCOSNP"],
                     "default": "NFCORE_MYCOSNP",
                     "fa_icon": "fas fa-project-diagram"
-                },
-                "assembler": {
-                    "type": "string",
-                    "description": "Assembler to use for genome assembly.",
-                    "default": "skesa",
-                    "fa_icon": "fas fa-cogs"
-                },
-                "shovill_depth": {
-                    "type": "integer",
-                    "description": "Target depth for Shovill assembly.",
-                    "default": 70,
-                    "fa_icon": "fas fa-layer-group"
                 },
                 "min_contig_cov": {
                     "type": "integer",
@@ -249,49 +237,36 @@
                     "default": true,
                     "fa_icon": "fas fa-tree"
                 },
-                "mask": {
-                    "type": "boolean",
-                    "description": "Enable masking of problematic regions.",
-                    "default": true,
-                    "fa_icon": "fas fa-mask"
-                },
-                "ref_dir": {
-                    "type": "string",
-                    "description": "Reference files directory (invalidates specific declarations).",
-                    "fa_icon": "fas fa-folder"
-                },
                 "snpeffconfig": {
                     "type": "string",
                     "description": "Path to SnpEff configuration directory.",
                     "fa_icon": "fas fa-cog"
-                }
-            }
-        },
-        "resource_options": {
-            "title": "Resource Options",
-            "type": "object",
-            "description": "Options for configuring compute resources.",
-            "fa_icon": "fas fa-server",
-            "properties": {
-                "max_cpus": {
-                    "type": "integer",
-                    "description": "Maximum number of CPUs to use.",
-                    "default": 4,
-                    "fa_icon": "fas fa-microchip"
                 },
-                "max_memory": {
+                "snpeffcache": {
                     "type": "string",
-                    "description": "Maximum memory to use.",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "default": "160.GB",
-                    "fa_icon": "fas fa-memory"
+                    "format": "directory-path",
+                    "description": "Database cache to use for SNPEFF processes.",
+                    "fa_icon": "fas fa-folder-open"
                 },
-                "max_time": {
+                "snpeff": {
+                    "type": "boolean",
+                    "description": "Boolean to determine whether or not to run snpeff.",
+                    "fa_icon": "fas fa-ban",
+                    "default": false
+                },
+                "genome": {
                     "type": "string",
-                    "description": "Maximum time for job execution.",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(s|m|h|d)$",
-                    "default": "240.h",
-                    "fa_icon": "fas fa-clock"
+                    "description": "Name of iGenomes reference.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                },
+                "igenomes_ignore": {
+                    "type": "boolean",
+                    "description": "Do not load the iGenomes reference config.",
+                    "fa_icon": "fas fa-ban",
+                    "hidden": true,
+                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`.",
+                    "default": false
                 }
             }
         },
@@ -404,50 +379,95 @@
                 }
             }
         },
-        "amd_p_options": {
-            "title": "AMD-P Specific Options",
+        "pipeline_specific_options": {
+            "title": "Pipeline specific options",
             "type": "object",
-            "fa_icon": "fas fa-microchip",
-            "description": "Parameters specific to AMD-P enhancements",
+            "description": "Parameters specific to the MycoSNP pipeline.",
             "properties": {
+                "assembler": {
+                    "type": "string",
+                    "description": "Assembler used for Pre-Mycosnp."
+                },
+                "shovill_depth": {
+                    "type": "integer",
+                    "description": "Depth for shovill assembly."
+                },
+                "genome_size": {
+                    "type": "string",
+                    "description": "Genome size for assembly."
+                },
+                "iqtree": {
+                    "type": "boolean",
+                    "description": "Enable IQ-TREE for phylogeny."
+                },
+                "raxmlng": {
+                    "type": "boolean",
+                    "description": "Enable RAxML-NG for phylogeny."
+                },
+                "save_debug": {
+                    "type": "boolean",
+                    "description": "Save debug files."
+                },
+                "mask": {
+                    "type": "boolean",
+                    "description": "Enable masking of reference."
+                },
+                "skip_samples": {
+                    "type": "string",
+                    "description": "Samples to skip from analysis."
+                },
+                "skip_samples_file": {
+                    "type": "string",
+                    "description": "File listing samples to skip from analysis."
+                },
+                "skip_combined_analysis": {
+                    "type": "boolean",
+                    "description": "Skip combined analysis step."
+                },
+                "skip_phylogeny": {
+                    "type": "boolean",
+                    "description": "Skip phylogeny step."
+                },
+                "ref_dir": {
+                    "type": "string",
+                    "description": "Reference files directory (invalidates specific declarations)."
+                },
+                "ref_masked_fasta": {
+                    "type": "string",
+                    "description": "Masked reference FASTA file."
+                },
+                "ref_fai": {
+                    "type": "string",
+                    "description": "Reference FAI index file."
+                },
+                "ref_bwa": {
+                    "type": "string",
+                    "description": "Reference BWA index file."
+                },
                 "amdp": {
                     "type": "boolean",
-                    "default": true,
-                    "description": "Enable AMD-P enhancement modules",
-                    "fa_icon": "fas fa-check-square"
+                    "description": "Enable AMD-P parameters."
                 },
                 "qc_thresholds": {
                     "type": "string",
-                    "default": "GCrangePct:42-47.5,AvgQscore:28,RefLenCov:20,MeanCovDepth:20",
-                    "description": "Set quality control thresholds",
-                    "fa_icon": "fas fa-sliders-h"
+                    "description": "Quality control thresholds."
                 },
                 "metadata_csv": {
                     "type": "string",
-                    "format": "file-path",
-                    "default": "",
-                    "description": "Path to the metadata CSV file for AMD-P.",
-                    "fa_icon": "fas fa-file-csv"
-                 },
+                    "description": "Path to metadata CSV file."
+                },
                 "geolocation_csv": {
                     "type": "string",
-                    "format": "file-path",
-                    "default": "",
-                    "description": "Path to the geolocation CSV file for AMD-P.",
-                    "fa_icon": "fas fa-file-csv"
+                    "description": "Path to geolocation CSV file."
                 },
                 "test_samples": {
                     "type": "string",
-                    "default": "",
-                    "description": "Comma-separated sample IDs to appear as stars in the microreact input metadata file",
-                    "fa_icon": "fas fa-vial"
-                 },
+                    "description": "Test samples for pipeline validation."
+                },
                 "percent_n": {
-                    "type": "number",
-                    "default": "8",
-                    "description": "Quality control threshold for the percent of Ns (range 0-100)",
-                    "fa_icon": "fas fa-sliders-h"
-                 }
+                    "type": "integer",
+                    "description": "Percent N threshold for QC."
+                }
             }
         }
     },
@@ -456,13 +476,13 @@
             "$ref": "#/$defs/input_output_options"
         },
         {
+            "$ref": "#/$defs/pipeline_specific_options"
+        },
+        {
             "$ref": "#/$defs/institutional_config_options"
         },
         {
             "$ref": "#/$defs/mycosnp_options"
-        },
-        {
-            "$ref": "#/$defs/resource_options"
         },
         {
             "$ref": "#/$defs/reference_options"

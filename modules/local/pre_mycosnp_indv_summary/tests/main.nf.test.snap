@@ -1,33 +1,4 @@
 {
-    "PRE_MYCOSNP_INDV_SUMMARY - create line summary for single sample": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "SRR30604805",
-                            "single_end": false
-                        },
-                        "SRR30604805_linesummary.csv:md5,c348c8afd99b26c1e29f9b211a83a568"
-                    ]
-                ],
-                "result": [
-                    [
-                        {
-                            "id": "SRR30604805",
-                            "single_end": false
-                        },
-                        "SRR30604805_linesummary.csv:md5,c348c8afd99b26c1e29f9b211a83a568"
-                    ]
-                ]
-            }
-        ],
-        "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
-        },
-        "timestamp": "2025-09-24T14:22:36.53276581"
-    },
     "PRE_MYCOSNP_INDV_SUMMARY - create line summary file for single sample": {
         "content": [
             {
@@ -40,6 +11,9 @@
                         "SRR30604805_linesummary.csv:md5,c348c8afd99b26c1e29f9b211a83a568"
                     ]
                 ],
+                "1": [
+                    "versions.yml:md5,6ea5577c3432f6cc4bae6a779dba01ca"
+                ],
                 "result": [
                     [
                         {
@@ -48,6 +22,9 @@
                         },
                         "SRR30604805_linesummary.csv:md5,c348c8afd99b26c1e29f9b211a83a568"
                     ]
+                ],
+                "versions": [
+                    "versions.yml:md5,6ea5577c3432f6cc4bae6a779dba01ca"
                 ]
             }
         ],
@@ -55,7 +32,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-09-24T14:24:41.729089609"
+        "timestamp": "2025-09-29T11:38:47.958539526"
     },
     "PRE_MYCOSNP_INDV_SUMMARY - stub test": {
         "content": [
@@ -66,8 +43,11 @@
                             "id": "SRR30604805",
                             "single_end": false
                         },
-                        "SRR30604805_linesummary.csv:md5,c348c8afd99b26c1e29f9b211a83a568"
+                        "SRR30604805_linesummary.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "1": [
+                    "versions.yml:md5,6ea5577c3432f6cc4bae6a779dba01ca"
                 ],
                 "result": [
                     [
@@ -75,15 +55,18 @@
                             "id": "SRR30604805",
                             "single_end": false
                         },
-                        "SRR30604805_linesummary.csv:md5,c348c8afd99b26c1e29f9b211a83a568"
+                        "SRR30604805_linesummary.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
+                ],
+                "versions": [
+                    "versions.yml:md5,6ea5577c3432f6cc4bae6a779dba01ca"
                 ]
             }
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "24.10.5"
         },
-        "timestamp": "2025-09-24T14:23:04.249391886"
+        "timestamp": "2025-10-08T16:04:14.746057526"
     }
 }

@@ -100,4 +100,14 @@ process PRE_MYCOSNP_INDV_SUMMARY {
         ncbi-datasets-cli: \$(datasets --version 2>&1 | sed 's/datasets version: //')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch "${meta.id}_linesummary.csv"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        ncbi-datasets-cli: \$(datasets --version 2>&1 | sed 's/datasets version: //')
+    END_VERSIONS
+    """
 }

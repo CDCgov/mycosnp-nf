@@ -56,7 +56,7 @@ include { PRE_MYCOSNP_COMB_SUMMARY } from '../modules/local/pre_mycosnp_comb_sum
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/fastqc/main'
 include { SHOVILL as SHOVILL          } from '../modules/local/shovill/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 
 
 /*
@@ -187,10 +187,14 @@ workflow PRE_MYCOSNP_WF {
     )
     ch_versions = ch_versions.mix(PRE_MYCOSNP_COMB_SUMMARY.out.versions)
 
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique()
-        .collectFile(name: 'collated_versions.yml')
-    )
+    // Collate and save software versions
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name:  'premycosnp_software_'  + 'versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
@@ -198,7 +202,7 @@ workflow PRE_MYCOSNP_WF {
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
     ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
@@ -213,7 +217,7 @@ workflow PRE_MYCOSNP_WF {
 
     emit:
     multiqc_report = MULTIQC.out.report
-    versions = ch_versions
+    versions       = ch_versions
 }
 
 /*

@@ -8,5 +8,6 @@ testing/
 null/
 bin/vcfTools.pyc*
 bin/__pycache__/
+.nf-test.*
+.nf-test
 .pre-commit-config.yaml
-.nf-test*

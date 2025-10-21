@@ -13,7 +13,6 @@ process FAQCS {
     output:
     tuple val(meta), path('*.trimmed.fastq.gz')           , emit: reads         , optional: true
     tuple val(meta), path('*.stats.txt')                  , emit: stats         , optional: true
-    tuple val(meta), path('*.txt')                        , emit: txt           , optional: true
     tuple val(meta), path('./debug')                      , emit: debug         , optional: true
     tuple val(meta), path('*_qc_report.pdf')              , emit: statspdf      , optional: true
     tuple val(meta), path('*.discard.fastq.gz')           , emit: reads_fail    , optional: true

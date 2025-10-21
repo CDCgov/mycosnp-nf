@@ -26,4 +26,3 @@ process QC_PARSER {
     touch combined_QC_results.csv
     """
 }
-

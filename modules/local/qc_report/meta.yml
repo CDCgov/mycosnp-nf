@@ -13,7 +13,7 @@ keywords:
 tools:
   - pandas:
       description: |
-        pandas is a fast, powerful, flexible and easy to use open source data analysis 
+        pandas is a fast, powerful, flexible and easy to use open source data analysis
         and manipulation tool, built on top of the Python programming language.
       homepage: https://pandas.pydata.org/
       documentation: https://pandas.pydata.org/docs/

@@ -41,8 +41,7 @@ process GATK4_LOCALCOMBINEGVCFS {
     def sample_list       = []
     if(skip_samples != '')
     {
-
-      sample_list = skip_samples.split(',')  // split by comma and put into list
+        sample_list = skip_samples.split(',')  // split by comma and put into list
     }
 
     //def input_files = vcf.collect{"-V ${it}"}.join(' ') // add '-V' to each vcf file
@@ -70,13 +69,13 @@ process GATK4_LOCALCOMBINEGVCFS {
         }
     }
     """
-	    gatk \\
-          --java-options "-Xmx${avail_mem}g" \\
-          CombineGVCFs \\
-          -R ${fasta} \\
-          -O ${prefix}.combined.g.vcf.gz \\
-          ${args} \\
-          ${input_files}
+    gatk \\
+        --java-options "-Xmx${avail_mem}g" \\
+        CombineGVCFs \\
+        -R ${fasta} \\
+        -O ${prefix}.combined.g.vcf.gz \\
+        ${args} \\
+        ${input_files}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -88,7 +87,7 @@ process GATK4_LOCALCOMBINEGVCFS {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.combined.g.vcf.gz
-    touch ${prefix}.combined.g.vcf.gz.tbi 
+    touch ${prefix}.combined.g.vcf.gz.tbi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

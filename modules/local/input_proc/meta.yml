@@ -8,8 +8,7 @@ keywords:
   - copy
 tools:
   - "python":
-      description:
-        "Python is a programming language that lets you work quickly
+      description: "Python is a programming language that lets you work quickly
         and integrate systems more effectively."
       homepage: "https://www.python.org/"
       documentation: "https://docs.python.org/3/"
@@ -50,6 +49,6 @@ output:
           description: File containing software versions
           pattern: "versions.yml"
 authors:
- - "AMD Platform"
+  - "AMD Platform"
 maintainers:
- - "AMD Platform"
+  - "AMD Platform"

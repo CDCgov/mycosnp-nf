@@ -62,10 +62,10 @@ include { paramsSummaryMap     } from 'plugin/nf-schema'
 //
 // MODULE: Installed directly from nf-core/modules
 //
+include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/fastqc/main'
 include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { GATK4_HAPLOTYPECALLER       } from '../modules/nf-core/gatk4/haplotypecaller/main'
 include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/gatk4/combinegvcfs/main' //not used here
 include { SEQKIT_REPLACE              } from '../modules/nf-core/seqkit/replace/main'
@@ -308,7 +308,7 @@ workflow MYCOSNP {
         ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
         if(params.snpeff != false){
-            SNPEFF(GATK_VARIANTS.out.filtered_vcf, params.species)
+            SNPEFF(GATK_VARIANTS.out.filtered_vcf, params.species, params.snpeffcache)
             ch_versions = ch_versions.mix(SNPEFF.out.versions)
         }
 
@@ -348,9 +348,14 @@ workflow MYCOSNP {
     )
     ch_versions = ch_versions.mix(FASTQC_RAW.out.versions.first())
 
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
+    // Collate and save software versions
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name:  'mycosnp_software_'  + 'versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
@@ -363,7 +368,7 @@ workflow MYCOSNP {
     ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
     ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.post_qc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.stats.map{meta, stats -> [stats]}.ifEmpty([]))

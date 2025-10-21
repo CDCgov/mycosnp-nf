@@ -82,10 +82,10 @@ workflow {
     // Create a default empty channel for multiqc_report
     multiqc_report = Channel.empty()
 
-    if (params.workflow == 'PRE_MYCOSNP') {
+    if (params.mode == 'PRE_MYCOSNP') {
         PRE_MYCOSNP(PIPELINE_INITIALISATION.out.samplesheet)
         multiqc_report = PRE_MYCOSNP.out.multiqc_report.ifEmpty([])
-    } else if (params.workflow == 'NFCORE_MYCOSNP') {
+    } else if (params.mode == 'NFCORE_MYCOSNP') {
         NFCORE_MYCOSNP(PIPELINE_INITIALISATION.out.samplesheet)
         multiqc_report = NFCORE_MYCOSNP.out.multiqc_report.ifEmpty([])
     } else {

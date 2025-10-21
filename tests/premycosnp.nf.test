@@ -1,6 +1,6 @@
 nextflow_pipeline {
 
-    name "Test primary mycosnp pipeline"
+    name "Test premycosnp pipeline"
     script "../main.nf"
     tag "pipeline"
 
@@ -9,9 +9,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
-                coverage = 70
-                skip_phylogeny = true
-                snpeff = true
+                mode = 'PRE_MYCOSNP'
             }
         }
 
@@ -26,7 +24,7 @@ nextflow_pipeline {
                     // Number of successful tasks
                     workflow.trace.succeeded().size(),
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
-                    removeNextflowVersion("$outputDir/pipeline_info/mycosnp_software_versions.yml"),
+                    removeNextflowVersion("$outputDir/pipeline_info/premycosnp_software__versions.yml"),
                     // All stable path name, with a relative path
                     stable_name,
                     // All files with stable contents

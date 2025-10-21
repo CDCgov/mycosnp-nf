@@ -21,7 +21,7 @@ nextflow_process {
 
                 def source_file1 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/genome_results.txt', checkIfExists: true)
                 def source_file2 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt', checkIfExists: true)
-                
+
                 def dest_file1 = file("\$PWD/SRR30604805/genome_results.txt")
                 def dest_file2 = file("\$PWD/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt")
 

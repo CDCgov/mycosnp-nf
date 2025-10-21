@@ -13,8 +13,8 @@ keywords:
 tools:
   - ncbi-datasets-cli:
       description: |
-        NCBI Datasets is a resource that lets users easily gather data 
-        from across NCBI databases. Find and download sequence, annotation, 
+        NCBI Datasets is a resource that lets users easily gather data
+        from across NCBI databases. Find and download sequence, annotation,
         and metadata for genes and genomes across taxonomy.
       homepage: https://www.ncbi.nlm.nih.gov/datasets/
       documentation: https://www.ncbi.nlm.nih.gov/datasets/docs/

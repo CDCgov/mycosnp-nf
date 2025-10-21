@@ -70,7 +70,7 @@ workflow BWA_REFERENCE {
                                              INPUT_PROC.out.versions,
                                              COORDSTOBED.out.versions,
                                              BEDTOOLS_MASKFASTA.out.versions )
-    
+
     ch_masked_fasta       = ch_use_fasta
     ch_samtools_index     = SAMTOOLS_FAIDX.out.fai
     ch_bwa_index          = BWA_INDEX.out.index

@@ -21,7 +21,7 @@ process COORDSTOBED {
     show-coords ${args} $delta > masked_ref_BEFORE_ORDER.bed
 
     awk '{if (\$1 != \$3 && \$2 != \$4) print \$0}' masked_ref_BEFORE_ORDER.bed > masked_ref_BEFORE_ORDER2.bed
-    
+
     awk '{print \$8\"\\t\"\$1\"\\t\"\$2}' masked_ref_BEFORE_ORDER2.bed > ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml

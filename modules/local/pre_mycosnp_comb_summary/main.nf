@@ -31,5 +31,10 @@ process PRE_MYCOSNP_COMB_SUMMARY {
     stub:
     """
     touch pre-mycosnp-summary.csv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        coreutils: \$(cat --version 2>&1 | head -1 | sed 's/.*(GNU coreutils) //' | sed 's/ .*//')
+    END_VERSIONS
     """
 }
