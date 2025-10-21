@@ -1,6 +1,6 @@
 # 🍄🧬 MycoSNP: Whole Genome Sequencing Analysis of Fungal Isolates
 
-[![GitHub Actions CI Status](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/ci.yml/badge.svg)](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/ci.yml)
+[![GitHub Actions CI Status](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/test-pipeline.yml/badge.svg)](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/test-pipeline.yml)
 [![GitHub Actions Linting Status](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/linting.yml/badge.svg)](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/linting.yml)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 

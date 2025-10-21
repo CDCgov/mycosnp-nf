@@ -9,3 +9,6 @@ testing*
 *.pyc
 bin/
 ro-crate-metadata.json
+email_template.html
+adaptivecard.json
+slackreport.json

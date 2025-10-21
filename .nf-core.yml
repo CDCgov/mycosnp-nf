@@ -1,5 +1,6 @@
 lint:
   files_exist:
+    - .gitattributes
     - conf/igenomes.config
     - conf/igenomes_ignored.config
     - assets/email_template.html
@@ -24,6 +25,7 @@ lint:
     - assets/email_template.txt
     - docs/README.md
     - assets/email_template.html
+    - .github/workflows/linting.yml
   multiqc_config:
     - report_comment
   nextflow_config:

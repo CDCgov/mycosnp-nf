@@ -28,7 +28,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot( 
+                { assert snapshot(
                     process.out.versions,
                     process.out.tbi ).match() },
                 { assert process.out.gvcf.size() > 0 }
