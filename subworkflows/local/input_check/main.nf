@@ -35,7 +35,7 @@ workflow INPUT_CHECK {
     // Includes a checkpoint to ensure that all fastq files exist.
     fastq_pairs_flat = rows_ch
         .flatMap { row ->
-            [row.fastq1, row.fastq2]
+            [row.fastq1, row.fastq2, row.fastq3, row.fastq4]
             .findAll { it }
             .collect { fq ->
                 def f = file(fq)
@@ -45,6 +45,7 @@ workflow INPUT_CHECK {
             }
         }
 
+    // break up read sets into multi-lane reads and single-/paired-end reads
     precheck_reads = fastq_pairs_flat
         .groupTuple(by: 0)
         .map { sample, fqs_list ->
@@ -56,8 +57,13 @@ workflow INPUT_CHECK {
             ]
             tuple(meta, uniq_reads)
         }
+        .branch {
+            multi_lane: it[1].size() > 2 // filter samples with > 2 fastq files
+            single_pair: it[1].size() <= 2 // filter single-/paired-end files
+        }
 
-    LANE_MERGE( precheck_reads )
+    //only process samples with mutiple lanes
+    LANE_MERGE( precheck_reads.multi_lane )
 
     // Triage checkpoint 2: Split out a channel of SRA accessions to fetch --> results in tuple(meta, sra_id)
     ch_sra_list = rows_ch
@@ -111,10 +117,11 @@ workflow INPUT_CHECK {
         ch_vcf_idx    = vcf_triples.map { meta, vcf, tbi -> tuple(meta, tbi) }
         ch_vcf_files  = vcf_triples.map { meta, vcf, tbi -> tuple(meta, vcf) }
 
+
     emit:
-    ch_fastq_reads  =   LANE_MERGE.out.reads       // channel: [ val(meta), [ reads ] ]
-    ch_sra_list     =   ch_sra_list                // channel: [ val(meta), sra_id    ]
-    ch_vcf_files    =   ch_vcf_files               // channel: [ val(meta), vcf       ]
-    ch_vcfidx_files =   ch_vcf_idx                 // channel: [ val(meta), tbi       ]
-    versions        =   ch_versions                // channel: [ versions.yml         ]
+    ch_fastq_reads  =   precheck_reads.single_pair.mix( LANE_MERGE.out.reads )      // channel: [ val(meta), [ reads ] ]
+    ch_sra_list     =   ch_sra_list                                                 // channel: [ val(meta), sra_id    ]
+    ch_vcf_files    =   ch_vcf_files                                                // channel: [ val(meta), vcf       ]
+    ch_vcfidx_files =   ch_vcf_idx                                                  // channel: [ val(meta), tbi       ]
+    versions        =   ch_versions                                                 // channel: [ versions.yml         ]
 }

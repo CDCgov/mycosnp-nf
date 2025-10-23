@@ -5,7 +5,7 @@
 */
 
 include { SEQKIT_PAIR                          } from '../../../modules/nf-core/seqkit/pair/main'
-include { SEQTK_SAMPLE                         } from '../../../modules/local/seqtk_sample/main'
+include { SEQTK_SAMPLE                         } from '../../../modules/nf-core/seqtk/sample/main'
 include { FAQCS                                } from '../../../modules/local/faqcs/main'
 include { BWA_INDEX                            } from '../../../modules/nf-core/bwa/index/main'   //not used here
 include { BWA_MEM                              } from '../../../modules/local/bwa/mem/main'
@@ -43,33 +43,72 @@ workflow BWA_PREPROCESS {
 
 
     SEQKIT_PAIR(reads)
+
     if (params.coverage == 0) {
-    FAQCS(SEQKIT_PAIR.out.reads)
-    }
+        FAQCS(SEQKIT_PAIR.out.reads)
+        }
     else {
-    // DOWNSAMPLE_RATE expects a plain path for reference_fasta
-    DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, ref_fasta.map{ meta, fa -> fa }, params.coverage)
-    ch_seq_samplerate = SEQKIT_PAIR.out.reads.join(
-        DOWNSAMPLE_RATE.out.downsampled_rate.map{ meta, sr, snr -> [ meta, snr]}
-        )
-    SEQTK_SAMPLE(ch_seq_samplerate)
-    FAQCS(SEQTK_SAMPLE.out.reads)
-    }
+        // DOWNSAMPLE_RATE expects a plain path for reference_fasta
+        DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, ref_fasta.map{ meta, fa -> fa }, params.coverage)
+
+        ch_seq_samplerate = SEQKIT_PAIR.out.reads.join(
+            DOWNSAMPLE_RATE.out.downsampled_rate.map{
+                meta, sr, snr -> [ meta, snr]
+                }
+            )
+
+        // breakup file list into individual rows for processing
+        ch_seq_samplerate
+            .flatMap { meta, reads_list, size ->
+                def (fastq1, fastq2) = reads_list
+                [
+                    tuple(meta, fastq1 ,size),
+                    tuple(meta, fastq2, size)
+                ]
+            }
+            .set { ch_seq_samplerate }
+
+        SEQTK_SAMPLE( ch_seq_samplerate )
+
+        // convert R1/R2 mapped reads back into single sorted channel rows
+        ch_seq_sample_combine = SEQTK_SAMPLE.out.reads
+            .groupTuple( by: 0, size: 2, sort: true )
+
+        FAQCS( ch_seq_sample_combine )
+        }
+
     // Group trimmed reads by sample so BWA_MEM receives [meta, [R1,R2]]
     // Pass only reads + index path + sort flag as required by local BWA_MEM (3 inputs)
-    BWA_MEM(FAQCS.out.reads, ref_bwa.map{ meta, idx -> idx }, true)
-    PICARD_MARKDUPLICATES(BWA_MEM.out.bam)
-    PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam)
-    PICARD_FIXMATEINFORMATION(PICARD_CLEANSAM.out.bam)
-    PICARD_ADDORREPLACEREADGROUPS(PICARD_FIXMATEINFORMATION.out.bam)
-    SAMTOOLS_INDEX(PICARD_ADDORREPLACEREADGROUPS.out.bam)
-    FASTQC_POST(FAQCS.out.reads)
-    QUALIMAP_BAMQC(PICARD_ADDORREPLACEREADGROUPS.out.bam, [])
+    BWA_MEM(
+        FAQCS.out.reads,
+        ref_bwa.map{ meta, idx -> idx },
+        true
+    )
 
-    ch_alignment_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam.join(SAMTOOLS_INDEX.out.bai)
+    PICARD_MARKDUPLICATES( BWA_MEM.out.bam )
+
+    PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam )
+
+    PICARD_FIXMATEINFORMATION( PICARD_CLEANSAM.out.bam )
+
+    PICARD_ADDORREPLACEREADGROUPS( PICARD_FIXMATEINFORMATION.out.bam )
+
+    SAMTOOLS_INDEX( PICARD_ADDORREPLACEREADGROUPS.out.bam )
+
+    FASTQC_POST( FAQCS.out.reads )
+
+    QUALIMAP_BAMQC(
+        PICARD_ADDORREPLACEREADGROUPS.out.bam,
+        []
+    )
+
+    ch_alignment_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam
+        .join( SAMTOOLS_INDEX.out.bai )
 
     SAMTOOLS_STATS    ( ch_alignment_combined, ref_fasta )
+
     SAMTOOLS_FLAGSTAT ( ch_alignment_combined )
+
     SAMTOOLS_IDXSTATS ( ch_alignment_combined )
 
     // Use the full TXT bundle from FAQCS to ensure all required qa.* inputs are staged for QC_REPORT
@@ -77,21 +116,23 @@ workflow BWA_PREPROCESS {
 
     QC_REPORT(ch_qcreport_input, ref_fasta.map{ meta, fasta -> fasta })
 
-    ch_versions            = ch_versions.mix(  SEQKIT_PAIR.out.versions,
-                                               FAQCS.out.versions,
-                                               BWA_MEM.out.versions,
-                                               PICARD_MARKDUPLICATES.out.versions,
-                                               PICARD_CLEANSAM.out.versions,
-                                               PICARD_FIXMATEINFORMATION.out.versions,
-                                               PICARD_ADDORREPLACEREADGROUPS.out.versions,
-                                               SAMTOOLS_INDEX.out.versions,
-                                               FASTQC_POST.out.versions,
-                                               SAMTOOLS_STATS.out.versions,
-                                               QUALIMAP_BAMQC.out.versions,
-                                               QC_REPORT.out.versions,
-                                               SAMTOOLS_IDXSTATS.out.versions,
-                                               SAMTOOLS_FLAGSTAT.out.versions
-                                            )
+    ch_versions = ch_versions.mix(
+        SEQKIT_PAIR.out.versions,
+        FAQCS.out.versions,
+        BWA_MEM.out.versions,
+        PICARD_MARKDUPLICATES.out.versions,
+        PICARD_CLEANSAM.out.versions,
+        PICARD_FIXMATEINFORMATION.out.versions,
+        PICARD_ADDORREPLACEREADGROUPS.out.versions,
+        SAMTOOLS_INDEX.out.versions,
+        FASTQC_POST.out.versions,
+        SAMTOOLS_STATS.out.versions,
+        QUALIMAP_BAMQC.out.versions,
+        QC_REPORT.out.versions,
+        SAMTOOLS_IDXSTATS.out.versions,
+        SAMTOOLS_FLAGSTAT.out.versions
+    )
+
     if (params.coverage != 0) {
         ch_versions = ch_versions.mix(SEQTK_SAMPLE.out.versions)
     }

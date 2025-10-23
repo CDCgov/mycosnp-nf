@@ -19,54 +19,42 @@ process LANE_MERGE {
     READS=(${reads_list})
     NUM_READS=\${#READS[@]}
 
-    if [[ "\$NUM_READS" -eq 0 ]]; then
-        echo "[COMBINE_READS] No fastqs provided for sample: ${meta.id}" >&2
-        exit 1
-    fi
+    # Handles samples with mutiple lanes (sequences) and concatenates
+    # Split by index cardinality into R1 (0,2,4,...) and R2 (1,3,5,...)
 
-    echo "[COMBINE_READS] Sample: ${meta.id} | Files (\$NUM_READS): \${READS[*]}" >&2
+    R1=()
+    R2=()
 
-    if [[ "\$NUM_READS" -eq 1 ]]; then
-        f="\${READS[0]}"
-        if [[ "\$f" == *.gz ]]; then
-            zcat "\$f" | gzip -c > "${prefix}.fastq.gz"
+    for i in "\${!READS[@]}"; do
+        if (( i % 2 == 0 )); then
+            R1+=( "\${READS[\$i]}" )
         else
-            gzip -c "\$f" > "${prefix}.fastq.gz"
+            R2+=( "\${READS[\$i]}" )
         fi
-    else
-        # Split by index cardinality into R1 (0,2,4,...) and R2 (1,3,5,...) assuming given order corresponds to read pair mates
-        R1=()
-        R2=()
-        for i in "\${!READS[@]}"; do
-            if (( i % 2 == 0 )); then
-                R1+=( "\${READS[\$i]}" )
+    done
+
+    # Process R1 and R2 in parallel using pigz
+    {
+        for f in "\${R1[@]}"; do
+            if [[ "\$f" == *.gz ]]; then
+                zcat "\$f"
             else
-                R2+=( "\${READS[\$i]}" )
+                cat "\$f"
             fi
         done
+    } | pigz -p ${task.cpus} > "${prefix}_R1.fastq.gz" &
 
-        # Combine R1 (assumes files follow expected file cardinality)
-        {
-            for f in "\${R1[@]}"; do
-                if [[ "\$f" == *.gz ]]; then
-                    zcat "\$f"
-                else
-                    cat "\$f"
-                fi
-            done
-        } | gzip -c > "${prefix}_R1.fastq.gz"
+    {
+        for f in "\${R2[@]}"; do
+            if [[ "\$f" == *.gz ]]; then
+                zcat "\$f"
+            else
+                cat "\$f"
+            fi
+        done
+    } | pigz -p ${task.cpus} > "${prefix}_R2.fastq.gz" &
 
-        # Combine R2 files (again assumes file cardinality structuring)
-        {
-            for f in "\${R2[@]}"; do
-                if [[ "\$f" == *.gz ]]; then
-                    zcat "\$f"
-                else
-                    cat "\$f"
-                fi
-            done
-        } | gzip -c > "${prefix}_R2.fastq.gz"
-    fi
+    wait
     """
 
     stub:
@@ -79,11 +67,11 @@ process LANE_MERGE {
 
     if [[ "\$NUM_READS" -eq 1 ]]; then
         # Single file case - create empty gzipped file
-        echo -n | gzip > "${prefix}.fastq.gz"
+        echo -n | pigz -p ${task.cpus} > "${prefix}.fastq.gz"
     else
         # Multiple files case - assume paired-end
-        echo -n | gzip > "${prefix}_R1.fastq.gz"
-        echo -n | gzip > "${prefix}_R2.fastq.gz"
+        echo -n | pigz -p ${task.cpus} > "${prefix}_R1.fastq.gz"
+        echo -n | pigz -p ${task.cpus} > "${prefix}_R2.fastq.gz"
     fi
     """
 }
