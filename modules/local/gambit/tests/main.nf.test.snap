@@ -1,0 +1,68 @@
+{
+    "GAMBIT_QUERY - script": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "test_sample_gambit.csv:md5,6996dd433057946780ed5739de623787"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,172059ab6988038f9ca3938d07f65a35"
+                ],
+                "taxa": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "test_sample_gambit.csv:md5,6996dd433057946780ed5739de623787"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,172059ab6988038f9ca3938d07f65a35"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-10-21T23:37:48.809966809"
+    },
+    "GAMBIT_QUERY - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "test_sample_gambit.csv:md5,6996dd433057946780ed5739de623787"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,172059ab6988038f9ca3938d07f65a35"
+                ],
+                "taxa": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "test_sample_gambit.csv:md5,6996dd433057946780ed5739de623787"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,172059ab6988038f9ca3938d07f65a35"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-10-21T23:39:14.392783228"
+    }
+}

@@ -48,7 +48,6 @@ include { BWA_PREPROCESS       } from '../subworkflows/local/bwa-pre-process/mai
 include { BWA_REFERENCE        } from '../subworkflows/local/bwa-reference/main'
 include { GATK_VARIANTS        } from '../subworkflows/local/gatk-variants/main'
 include { CREATE_PHYLOGENY     } from '../subworkflows/local/phylogeny/main'
-include { SNPEFF_BUILD         } from '../subworkflows/local/snpeff_build/main'  //not used here
 include { SNPEFF               } from '../subworkflows/local/snpeff/main'
 include { paramsSummaryMultiqc } from '../subworkflows/nf-core/utils_nfcore_pipeline/main'
 include { paramsSummaryMap     } from 'plugin/nf-schema'

@@ -454,7 +454,10 @@
                 },
                 "metadata_csv": {
                     "type": "string",
-                    "description": "Path to metadata CSV file."
+                    "format": "file-path",
+                    "default": null,
+                    "description": "Path to the metadata CSV file for AMD-P.",
+                    "fa_icon": "fas fa-file-csv"
                 },
                 "geolocation_csv": {
                     "type": "string",
@@ -462,11 +465,15 @@
                 },
                 "test_samples": {
                     "type": "string",
-                    "description": "Test samples for pipeline validation."
+                    "default": null,
+                    "description": "Comma-separated sample IDs to appear as stars in the microreact input metadata file",
+                    "fa_icon": "fas fa-vial"
                 },
                 "percent_n": {
-                    "type": "integer",
-                    "description": "Percent N threshold for QC."
+                    "type": "number",
+                    "default": "8",
+                    "description": "Quality control threshold for the percent of Ns (range 0-100)",
+                    "fa_icon": "fas fa-sliders-h"
                 }
             }
         }

@@ -21,7 +21,6 @@ process SPLIT_VCF {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
     """
     # First get a list of samples
     bcftools query \\
@@ -30,6 +29,19 @@ process SPLIT_VCF {
     for SAMPLE in \$(cat samplelist.txt); do
         bcftools view -Oz -s \$SAMPLE -o \$SAMPLE.vcf.gz $vcf
     done
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
+    END_VERSIONS
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch samplelist.txt
+    echo -n | gzip > "${prefix}.vcf.gz"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

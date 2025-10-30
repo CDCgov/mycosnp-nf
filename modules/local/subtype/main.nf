@@ -38,4 +38,16 @@ process SUBTYPE {
         sourmash: \$(sourmash --version | tr -d "[a-z, ]")
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch "${prefix}_subtype.csv"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sourmash: \$(sourmash --version | tr -d "[a-z, ]")
+    END_VERSIONS
+    """
 }

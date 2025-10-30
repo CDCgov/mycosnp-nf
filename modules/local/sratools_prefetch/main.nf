@@ -34,5 +34,17 @@ process SRATOOLS_PREFETCH {
         sratools: \$(prefetch --version 2>&1 | grep -Eo '[0-9.]+')
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def config = "/LIBS/GUID = \"${UUID.randomUUID().toString()}\"\\n/libs/cloud/report_instance_identity = \"true\"\\n"
+    """
+    touch ${id}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sratools: \$(prefetch --version 2>&1 | grep -Eo '[0-9.]+')
+    END_VERSIONS
+    """
 }
 // taken from [nf-core/fetchngs](https://github.com/nf-core/fetchngs/blob/master/modules/local/sratools_prefetch.nf)

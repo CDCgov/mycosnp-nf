@@ -25,4 +25,17 @@ process SNPEFFR {
 	snpeffr: \$(snpeffr --version | sed 's/v//')
 	END_VERSIONS
 	"""
+
+    stub:
+    def args = task.ext.args ?: ''
+	def prefix = task.ext.prefix ?: "${meta.id}"
+
+	"""
+	touch ${prefix}_cauris_refB11205_fks1.csv
+
+	cat <<-END_VERSIONS > versions.yml
+	"${task.process}":
+	snpeffr: \$(snpeffr --version | sed 's/v//')
+	END_VERSIONS
+	"""
 }

@@ -36,4 +36,20 @@ process FILTER_GATK_GENOTYPES {
         python: \$(python --version | sed 's/Python //g')
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+
+    def is_compressed_vcf = vcf.getName().endsWith(".gz") ? true : false
+    def vcf_name = vcf.getName().replace(".gz", "")
+
+    """
+    echo -n | gzip > "${prefix}.vcf.gz"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
+    """
 }

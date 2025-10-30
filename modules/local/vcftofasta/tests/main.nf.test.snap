@@ -1,0 +1,68 @@
+{
+    "test-vcf-to-fasta": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_vcf-to-fasta.fasta:md5,f2d830a9b13431c7111d6658d8c94a09"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,ad4ad88c75c659973934e02832a5cb09"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_vcf-to-fasta.fasta:md5,f2d830a9b13431c7111d6658d8c94a09"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,ad4ad88c75c659973934e02832a5cb09"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-10-21T22:59:44.930153079"
+    },
+    "test-vcf-to-fasta-stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,ad4ad88c75c659973934e02832a5cb09"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,ad4ad88c75c659973934e02832a5cb09"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-10-21T23:00:02.201175696"
+    }
+}

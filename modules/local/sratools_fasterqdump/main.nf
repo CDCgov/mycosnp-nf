@@ -33,25 +33,51 @@ process SRATOOLS_FASTERQDUMP {
     fasterq-dump \\
         $args \\
         --threads $task.cpus \\
-        ${sra.name}
+        ${sra.baseName}
     pigz \\
         $args2 \\
         --no-name \\
         --processes $task.cpus \\
         *.fastq
     ## Rename FastQ files by meta.id
-    if [ -f  ${sra.name}.fastq.gz ]; then
-        mv ${sra.name}.fastq.gz ${meta.id}.fastq.gz
+    if [ -f  ${sra.baseName}.fastq.gz ]; then
+        mv ${sra.baseName}.fastq.gz ${meta.id}.fastq.gz
         md5sum ${meta.id}.fastq.gz > ${meta.id}.fastq.gz.md5
     fi
-    if [ -f  ${sra.name}_1.fastq.gz ]; then
-        mv ${sra.name}_1.fastq.gz ${meta.id}_1.fastq.gz
+    if [ -f  ${sra.baseName}_1.fastq.gz ]; then
+        mv ${sra.baseName}_1.fastq.gz ${meta.id}_1.fastq.gz
         md5sum ${meta.id}_1.fastq.gz > ${meta.id}_1.fastq.gz.md5
     fi
-    if [ -f  ${sra.name}_2.fastq.gz ]; then
-        mv ${sra.name}_2.fastq.gz ${meta.id}_2.fastq.gz
+    if [ -f  ${sra.baseName}_2.fastq.gz ]; then
+        mv ${sra.baseName}_2.fastq.gz ${meta.id}_2.fastq.gz
         md5sum ${meta.id}_2.fastq.gz > ${meta.id}_2.fastq.gz.md5
     fi
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sratools: \$(fasterq-dump --version 2>&1 | grep -Eo '[0-9.]+')
+        pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
+    END_VERSIONS
+    """
+
+    stub:
+    def args = task.ext.args  ?: ''
+    def args2 = task.ext.args2 ?: ''
+    def config = "/LIBS/GUID = \"${UUID.randomUUID().toString()}\"\\n/libs/cloud/report_instance_identity = \"true\"\\n"
+    // Paired-end data extracted by fasterq-dump (--split-3 the default) always creates
+    // *_1.fastq *_2.fastq files but sometimes also an additional *.fastq file
+    // for unpaired reads which we ignore here.
+    fastq_output = meta.single_end ? '*.fastq.gz'     : '*_{1,2}.fastq.gz'
+    md5_output   = meta.single_end ? '*.fastq.gz.md5' : '*_{1,2}.fastq.gz.md5'
+    """
+    touch ${meta.id}_1.fastq
+    touch ${meta.id}_2.fastq
+
+    gzip ${meta.id}_1.fastq
+    gzip ${meta.id}_2.fastq
+
+    touch ${meta.id}_1.fastq.gz.md5
+    touch ${meta.id}_2.fastq.gz.md5
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         sratools: \$(fasterq-dump --version 2>&1 | grep -Eo '[0-9.]+')
