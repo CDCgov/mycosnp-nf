@@ -13,32 +13,43 @@ process VCF_TO_FASTA {
 
     output:
     tuple val(meta), path("*.fasta"), emit: fasta
-    path "versions.yml"             , emit: versions
+    path "versions.yml",              emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
     def is_compressed_vcf = vcf.getName().endsWith(".gz") ? true : false
     def vcf_name = vcf.getName().replace(".gz", "")
-
     """
-    NUM_SAMPLES=\$(cat $samplelist | wc -l)
-    if [ $max_perc_amb_samples > 0 ]; then
-        MAX_AMB_SAMPLES=\$(echo "\${NUM_SAMPLES} $max_perc_amb_samples" | awk '{x=\$1*(\$2/100); y=int(x); x=(y<1?1:y)} END {print x}')
+    NUM_SAMPLES=\$(cat ${samplelist} | wc -l)
+    if [ ${max_perc_amb_samples} > 0 ]; then
+        MAX_AMB_SAMPLES=\$(echo "\${NUM_SAMPLES} ${max_perc_amb_samples}" | awk '{x=\$1*(\$2/100); y=int(x); x=(y<1?1:y)} END {print x}')
     else
-        MAX_AMB_SAMPLES=$max_amb_samples
+        MAX_AMB_SAMPLES=${max_amb_samples}
     fi
 
     if [ "$is_compressed_vcf" == "true" ]; then
-        gzip -c -d $vcf > $vcf_name
+        gzip -c -d ${vcf} > ${vcf_name}
     fi
 
-    vcfSnpsToFasta.py --max_amb_samples \$MAX_AMB_SAMPLES --min_depth $min_depth $vcf_name > ${prefix}_vcf-to-fasta.fasta
+    vcfSnpsToFasta.py --max_amb_samples \$MAX_AMB_SAMPLES --min_depth ${min_depth} ${vcf_name} > ${prefix}_vcf-to-fasta.fasta
     echo "NUM_SAMPLES=\$NUM_SAMPLES" >> log.txt
-    echo "MAX_PERC_AMB_SAMPLES=$max_perc_amb_samples" >> log.txt
+    echo "MAX_PERC_AMB_SAMPLES=${max_perc_amb_samples}" >> log.txt
     echo "MAX_AMB_SAMPLES=\$MAX_AMB_SAMPLES" >> log.txt
-    echo "MIN_DEPTH=$min_depth" >> log.txt
+    echo "MIN_DEPTH=${min_depth}" >> log.txt
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_vcf-to-fasta.fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

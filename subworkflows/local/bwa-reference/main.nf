@@ -16,71 +16,78 @@ workflow BWA_REFERENCE {
 
     take:
     fasta // channel: fasta
+    mask  // val: whether to mask reference based on nucmer results
 
     main:
+    ch_versions = Channel.empty()
 
-    ch_use_fasta          = Channel.empty()
-    ch_masked_fasta       = Channel.empty()
-    ch_samtools_index     = Channel.empty()
-    ch_bwa_index          = Channel.empty()
-    ch_dict               = Channel.empty()
-    ch_reference_combined = Channel.empty()
-    ch_versions           = Channel.empty()
+    INPUT_PROC (
+        fasta
+    )
+    ch_versions = ch_versions.mix(INPUT_PROC.out.versions)
 
-    INPUT_PROC( fasta )
-    NUCMER( INPUT_PROC.out.ref_fasta )
-    COORDSTOBED( NUCMER.out.delta )
-    // BEDTOOLS_MASKFASTA expects tuple val(meta), path(bed) and a path-only fasta
+    NUCMER (
+        INPUT_PROC.out.ref_fasta
+    )
+    ch_versions = ch_versions.mix(NUCMER.out.versions)
+
+    COORDSTOBED (
+        NUCMER.out.delta
+    )
+    ch_versions = ch_versions.mix(COORDSTOBED.out.versions)
+
     // Broadcast fasta path alongside each bed entry to ensure pairing
-    def ref_fasta_path = INPUT_PROC.out.ref_fasta.map{ meta, fa, fa2-> fa }
-    def bed_with_fasta = COORDSTOBED.out.bed.map{ meta, bed -> [ meta, bed ] }
-    BEDTOOLS_MASKFASTA( bed_with_fasta, ref_fasta_path )
-
-
-    if(params.mask)
-    {
-        // else use nucmer masked fasta input
-        ch_use_fasta = BEDTOOLS_MASKFASTA.out.fasta
-    } else
-    {
-        // If no_mask is set, use original fasta input
-        ch_use_fasta = INPUT_PROC.out.map{meta, fa1, fa2 -> [ meta, fa1 ] }
+    def ref_fasta_path = INPUT_PROC.out.ref_fasta.map {
+        meta, fa, fa2-> fa
     }
 
-    BWA_INDEX(ch_use_fasta)
-    SAMTOOLS_FAIDX(ch_use_fasta, [[],[]], false)
-    PICARD_CREATESEQUENCEDICTIONARY(ch_use_fasta)
+    def bed_with_fasta = COORDSTOBED.out.bed.map {
+        meta, bed -> [ meta, bed ]
+    }
 
+    BEDTOOLS_MASKFASTA (
+        bed_with_fasta, ref_fasta_path
+    )
+    ch_versions = ch_versions.mix(BEDTOOLS_MASKFASTA.out.versions)
 
-    // reference_fasta, samtools_faidx, bwa_index, dict
+    if(mask) {
+        // else use nucmer masked fasta input
+        ch_use_fasta = BEDTOOLS_MASKFASTA.out.fasta
+    } else {
+        // If no_mask is set, use original fasta input
+        ch_use_fasta = INPUT_PROC.out.ref_fasta.map {
+            meta, fa1, fa2 -> [ meta, fa1 ]
+        }
+    }
+
+    BWA_INDEX (
+        ch_use_fasta
+    )
+    ch_versions = ch_versions.mix(BWA_INDEX.out.versions)
+
+    SAMTOOLS_FAIDX (
+        ch_use_fasta, [[],[]], false
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+
+    PICARD_CREATESEQUENCEDICTIONARY (
+        ch_use_fasta
+    )
+    ch_versions = ch_versions.mix(PICARD_CREATESEQUENCEDICTIONARY.out.versions)
+
     // Use join to combine channels by meta key instead of combine
     ch_use_fasta
-        .join(SAMTOOLS_FAIDX.out.fai, by: 0)
-        .join(BWA_INDEX.out.index, by: 0)
-        .join(PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict, by: 0)
+        .join(SAMTOOLS_FAIDX.out.fai)
+        .join(BWA_INDEX.out.index)
+        .join(PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict)
         .map { meta, fa1, fai, bai, dict -> [meta, fa1, fai, bai, dict] }
         .set { ch_reference_combined }
 
-
-    // Collect versions information
-    ch_versions           = ch_versions.mix( NUCMER.out.versions,
-                                             BWA_INDEX.out.versions,
-                                             SAMTOOLS_FAIDX.out.versions,
-                                             PICARD_CREATESEQUENCEDICTIONARY.out.versions,
-                                             INPUT_PROC.out.versions,
-                                             COORDSTOBED.out.versions,
-                                             BEDTOOLS_MASKFASTA.out.versions )
-
-    ch_masked_fasta       = ch_use_fasta
-    ch_samtools_index     = SAMTOOLS_FAIDX.out.fai
-    ch_bwa_index          = BWA_INDEX.out.index
-    ch_dict               = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict
-
     emit:
-    masked_fasta       = ch_masked_fasta        // channel: [ val(meta), fas ]
-    samtools_index     = ch_samtools_index      // channel: [ val(meta), fai ]
-    bwa_index          = ch_bwa_index           // channel: [ val(meta), bwa ]
-    dict               = ch_dict                // channel: [ val(meta), dict ]
-    reference_combined = ch_reference_combined  // channel: [ val(meta), fa, fai, bai, dict ]
-    versions           = ch_versions            // channel: [ ch_versions ]
+    masked_fasta       = ch_use_fasta                                       // channel: [ val(meta), fas ]
+    samtools_index     = SAMTOOLS_FAIDX.out.fai                             // channel: [ val(meta), fai ]
+    bwa_index          = BWA_INDEX.out.index                                // channel: [ val(meta), bwa ]
+    dict               = PICARD_CREATESEQUENCEDICTIONARY.out.reference_dict // channel: [ val(meta), dict ]
+    reference_combined = ch_reference_combined                              // channel: [ val(meta), fa, fai, bai, dict ]
+    versions           = ch_versions                                        // channel: [ ch_versions ]
 }

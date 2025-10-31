@@ -5,8 +5,7 @@ nextflow_process {
     process "QC_REPORTSHEET"
 
     tag "modules"
-    tag "modules/local/qc_reportsheet"
-    tag "QC_REPORTSHEET"
+    tag "qc_reportsheet"
 
     test("QC_REPORTSHEET - combine qc reports from mutiple samples into a single output file") {
 

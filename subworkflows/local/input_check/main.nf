@@ -6,7 +6,7 @@ include { LANE_MERGE        } from '../../../modules/local/lane_merge/main'
 
 workflow INPUT_CHECK {
     take:
-    samplesheet                             // file: /path/to/samplesheet.csv
+    samplesheet // file: /path/to/samplesheet.csv
 
     main:
     ch_versions = Channel.empty()
@@ -63,7 +63,10 @@ workflow INPUT_CHECK {
         }
 
     //only process samples with mutiple lanes
-    LANE_MERGE( precheck_reads.multi_lane )
+    LANE_MERGE (
+        precheck_reads.multi_lane
+    )
+    ch_versions = ch_versions.mix(LANE_MERGE.out.versions)
 
     // Triage checkpoint 2: Split out a channel of SRA accessions to fetch --> results in tuple(meta, sra_id)
     ch_sra_list = rows_ch

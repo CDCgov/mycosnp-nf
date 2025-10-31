@@ -12,15 +12,16 @@ process FILTER_GATK_GENOTYPES {
 
     output:
     tuple val(meta), path("*.vcf.gz"), emit: vcf
-    path "versions.yml"              , emit: versions
+    path "versions.yml",               emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
     def is_compressed_vcf = vcf.getName().endsWith(".gz") ? true : false
     def vcf_name = vcf.getName().replace(".gz", "")
-
     """
     if [ "$is_compressed_vcf" == "true" ]; then
         gzip -c -d $vcf > $vcf_name
@@ -38,14 +39,9 @@ process FILTER_GATK_GENOTYPES {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
-    def is_compressed_vcf = vcf.getName().endsWith(".gz") ? true : false
-    def vcf_name = vcf.getName().replace(".gz", "")
-
     """
-    echo -n | gzip > "${prefix}.vcf.gz"
+    touch ${prefix}.vcf.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

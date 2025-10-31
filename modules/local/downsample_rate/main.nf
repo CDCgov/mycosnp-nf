@@ -13,10 +13,12 @@ process DOWNSAMPLE_RATE {
     val(coverage)
 
     output:
-
     tuple val(meta), env(SAMPLE_RATE), env(SAMPLED_NUM_READS),   emit: downsampled_rate
-	  env(SAMPLED_NUM_READS)                                   ,   emit: number_to_sample
+	env(SAMPLED_NUM_READS),                                      emit: number_to_sample
+    path "versions.yml",                                         emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     """
@@ -28,11 +30,21 @@ process DOWNSAMPLE_RATE {
     # Calculate number of reads
     NUM_READS=\$(zcat ${reads[0]}|awk 'END {print NR/4}')
     SAMPLED_NUM_READS=\$(echo "\${NUM_READS} \${SAMPLE_RATE}" | awk '{x=\$1*\$2} END {printf "%.0f", x}')
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | cut -d' ' -f2)
+    END_VERSIONS
     """
 
     stub:
     """
     SAMPLE_RATE=1
     SAMPLED_NUM_READS=1000
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | cut -d' ' -f2)
+    END_VERSIONS
     """
 }

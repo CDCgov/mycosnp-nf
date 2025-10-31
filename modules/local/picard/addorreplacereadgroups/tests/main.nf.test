@@ -1,12 +1,13 @@
 nextflow_process {
 
     name "Test Process PICARD_ADDORREPLACEREADGROUPS (local)"
-    tag "modules_local"
-    tag "modules"
-    tag "picard"
-    tag "addorreplacereadgroups"
     script "../main.nf"
     process "PICARD_ADDORREPLACEREADGROUPS"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "picard"
+    tag "picard/addorreplacereadgroups"
 
     test("Replace RGs from meta when ext.args empty") {
 
@@ -30,8 +31,6 @@ nextflow_process {
     }
 
     test("Respect ext.args if set") {
-
-        config "./nextflow.config"
 
         when {
             process {

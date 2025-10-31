@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-    nf-core/mycosnp
+    CDCgov/mycosnp-nf
 ========================================================================================
     Github : https://github.com/CDCgov/mycosnp-nf
     Wiki   : https://github.com/CDCgov/mycosnp-nf/wiki
@@ -16,7 +16,7 @@ nextflow.enable.dsl = 2
 ========================================================================================
 */
 
-include { PRE_MYCOSNP_WF          } from './workflows/pre_mycosnp'
+include { PRE_MYCOSNP_WF          } from './workflows/premycosnp'
 include { MYCOSNP                 } from './workflows/mycosnp'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_mycosnp_pipeline/main'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_mycosnp_pipeline/main'
@@ -29,7 +29,9 @@ workflow PRE_MYCOSNP {
     samplesheet
 
     main:
-    PRE_MYCOSNP_WF(samplesheet)
+    PRE_MYCOSNP_WF (
+        samplesheet
+    )
 
     emit:
     versions = PRE_MYCOSNP_WF.out.versions
@@ -45,14 +47,16 @@ workflow PRE_MYCOSNP {
 
 
 //
-// WORKFLOW: Run main nf-core/mycosnp analysis pipeline
+// WORKFLOW: Run main CDCgov/mycosnp-nf analysis pipeline
 //
 workflow NFCORE_MYCOSNP {
     take:
     samplesheet // Define the input parameter
 
     main:
-    MYCOSNP (samplesheet)
+    MYCOSNP (
+        samplesheet
+    )
 
     emit:
     multiqc_report = MYCOSNP.out.multiqc_report

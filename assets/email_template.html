@@ -6,15 +6,15 @@
 
     <meta
       name="description"
-      content="ph-core/mycosnp: MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations."
+      content="CDCgov/mycosnp-nf: MycoSNP is a portable workflow for performing whole genome sequencing analysis of fungal organisms, including Candida auris. This method prepares the reference, performs quality control, and calls variants using a reference. MycoSNP generates several output files that are compatible with downstream analytic tools, such as those for used for phylogenetic tree-building and gene variant annotations."
     />
-    <title>ph-core/mycosnp Pipeline Report</title>
+    <title>CDCgov/mycosnp-nf Pipeline Report</title>
   </head>
   <body>
     <div style="font-family: Helvetica, Arial, sans-serif; padding: 30px; max-width: 800px; margin: 0 auto">
       <img src="cid:nfcorepipelinelogo" />
 
-      <h1>ph-core/mycosnp ${version}</h1>
+      <h1>CDCgov/mycosnp-nf ${version}</h1>
       <h2>Run Name: $runName</h2>
 
       <% if (!success){ out << """
@@ -29,7 +29,7 @@
           border-radius: 4px;
         "
       >
-        <h4 style="margin-top: 0; color: inherit">ph-core/mycosnp execution completed unsuccessfully!</h4>
+        <h4 style="margin-top: 0; color: inherit">CDCgov/mycosnp-nf execution completed unsuccessfully!</h4>
         <p>The exit status of the task that caused the workflow execution to fail was: <code>$exitStatus</code>.</p>
         <p>The full error message was:</p>
         <pre style="white-space: pre-wrap; overflow: visible; margin-bottom: 0">${errorReport}</pre>
@@ -46,7 +46,7 @@
           border-radius: 4px;
         "
       >
-        ph-core/mycosnp execution completed successfully!
+        CDCgov/mycosnp-nf execution completed successfully!
       </div>
       """ } %>
 
@@ -111,8 +111,8 @@ $commandLine</pre
         </tbody>
       </table>
 
-      <p>ph-core/mycosnp</p>
-      <p><a href="https://github.com/ph-core/mycosnp">https://github.com/ph-core/mycosnp</a></p>
+      <p>CDCgov/mycosnp-nf</p>
+      <p><a href="https://github.com/CDCgov/mycosnp-nf">https://github.com/CDCgov/mycosnp-nf</a></p>
     </div>
   </body>
 </html>

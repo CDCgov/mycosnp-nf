@@ -33,124 +33,131 @@ workflow BWA_PREPROCESS {
     ref_fai   // channel: tuple val(meta), path(fai)
     ref_bwa   // channel: tuple val(meta), path(bwa)
     reads     // channel: [ val(meta), [ fastq ] ]
+    coverage  // val: desired coverage for downsampling (0 = no downsampling)
 
     main:
     ch_versions           = Channel.empty()
-    ch_alignment          = Channel.empty()
-    ch_alignment_index    = Channel.empty()
-    ch_alignment_combined = Channel.empty()
-    ch_seq_samplerate     = Channel.empty()
 
+    SEQKIT_PAIR (
+        reads
+    )
+    ch_versions = ch_versions.mix(SEQKIT_PAIR.out.versions)
 
-    SEQKIT_PAIR(reads)
-
-    if (params.coverage == 0) {
-        FAQCS(SEQKIT_PAIR.out.reads)
-        }
+    if (coverage == 0) {
+        FAQCS (
+            SEQKIT_PAIR.out.reads
+        )
+        ch_versions = ch_versions.mix(FAQCS.out.versions)
+    }
     else {
         // DOWNSAMPLE_RATE expects a plain path for reference_fasta
-        DOWNSAMPLE_RATE(SEQKIT_PAIR.out.reads, ref_fasta.map{ meta, fa -> fa }, params.coverage)
+        DOWNSAMPLE_RATE (
+            SEQKIT_PAIR.out.reads,
+            ref_fasta.map{ meta, fa -> fa },
+            coverage
+        )
+        ch_versions = ch_versions.mix(DOWNSAMPLE_RATE.out.versions)
 
         ch_seq_samplerate = SEQKIT_PAIR.out.reads.join(
-            DOWNSAMPLE_RATE.out.downsampled_rate.map{
-                meta, sr, snr -> [ meta, snr]
-                }
-            )
-
-        // breakup file list into individual rows for processing
-        ch_seq_samplerate
-            .flatMap { meta, reads_list, size ->
-                def (fastq1, fastq2) = reads_list
-                [
-                    tuple(meta, fastq1 ,size),
-                    tuple(meta, fastq2, size)
-                ]
+            DOWNSAMPLE_RATE.out.downsampled_rate.map {
+                meta, sr, snr -> [ meta, snr ]
             }
-            .set { ch_seq_samplerate }
+        )
 
-        SEQTK_SAMPLE( ch_seq_samplerate )
+        SEQTK_SAMPLE(
+            ch_seq_samplerate
+        )
+        ch_versions = ch_versions.mix(SEQTK_SAMPLE.out.versions)
 
-        // convert R1/R2 mapped reads back into single sorted channel rows
-        ch_seq_sample_combine = SEQTK_SAMPLE.out.reads
-            .groupTuple( by: 0, size: 2, sort: true )
+        FAQCS (
+            SEQTK_SAMPLE.out.reads
+        )
+        ch_versions = ch_versions.mix(FAQCS.out.versions)
 
-        FAQCS( ch_seq_sample_combine )
-        }
-
+    }
     // Group trimmed reads by sample so BWA_MEM receives [meta, [R1,R2]]
     // Pass only reads + index path + sort flag as required by local BWA_MEM (3 inputs)
-    BWA_MEM(
+    BWA_MEM (
         FAQCS.out.reads,
         ref_bwa.map{ meta, idx -> idx },
         true
     )
+    ch_versions = ch_versions.mix(BWA_MEM.out.versions)
 
-    PICARD_MARKDUPLICATES( BWA_MEM.out.bam )
+    PICARD_MARKDUPLICATES (
+        BWA_MEM.out.bam
+    )
+    ch_versions = ch_versions.mix(PICARD_MARKDUPLICATES.out.versions)
 
-    PICARD_CLEANSAM(PICARD_MARKDUPLICATES.out.bam )
+    PICARD_CLEANSAM (
+        PICARD_MARKDUPLICATES.out.bam
+    )
+    ch_versions = ch_versions.mix(PICARD_CLEANSAM.out.versions)
 
-    PICARD_FIXMATEINFORMATION( PICARD_CLEANSAM.out.bam )
+    PICARD_FIXMATEINFORMATION (
+        PICARD_CLEANSAM.out.bam
+    )
+    ch_versions = ch_versions.mix(PICARD_FIXMATEINFORMATION.out.versions)
 
-    PICARD_ADDORREPLACEREADGROUPS( PICARD_FIXMATEINFORMATION.out.bam )
+    PICARD_ADDORREPLACEREADGROUPS (
+        PICARD_FIXMATEINFORMATION.out.bam
+    )
+    ch_versions = ch_versions.mix(PICARD_ADDORREPLACEREADGROUPS.out.versions)
 
-    SAMTOOLS_INDEX( PICARD_ADDORREPLACEREADGROUPS.out.bam )
+    SAMTOOLS_INDEX (
+        PICARD_ADDORREPLACEREADGROUPS.out.bam
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
 
-    FASTQC_POST( FAQCS.out.reads )
+    FASTQC_POST (
+        FAQCS.out.reads
+    )
+    ch_versions = ch_versions.mix(FASTQC_POST.out.versions)
 
-    QUALIMAP_BAMQC(
+    QUALIMAP_BAMQC (
         PICARD_ADDORREPLACEREADGROUPS.out.bam,
         []
     )
+    ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions)
 
     ch_alignment_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam
         .join( SAMTOOLS_INDEX.out.bai )
 
-    SAMTOOLS_STATS    ( ch_alignment_combined, ref_fasta )
+    SAMTOOLS_STATS (
+        ch_alignment_combined,
+        ref_fasta
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_STATS.out.versions)
 
-    SAMTOOLS_FLAGSTAT ( ch_alignment_combined )
+    SAMTOOLS_FLAGSTAT (
+        ch_alignment_combined
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_FLAGSTAT.out.versions)
 
-    SAMTOOLS_IDXSTATS ( ch_alignment_combined )
+    SAMTOOLS_IDXSTATS (
+        ch_alignment_combined
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
 
     // Use the full TXT bundle from FAQCS to ensure all required qa.* inputs are staged for QC_REPORT
     ch_qcreport_input = FAQCS.out.txt.join(QUALIMAP_BAMQC.out.results)
 
-    QC_REPORT(ch_qcreport_input, ref_fasta.map{ meta, fasta -> fasta })
-
-    ch_versions = ch_versions.mix(
-        SEQKIT_PAIR.out.versions,
-        FAQCS.out.versions,
-        BWA_MEM.out.versions,
-        PICARD_MARKDUPLICATES.out.versions,
-        PICARD_CLEANSAM.out.versions,
-        PICARD_FIXMATEINFORMATION.out.versions,
-        PICARD_ADDORREPLACEREADGROUPS.out.versions,
-        SAMTOOLS_INDEX.out.versions,
-        FASTQC_POST.out.versions,
-        SAMTOOLS_STATS.out.versions,
-        QUALIMAP_BAMQC.out.versions,
-        QC_REPORT.out.versions,
-        SAMTOOLS_IDXSTATS.out.versions,
-        SAMTOOLS_FLAGSTAT.out.versions
+    QC_REPORT (
+        ch_qcreport_input,
+        ref_fasta.map{ meta, fasta -> fasta }
     )
-
-    if (params.coverage != 0) {
-        ch_versions = ch_versions.mix(SEQTK_SAMPLE.out.versions)
-    }
-
-    ch_alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam
-    ch_alignment_index    = SAMTOOLS_INDEX.out.bai
-    ch_qcreport           = QC_REPORT.out.qc_line
+    ch_versions = ch_versions.mix(QC_REPORT.out.versions)
 
     emit:
-    alignment          = ch_alignment                    // channel: [ val(meta), bam ]
-    alignment_index    = ch_alignment_index              // channel: [ val(meta), bai ]
-    alignment_combined = ch_alignment_combined           // channel: [ val(meta), bam, bai ]
-    qualimap           = QUALIMAP_BAMQC.out.results      // channel: [ val(meta), results ]
-    stats              = SAMTOOLS_STATS.out.stats        // channel: [ val(meta), stats ]
-    flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat  // channel: [ val(meta), flagstat ]
-    idxstats           = SAMTOOLS_IDXSTATS.out.idxstats  // channel: [ val(meta), idxstats ]
-    post_qc            = FASTQC_POST.out.zip             // channel: [ val(meta), zip ]
-    versions           = ch_versions                     // channel: [ ch_versions ]
-    qc_lines           = ch_qcreport                     // channel: [ qc_line ]
+    alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam  // channel: [ val(meta), bam ]
+    alignment_index    = SAMTOOLS_INDEX.out.bai                 // channel: [ val(meta), bai ]
+    alignment_combined = ch_alignment_combined                  // channel: [ val(meta), bam, bai ]
+    qualimap           = QUALIMAP_BAMQC.out.results             // channel: [ val(meta), results ]
+    stats              = SAMTOOLS_STATS.out.stats               // channel: [ val(meta), stats ]
+    flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat         // channel: [ val(meta), flagstat ]
+    idxstats           = SAMTOOLS_IDXSTATS.out.idxstats         // channel: [ val(meta), idxstats ]
+    post_qc            = FASTQC_POST.out.zip                    // channel: [ val(meta), zip ]
+    versions           = ch_versions                            // channel: [ ch_versions ]
+    qc_lines           = QC_REPORT.out.qc_line                  // channel: [ qc_line ]
 
 }

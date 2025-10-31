@@ -15,6 +15,10 @@ process MICROREACTSHAPES {
 
     output:
     tuple val(meta), path('microreact_metadata.csv'), emit: shapes
+    path "versions.yml",                              emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
@@ -22,10 +26,19 @@ process MICROREACTSHAPES {
     """
     update_microreact_shapes.py $MicroreactMetadata -t $params.test_samples -g $GeolocationData
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
     """
 
     stub:
     """
     touch microreact_metadata.csv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
     """
 }

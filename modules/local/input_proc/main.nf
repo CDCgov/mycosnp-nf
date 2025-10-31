@@ -12,6 +12,9 @@ process INPUT_PROC {
     tuple val(meta), path("reference.fasta", includeInputs: true), path("reference.copy.fasta"), emit: ref_fasta
     path "versions.yml"                                                                        , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     meta = ["id": 'reference']
     def is_compressed = false

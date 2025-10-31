@@ -3,9 +3,12 @@ nextflow_process {
     name "Test Process INPUT_PROC"
     script "../main.nf"
     process "INPUT_PROC"
-    tag "INPUT_PROC"
+
+    tag "modules"
+    tag "input_proc"
 
     test("INPUT_PROC") {
+
         when {
             process {
                 """

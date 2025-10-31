@@ -14,6 +14,9 @@ process COORDSTOBED {
     tuple val(meta), path("masked_ref.bed"), emit: bed
     path "versions.yml", emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "masked_ref"
@@ -37,7 +40,6 @@ process COORDSTOBED {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         mummer: \$(nucmer --version 2>&1 | grep "version" | sed 's/^.*version //')
-
     END_VERSIONS
     """
 }

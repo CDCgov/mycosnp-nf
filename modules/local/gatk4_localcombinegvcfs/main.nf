@@ -8,18 +8,18 @@ process GATK4_LOCALCOMBINEGVCFS {
         'quay.io/biocontainers/gatk4:4.5.0.0--py36hdfd78af_0' }"
 
     input:
-    val meta
-    path vcf
-    path fasta
-    path fasta_fai
-    path fasta_dict
+    val(meta)
+    path(vcf)
+    path(fasta)
+    path(fasta_fai)
+    path(fasta_dict)
 
     output:
 
-    tuple val(meta), path("*.combined.g.vcf.gz"), path("*.combined.g.vcf.gz.tbi")   , emit: combined_gvcf
-    path("*.combined.g.vcf.gz")                                                     , emit: gvcf
-    path("*.combined.g.vcf.gz.tbi")                                                 , emit: tbi
-    path "versions.yml"                                                             , emit: versions
+    tuple val(meta), path("*.combined.g.vcf.gz"), path("*.combined.g.vcf.gz.tbi"), emit: combined_gvcf
+    path("*.combined.g.vcf.gz"),                                                   emit: gvcf
+    path("*.combined.g.vcf.gz.tbi"),                                               emit: tbi
+    path("versions.yml"),                                                          emit: versions
 
     when:
     task.ext.when == null || task.ext.when

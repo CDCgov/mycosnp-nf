@@ -9,18 +9,20 @@ process GAMBIT_QUERY {
 
     input:
     tuple val(meta), path(assembly)
-    path db_file
-    path h5_files_dir
+    path(db_file)
+    path(h5_files_dir)
 
     output:
     tuple val(meta), path("*_gambit.csv"), emit: taxa
     path "versions.yml"                  , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def output_h5_file = "gambit_signatures.gs"
-
     """
     # Re-combine chunks of GAMBIT signature file
     > ${output_h5_file}  # Create or clear the combined signatures file

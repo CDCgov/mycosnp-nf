@@ -11,6 +11,10 @@ process LANE_MERGE {
 
     output:
     tuple val(meta), path("*.fastq.gz"), emit: reads
+    path "versions.yml",                 emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def reads_list = reads.collect { "'${it.name}'" }.join(' ')
@@ -55,13 +59,17 @@ process LANE_MERGE {
     } | pigz -p ${task.cpus} > "${prefix}_R2.fastq.gz" &
 
     wait
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
     """
 
     stub:
     def reads_list = reads.collect { "'${it.name}'" }.join(' ')
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-
     READS=(${reads_list})
     NUM_READS=\${#READS[@]}
 
@@ -73,5 +81,10 @@ process LANE_MERGE {
         echo -n | pigz -p ${task.cpus} > "${prefix}_R1.fastq.gz"
         echo -n | pigz -p ${task.cpus} > "${prefix}_R2.fastq.gz"
     fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
     """
 }

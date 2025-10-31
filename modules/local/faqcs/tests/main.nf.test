@@ -5,8 +5,7 @@ nextflow_process {
     process "FAQCS"
 
     tag "modules"
-    tag "modules/local/faqcs"
-    tag "FAQCS"
+    tag "faqcs"
 
     test("Single-end") {
 
@@ -61,8 +60,6 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                // { assert !process.out.reads_fail || process.out.reads_fail.size() > 0 },
-                // { assert !process.out.reads_unpaired || process.out.reads_unpaired.size() > 0 },
                 { assert process.out.statspdf.size() > 0 },
                 { assert snapshot(
                     process.out.reads,

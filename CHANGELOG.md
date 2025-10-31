@@ -1,28 +1,29 @@
 # CDCgov/mycosnp-nf: Changelog
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.6.2 - [05/18/2025]
+## v1.6.2 - [2025-05-18]
 
-### Fixed
+### `Fixed`
 
 - Docker permissions issue with GAMBIT container in some Linux environments (issue [#137](https://github.com/CDCgov/mycosnp-nf/issues/137))
 
-### Changed
+### `Changed`
 
 - Bumped GAMBIT fungal database from v0.2.0 to v1.0.0. See [GAMBIT'S documentation](https://theiagen.notion.site/GAMBIT-7c1376b861d0486abfbc316480046bdc#3f6610c81fbb4812b745234441514e12) for details about the databases.
 - Bumped GAMBIT version from v1.0.0 to v1.1.0. Database is now included with the repo in `assets/gambit_db/`. Signatures database in `assets/gambit_db/signatures/` (split into chunks so each chunks is below GitHub's file size limit of 100 MB and warning limit of 50 MB). See GAMBIT v1.1.0 [release notes](https://github.com/jlumpe/gambit/releases/tag/v1.1.0) for more info (no functional changes).
 
-## v1.6.1 - [05/09/2025]
+## v1.6.1 - [2025-05-09]
 
-### Changed
+### `Changed`
 
 - Switched Shovill container image to StaPH-B's Docker image (`quay.io/staphb/shovill:1.1.0-2022Dec`). Addresses issues with pulling image from Docker Hub (#134).
 - Reordered params in `nextflow_schema.json` to be more intuitive.
 
-## v1.6.0 - [04/21/2025]
+## v1.6.0 - [2025-04-21]
 
-### Added
+### `Added`
 
 - Added the "Pre-MycoSNP" workflow for quick fungal taxonomic classification and _Candida auris_ clade typing (using de novo assemblies)
   - Base workflow development by Jared Johnson [@DOH-JDJ0303](https://github.com/DOH-JDJ0303) (#119)
@@ -32,7 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Nextflow Tower / Seqera Cloud functionality, by Jared Johnson [@DOH-JDJ0303](https://github.com/DOH-JDJ0303) (#104)
 - Added FKS1 coordinates for a third hotspot region (single amino acid) associated with echinocandin resistance in _Candida auris_ (for the snpeffr report - `results/snpeff/combined_cauris_refB11205_fks1.csv`)
 
-### Changed
+### `Changed`
 
 - Bumped GATK version to 4.5.0.0
 - Changed SnpEff-related config to work with cloud, by Jared Johnson [@DOH-JDJ0303](https://github.com/DOH-JDJ0303) (#103)
@@ -41,45 +42,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Bumped [snpeffr](https://github.com/CDCgov/snpeffr) version to v1.1.1. The "mutation" column in the snpeffr report (`results/snpeff/combined_cauris_refB11205_fks1.csv`) can now contain a value of "undetermined". This occurs when GATK identifies a variant in the individual VCF file for an isolate, but then the identified variant is lost in the subsequent step when GATK creates a merged VCF file that includes all isolates.
   - Snpeffr v1.1.1 updates by Mal Rajeev [@mrajeev08](https://github.com/mrajeev08)
 
-### Removed
+### `Removed`
 
 - Removed `--tmpdir` parameter and associated config in [nextflow.config](/nextflow.config)
 
-### Fixed
+### `Fixed`
 
 - Fixed _Candida auris_ FKS1 hotspot 1 coordinates in [nextflow.config](/nextflow.config), to include the first nucleotide of F635, and remove two extra nucleotides at the end
 
-### Deprecated
+### `Deprecated`
 
 - Nextflow `-entry` parameter to run specific workflow is deprecated. Use MycoSNP's `--workflow` parameter instead.
 
-## v1.5 Wingardium Leviosa - [05/09/2023]
+## v1.5 Wingardium Leviosa - [2023-05-09]
 
 - Re-released on 12/12/2024 following #126 (added empty tmp directory - no changes in functionality)
 - Re-released on 09/03/2024 following #122 (disabled snpEff logging - no changes in functionality)
 
-**Added**
+### `Fixed`
 
 - Added new subworkflow for `snpEff` variant annotation
 - Added `Quicksnp` module which creates a neighbor-joining tree with SNP distances on branches
 
-**Fixed**
+### `Fixed`
 
 - Corrected an issue with downsampling read count calculations
 
-**Dependencies**
-
-- _N/A_
-
-**Deprecated**
+### `Deprecated`
 
 - Removed `rate` parameter to use `coverage` instead
 
-**TODO**
+### `TODO`
 
 - Update file naming for snpEff mutations file
 
-## v1.4 Tremella Snidget - [06/27/2022]
+## v1.4 Tremella Snidget - [2022-06-27]
 
 ### `Added`
 
@@ -89,35 +86,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Changed default --min-depth to 10
 
-### `Dependencies`
-
-### `Deprecated`
-
--
-
-### `TODO`
-
-- ***
-
-## v1.3 Musky Albus - [06/09/2022]
-
-### `Added`
+## v1.3 Musky Albus - [2022-06-09]
 
 ### `Fixed`
 
 - Changed downsample strategy in `modules/local/downsample_rate.nf` that was causing differences with results from geneflow version. Downsample rate now set at default 1 (closes #67)
 
-### `Dependencies`
-
-### `Deprecated`
-
--
-
-### `TODO`
-
-- ***
-
-## v1.2 Expecto Patronum - [05/11/2022]
+## v1.2 Expecto Patronum - [2022-05-11]
 
 ### `Added`
 
@@ -126,7 +101,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Updated `qc_report.txt` to include coverage **mean depth** and **reads mapped**.
 - Positions masked `(N)` based on **DP** & Added functionality to use `min_depth` (Default 50).
 - Change `test` profile to include `min_depth = 2` so it will run to completion.
--
 
 ### `Fixed`
 
@@ -136,21 +110,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Set full vcf consensus file to debug output
 - Remove part nf-core branding
 
-### `Dependencies`
-
-### `Deprecated`
-
--
-
 ### `TODO`
 
 - Update logo
 
----
-
-## v1.1 Candid Aura - [04/01/2022]
-
-### `Added`
+## v1.1 Candid Aura - [2022-04-01]
 
 ### `Fixed`
 
@@ -163,8 +127,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Output file `combined/phylogeny/raxmlng/output.raxml.bestTree` -> `combined/phylogeny/raxmlng/raxmlng_bestTree.nh`
 - Output file `combined/phylogeny/raxmlng/output.raxml.support` -> `combined/phylogeny/raxmlng/raxmlng_support.nh`
 
-### `Dependencies`
-
 ### `Deprecated`
 
 - `/results/qc` output dir removed
@@ -173,9 +135,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Continue improving output docs
 
----
-
-## v1.0 Espresso Myconaut - [03/25/2022]
+## v1.0 Espresso Myconaut - [2022-03-25]
 
 Initial release of CDCgov/mycosnp-nf, created with the [nf-core](https://nf-co.re/) template.
 
@@ -189,10 +149,6 @@ Initial release of CDCgov/mycosnp-nf, created with the [nf-core](https://nf-co.r
 - Skip combined variant analysis (run reference prep and mapping) `skip_combined_analysis`
 - Skip samples capability `--skip_samples`
 - Skip samples file capability `--skip_samples_file`
-
-### `Fixed`
-
--
 
 ### `Dependencies`
 

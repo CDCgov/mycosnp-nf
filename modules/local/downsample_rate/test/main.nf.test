@@ -5,8 +5,7 @@ nextflow_process {
     process "DOWNSAMPLE_RATE"
 
     tag "modules"
-    tag "modules/local/downsample_rate"
-    tag "DOWNSAMPLE_RATE"
+    tag "downsample_rate"
 
     test("DOWNSAMPLE_RATE - down sample reads from a fastq file") {
 

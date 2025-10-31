@@ -1,14 +1,15 @@
 nextflow_process {
+
     name "Test Process MICROREACTSHAPES"
     script "../main.nf"
     process "MICROREACTSHAPES"
+    config "./nextflow.config"
 
     tag "modules"
-    tag "modules/local/microreactshapes"
     tag "microreactshapes"
 
     test("MICROREACTSHAPES - Output Validation") {
-        config "./nextflow.config"
+
         when {
             process {
                  """
@@ -38,8 +39,9 @@ nextflow_process {
     }
 
     test("MICROREACTSHAPES - stub test") {
+
         options "-stub"
-        config "./nextflow.config"
+
         when {
             process {
                 """

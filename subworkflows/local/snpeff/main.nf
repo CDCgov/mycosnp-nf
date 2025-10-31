@@ -9,54 +9,36 @@ include { SNPEFFR			               } from '../../../modules/local/snpeffr/main'
 workflow SNPEFF {
     take:
     vcf                                             // channel: [val(meta), [ vcf ] ]
-    species
+    species                                         // val: species name for SnpEff
     snpeffcache                                     // channel: path to snpeff cache directory
+    ref_name                                        // val: reference name for output naming in snpeffr
 
     main:
-
     ch_versions = Channel.empty()
-
-    //
-    //SNPEFF
-    //
 
     SNPEFF_ANN (
         vcf,
         species,
         [[], snpeffcache]
     )
-    ch_versions      = ch_versions.mix(SNPEFF_ANN.out.versions.first())
+    ch_versions = ch_versions.mix(SNPEFF_ANN.out.versions.first())
 
-    //
     //ZIP & INDEXING VCF
-    //
-
     TABIX_BGZIPTABIX (
         SNPEFF_ANN.out.vcf
     )
-    // Derive gzipped VCF path from either tbi or csi outputs
-    ch_tabix_tbi     = TABIX_BGZIPTABIX.out.gz_tbi
-    ch_tabix_vcf     = TABIX_BGZIPTABIX.out.gz_tbi
-                            .mix(TABIX_BGZIPTABIX.out.gz_csi)
-                            .map { meta, gz, idx -> [ meta, gz ] }
-    ch_versions      = ch_versions.mix(TABIX_BGZIPTABIX.out.versions.first())
+    ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
+
+    ch_tabix_vcf = TABIX_BGZIPTABIX.out.gz_tbi
+        .mix( TABIX_BGZIPTABIX.out.gz_csi )
+        .map { meta, gz, idx -> [ meta, gz ] }
 
     SNPEFFR (
-        ch_tabix_vcf
+        ch_tabix_vcf,
+        ref_name
     )
-
-    ch_snpeffr_csv    = SNPEFFR.out.report
-    ch_versions       = ch_versions.mix(SNPEFFR.out.versions.first())
+    ch_versions = ch_versions.mix(SNPEFFR.out.versions)
 
     emit:
-    ch_tabix_tbi     = TABIX_BGZIPTABIX.out.gz_tbi
-    ch_tabix_vcf     = TABIX_BGZIPTABIX.out.gz_tbi
-                                    .mix(TABIX_BGZIPTABIX.out.gz_csi)
-                                    .map { meta, gz, idx -> [ meta, gz ] }
-    txt              = SNPEFF_ANN.out.genes_txt        // channel: [ val(meta), [ txt ] ]
-    html             = SNPEFF_ANN.out.summary_html     // channel: [ val(meta), [ html ] ]
-    vcf_tbi          = ch_tabix_tbi                    // channel: [ val(meta), [ tbi ] ]
-    vcf              = ch_tabix_vcf                    // channel: [ val(meta), [ gz ] ]
-    versions         = ch_versions                     // channel: [ versions.yml ]
-
+    versions = ch_versions // channel: [ versions.yml ]
 }

@@ -5,8 +5,7 @@ nextflow_process {
     process "GATK4_LOCALCOMBINEGVCFS"
 
     tag "modules"
-    tag "modules/local/gatk4_localcombinegvcfs"
-    tag "GATK4_LOCALCOMBINEGVCFS"
+    tag "gatk4_localcombinegvcfs"
 
     test("GATK4_LOCALCOMBINEGVCFS - script") {
 
@@ -28,10 +27,9 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(
-                    process.out.versions,
-                    process.out.tbi ).match() },
-                { assert process.out.gvcf.size() > 0 }
+                { assert snapshot( process.out.versions ).match() },
+                { assert process.out.gvcf.size() > 0 },
+                { assert process.out.tbi.size() > 0 }
 
             )
         }

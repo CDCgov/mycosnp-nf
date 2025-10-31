@@ -12,8 +12,8 @@ process SPLIT_VCF {
 
     output:
     tuple val(meta), path("*.vcf.gz"), emit: vcfs
-    tuple val(meta), path("*.txt"), emit: txt
-    path "versions.yml"           , emit: versions
+    tuple val(meta), path("*.txt"),    emit: txt
+    path "versions.yml",               emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -37,11 +37,10 @@ process SPLIT_VCF {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
+    touch ${prefix}.vcf.gz
     touch samplelist.txt
-    echo -n | gzip > "${prefix}.vcf.gz"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

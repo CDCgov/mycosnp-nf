@@ -5,8 +5,7 @@ nextflow_process {
     process "QUICKSNP"
 
     tag "modules"
-    tag "modules/local/quicksnp"
-    tag "QUICKSNP"
+    tag "quicksnp"
 
     test("QUICKSNP - create nwk file based on distance matrix TSV file") {
 

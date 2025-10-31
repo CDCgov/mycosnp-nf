@@ -52,6 +52,13 @@ output:
     - SAMPLED_NUM_READS:
         type: value
         description: Number of reads to sample for target coverage
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
 authors:
   - "AMD Platform"
 maintainers:

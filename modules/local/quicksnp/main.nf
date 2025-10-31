@@ -12,7 +12,7 @@ process QUICKSNP {
 
     output:
     tuple val(meta), path("*.nwk"), emit: quicksnp_tree
-    path  "versions.yml"          , emit: versions
+    path "versions.yml",            emit: versions
 
     when:
     task.ext.when == null || task.ext.when

@@ -13,6 +13,14 @@ lint:
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
+    - .github/workflows/branch.yml
+    - .github/actions/get-shards/action.yml
+    - .github/actions/nf-test/action.yml
+    - assets/nf-core-mycosnp-nf_logo_light.png
+    - docs/images/nf-core-mycosnp-nf_logo_light.png
+    - docs/images/nf-core-mycosnp-nf_logo_dark.png
+    - ro-crate-metadata.json
+    - .github/workflows/linting_comment.yml
   files_unchanged:
     - .prettierignore
     - CODE_OF_CONDUCT.md
@@ -22,19 +30,17 @@ lint:
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - .github/CONTRIBUTING.md
     - .github/PULL_REQUEST_TEMPLATE.md
-    - assets/email_template.txt
     - docs/README.md
-    - assets/email_template.html
     - .github/workflows/linting.yml
+    - assets/email_template.html
+    - assets/email_template.txt
+    - assets/sendmail_template.txt
+    - .github/workflows/branch.yml
   multiqc_config:
     - report_comment
   nextflow_config:
     - manifest.name
     - manifest.homePage
-    - validation.help.beforeText
-    - validation.help.afterText
-    - validation.summary.beforeText
-    - validation.summary.afterText
 nf_core_version: 3.3.2
 repository_type: pipeline
 template:
@@ -48,11 +54,11 @@ template:
   force: false
   is_nfcore: false
   name: mycosnp
-  org: ph-core
+  org: CDCgov
   outdir: .
   skip_features:
     - igenomes
     - email
     - adaptivecard
     - slackreport
-  version: 1.6.4dev
+  version: 1.6.4

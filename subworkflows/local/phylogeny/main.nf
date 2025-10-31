@@ -13,59 +13,82 @@ workflow CREATE_PHYLOGENY {
     take:
     fasta                 // channel: aligned pseudogenomes or filtered version
     constant_sites_string // val: string of constant sites A,C,G,T
-    snpdists_tsv
+    snpdists_tsv          // channel: tsv of SNP distances
+    rapidnj               // val: whether to run rapidnj
+    fasttree              // val: whether to run fasttree
+    iqtree                // val: whether to run iqtree
+    raxmlng               // val: whether to run raxmlng
+    amdp                  // val: whether to run amdp
+    metadata_csv          // val: metadata CSV file for microreact shapes
+    geolocation_csv       // val: geolocation CSV file for microreact shapes
+
 
     main:
     ch_versions = Channel.empty()
 
     rapidnj_tree = Channel.empty()
-
-    if (params.rapidnj) {
-        RAPIDNJ(fasta)
-        rapidnj_tree = RAPIDNJ.out.phylogeny
+    if (rapidnj) {
+        RAPIDNJ (
+            fasta
+        )
         ch_versions = ch_versions.mix(RAPIDNJ.out.versions)
+
+        rapidnj_tree = RAPIDNJ.out.phylogeny
     }
 
     fasttree_tree = Channel.empty()
-
-    if (params.fasttree) {
-        FASTTREE(fasta)
-        fasttree_tree = FASTTREE.out.phylogeny
+    if (fasttree) {
+        FASTTREE (
+            fasta
+        )
         ch_versions = ch_versions.mix(FASTTREE.out.versions)
+
+        fasttree_tree = FASTTREE.out.phylogeny
     }
 
     iqtree_tree = Channel.empty()
-    if (params.iqtree) {
-        IQTREE([[],fasta,[]], [], [], [], [], [], [], [], [], [], [], [], [])
-        iqtree_tree = IQTREE.out.phylogeny
+    if (iqtree) {
+        IQTREE (
+            [ [], fasta, [] ], [], [], [], [], [], [], [], [], [], [], [], []
+        )
         ch_versions = ch_versions.mix(IQTREE.out.versions)
+
+        iqtree_tree = IQTREE.out.phylogeny
     }
 
     raxmlng_tree = Channel.empty()
-    if (params.raxmlng) {
-        RAXMLNG([[],fasta,'GTR+G'])
-        raxmlng_tree = RAXMLNG.out.phylogeny
+    if (raxmlng) {
+        RAXMLNG (
+            [ [],fasta, 'GTR+G' ]
+        )
         ch_versions = ch_versions.mix(RAXMLNG.out.versions)
+
+        raxmlng_tree = RAXMLNG.out.phylogeny
     }
 
-    quicksnp_tree = Channel.empty()
-    QUICKSNP(snpdists_tsv)
+    QUICKSNP (
+        snpdists_tsv
+    )
     ch_versions = ch_versions.mix(QUICKSNP.out.versions)
 
-    quicksnp_tree = QUICKSNP.out.quicksnp_tree
-
     shapes = Channel.empty()
-    if (params.amdp) {
-        MICROREACTSHAPES(quicksnp_tree, params.metadata_csv, params.geolocation_csv)
+    if (amdp) {
+        MICROREACTSHAPES (
+            QUICKSNP.out.quicksnp_tree,
+            metadata_csv,
+            geolocation_csv
+        )
+        ch_versions = ch_versions.mix(MICROREACTSHAPES.out.versions)
+
         shapes = MICROREACTSHAPES.out.shapes
     }
 
     emit:
-    rapidnj_tree      = rapidnj_tree     // channel: [ phylogeny ]
-    fasttree_tree     = fasttree_tree    // channel: [ phylogeny ]
-    iqtree_tree       = iqtree_tree      // channel: [ phylogeny ]
-    raxmlng_tree      = raxmlng_tree     // channel: [ phylogeny ]
-    quicksnp_tree     = quicksnp_tree    // channel: [ phylogeny ]
-    shapes            = shapes           // channel: [ phylogeny  ]
-    versions          = ch_versions      // channel: [ ch_versions ]
+    rapidnj_tree  = rapidnj_tree                  // channel: [ phylogeny ]
+    fasttree_tree = fasttree_tree                 // channel: [ phylogeny ]
+    iqtree_tree   = iqtree_tree                   // channel: [ phylogeny ]
+    raxmlng_tree  = raxmlng_tree                  // channel: [ phylogeny ]
+    quicksnp_tree = QUICKSNP.out.quicksnp_tree    // channel: [ phylogeny ]
+    shapes        = shapes                        // channel: [ phylogeny  ]
+    versions      = ch_versions                   // channel: [ ch_versions ]
 }

@@ -5,8 +5,7 @@ nextflow_process {
     process "LANE_MERGE"
 
     tag "modules"
-    tag "modules/local/lane_merge"
-    tag "LANE_MERGE"
+    tag "lane_merge"
 
     test("LANE_MERGE - single file") {
 

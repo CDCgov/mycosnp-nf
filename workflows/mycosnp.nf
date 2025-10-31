@@ -80,15 +80,13 @@ include { QC_PARSER                   } from '../modules/local/qc_parser/main'
 
 // Info required for completion email and summary
 
-
-
 workflow MYCOSNP {
 
     take:
-    samplesheet         // New samplesheet combines ingestion for fastq reads, sra accessions, and vcf files for phylogeny
+    samplesheet // New samplesheet combines ingestion for fastq reads, sra accessions, and vcf files for phylogeny
 
     main:
-    if (!params.fasta && !params.ref_dir && !params.ref_masked_fasta && !params.ref_fai && !params.ref_bwa && !params.ref_dict) {
+    if ( !params.fasta && !params.ref_dir && !params.ref_masked_fasta && !params.ref_fai && !params.ref_bwa && !params.ref_dict) {
         log.error "Genome fasta or index files not specified with e.g. '--fasta genome.fa', '--ref_dir genome/' or via a detectable config file."
         System.exit(1)
     }
@@ -98,25 +96,26 @@ workflow MYCOSNP {
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    def ch_all_reads    = Channel.empty()
-    def ch_sra_list     = Channel.empty()
-    def ch_vcf_files    = Channel.empty()
-    def ch_vcfidx_files = Channel.empty()
-    INPUT_CHECK( params.input )
-    ch_all_reads    = ch_all_reads.mix(INPUT_CHECK.out.ch_fastq_reads)          // channel: [ val(meta), [ reads ] ]
-    ch_sra_list     = ch_sra_list.mix (INPUT_CHECK.out.ch_sra_list)             // channel: [ val(meta), sra_id    ]
-    ch_vcf_files    = ch_vcf_files.mix(INPUT_CHECK.out.ch_vcf_files)            // channel: [ val(meta), vcf       ]
-    ch_vcfidx_files = ch_vcfidx_files.mix(INPUT_CHECK.out.ch_vcfidx_files)      // channel: [ val(meta), tbi       ]
-    ch_versions     = ch_versions.mix (INPUT_CHECK.out.versions)                // channel: [ versions.yml         ]
 
+    INPUT_CHECK (
+        params.input
+    )
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
+    ch_all_reads    = INPUT_CHECK.out.ch_fastq_reads  // channel: [ val(meta), [ reads ] ]
+    ch_sra_list     = INPUT_CHECK.out.ch_sra_list     // channel: [ val(meta), sra_id    ]
+    ch_vcf_files    = INPUT_CHECK.out.ch_vcf_files    // channel: [ val(meta), vcf       ]
+    ch_vcfidx_files = INPUT_CHECK.out.ch_vcfidx_files // channel: [ val(meta), tbi       ]
 
     //
     // SUBWORKFLOW: Fetch FASTQ reads from input SRA accession IDs, mix with fastq reads from samplesheet
     //
-    SRA_FASTQ_SRATOOLS(ch_sra_list)
-    ch_all_reads = ch_all_reads.mix(SRA_FASTQ_SRATOOLS.out.reads)
-    ch_versions  = ch_versions.mix (SRA_FASTQ_SRATOOLS.out.versions)
+    SRA_FASTQ_SRATOOLS (
+        ch_sra_list
+    )
+    ch_versions  = ch_versions.mix(SRA_FASTQ_SRATOOLS.out.versions)
 
+    ch_all_reads = ch_all_reads.mix(SRA_FASTQ_SRATOOLS.out.reads)
 
 /*
 ========================================================================================
@@ -139,19 +138,8 @@ workflow MYCOSNP {
     ref_bwa                     = null
     ref_dict                    = null
 */
-    // Reference channels (tuple val(meta), path(file)) for modules expecting meta-tagged inputs
-    def ch_ref_fasta = Channel.empty()
-    def ch_ref_fai   = Channel.empty()
-    def ch_ref_bwa   = Channel.empty()
-    def ch_ref_dict  = Channel.empty()
-    // Path-only channels for local processes expecting plain paths
-    def ref_fasta_only = Channel.empty()
-    def ref_fai_only   = Channel.empty()
-    def ref_dict_only  = Channel.empty()
 
-
-    if(params.ref_dir != null)
-    {
+    if(params.ref_dir != null) {
         def meta_ref = [ id: 'reference' ]
         ch_ref_fasta = Channel.fromPath(params.ref_dir + "/masked/*.fa*", checkIfExists:true)
                              .first()
@@ -166,39 +154,37 @@ workflow MYCOSNP {
                              .first()
                              .map { p -> [ meta_ref, p ] }
 
-    } else if (params.ref_masked_fasta && params.ref_fai && params.ref_bwa && params.ref_dict )
-    {
+    } else if ( params.ref_masked_fasta && params.ref_fai && params.ref_bwa && params.ref_dict ) {
         def meta_ref = [ id: 'reference' ]
-        if(params.ref_masked_fasta != null)
-        {
+        if(params.ref_masked_fasta != null) {
             ch_ref_fasta  = Channel.fromPath(params.ref_masked_fasta, checkIfExists:true).first().map { p -> [ meta_ref, p ] }
         }
-        if(params.ref_fai != null)
-        {
+
+        if(params.ref_fai != null) {
             ch_ref_fai    = Channel.fromPath(params.ref_fai, checkIfExists:true).first().map { p -> [ meta_ref, p ] }
         }
-        if(params.ref_bwa != null)
-        {
+
+        if(params.ref_bwa != null) {
             ch_ref_bwa    = Channel.fromPath(params.ref_bwa, checkIfExists:true, type: 'dir').first().map { p -> [ meta_ref, p ] }
         }
-        if(params.ref_dict != null)
-        {
+
+        if(params.ref_dict != null) {
             ch_ref_dict   = Channel.fromPath(params.ref_dict, checkIfExists:true).first().map { p -> [ meta_ref, p ] }
         }
-    }
-    else if (params.fasta)
-    {
+    } else if (params.fasta) {
         ch_fasta = file(params.fasta)
-        BWA_REFERENCE(ch_fasta)
-
+        BWA_REFERENCE (
+            ch_fasta,
+            params.mask
+        )
         ch_versions = ch_versions.mix(BWA_REFERENCE.out.versions)
+
         // Use tuple channels directly from reference subworkflow
         ch_ref_fasta = BWA_REFERENCE.out.masked_fasta
         ch_ref_fai   = BWA_REFERENCE.out.samtools_index
         ch_ref_bwa   = BWA_REFERENCE.out.bwa_index
         ch_ref_dict  = BWA_REFERENCE.out.dict
-    } else
-    {
+    } else {
         exit 1, 'Input reference fasta or index files not specified!'
     }
 
@@ -206,7 +192,6 @@ workflow MYCOSNP {
     ref_fasta_only = ch_ref_fasta.map{ meta1, fa1 -> fa1 }.first()
     ref_fai_only   = ch_ref_fai.map{ meta1, fai -> fai }.first()
     ref_dict_only  = ch_ref_dict.map{ meta1, dict -> dict }.first()
-
 
 /*
 ========================================================================================
@@ -226,7 +211,13 @@ workflow MYCOSNP {
 ========================================================================================
 */
     // Pass reference channels separately to BWA_PREPROCESS
-    BWA_PREPROCESS( ch_ref_fasta, ch_ref_fai, ch_ref_bwa, ch_all_reads)
+    BWA_PREPROCESS (
+        ch_ref_fasta,
+        ch_ref_fai,
+        ch_ref_bwa,
+        ch_all_reads,
+        params.coverage
+    )
     ch_versions = ch_versions.mix(BWA_PREPROCESS.out.versions)
 
     // MODULE: QC_REPORTSHEET
@@ -237,7 +228,10 @@ workflow MYCOSNP {
 
     // Conditionally run QC_PARSER if param.amdp is true
     if (params.amdp) {
-        QC_PARSER(QC_REPORTSHEET.out.qc_reportsheet)
+        QC_PARSER (
+            QC_REPORTSHEET.out.qc_reportsheet
+        )
+        ch_versions  = ch_versions.mix(QC_PARSER.out.versions)
     }
 
 /*
@@ -258,7 +252,7 @@ workflow MYCOSNP {
 
     // Pad alignment tuple with placeholders for intervals and dragstr_model expected by the module's first input port
     def hc_align = BWA_PREPROCESS.out.alignment_combined.map { meta, bam, bai -> [ meta, bam, bai, [], [] ] }
-    GATK4_HAPLOTYPECALLER(
+    GATK4_HAPLOTYPECALLER (
         hc_align,
         ch_ref_fasta,
         ch_ref_fai,
@@ -268,15 +262,14 @@ workflow MYCOSNP {
     )
     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
-    if(! params.skip_combined_analysis)
-    {
+    if(! params.skip_combined_analysis) {
         ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{ meta, vcf ->[ vcf ] }.collect()
-        ch_vcf = ch_vcf.mix(
+        ch_vcf = ch_vcf.mix (
             ch_vcf_files.map{
                 meta, vcf ->[ vcf ]
             }.collect()
         )
-        ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map{ meta, idx ->[ idx ] }.collect()
+        ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map { meta, idx ->[ idx ] }.collect()
         ch_vcf_idx = ch_vcf_idx.mix(
             ch_vcfidx_files.map{
                 meta, idx ->[ idx ]
@@ -284,30 +277,37 @@ workflow MYCOSNP {
         )
         ch_vcfs = ch_vcf.mix(ch_vcf_idx).collect()
 
-        GATK4_LOCALCOMBINEGVCFS(
+        GATK4_LOCALCOMBINEGVCFS (
             [id:'combined', single_end:false],
             ch_vcfs,
             ref_fasta_only,
             ref_fai_only,
             ref_dict_only
         )
-
         ch_versions = ch_versions.mix(GATK4_LOCALCOMBINEGVCFS.out.versions)
 
-        GATK_VARIANTS(
+        GATK_VARIANTS (
             ref_fasta_only,
             ref_fai_only,
-            ch_ref_bwa.map{ m, b -> b }.first(),
+            ch_ref_bwa.map { m, b -> b }.first(),
             ref_dict_only,
-            GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf.map{meta, vcf, tbi->[ meta ]},
+            GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf.map {meta, vcf, tbi->[ meta ]},
             GATK4_LOCALCOMBINEGVCFS.out.gvcf,
-            GATK4_LOCALCOMBINEGVCFS.out.tbi
-        )
+            GATK4_LOCALCOMBINEGVCFS.out.tbi,
+            params.max_amb_samples,
+            params.max_perc_amb_samples,
+            params.min_depth
 
+        )
         ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
-        if(params.snpeff != false){
-            SNPEFF(GATK_VARIANTS.out.filtered_vcf, params.species, params.snpeffcache)
+        if(params.snpeff != false) {
+            SNPEFF (
+                GATK_VARIANTS.out.filtered_vcf,
+                params.species,
+                params.snpeffcache,
+                params.ref_name
+            )
             ch_versions = ch_versions.mix(SNPEFF.out.versions)
         }
 
@@ -325,15 +325,29 @@ workflow MYCOSNP {
         versions          = ch_versions
 ========================================================================================
 */
-
-        SEQKIT_REPLACE(GATK_VARIANTS.out.snps_fasta) // Swap * for -
+        SEQKIT_REPLACE (
+            GATK_VARIANTS.out.snps_fasta
+        ) // Swap * for -
         ch_versions = ch_versions.mix(SEQKIT_REPLACE.out.versions)
 
-        SNPDISTS(SEQKIT_REPLACE.out.fastx)
+        SNPDISTS (
+            SEQKIT_REPLACE.out.fastx
+        )
         ch_versions = ch_versions.mix(SNPDISTS.out.versions)
 
-        if(! params.skip_phylogeny) {
-            CREATE_PHYLOGENY(SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]}, '', SNPDISTS.out.tsv)
+        if(!params.skip_phylogeny) {
+            CREATE_PHYLOGENY (
+                SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]},
+                '',
+                SNPDISTS.out.tsv,
+                params.rapidnj,
+                params.fasttree,
+                params.iqtree,
+                params.raxmlng,
+                params.amdp,
+                params.metadata_csv,
+                params.geolocation_csv
+            )
             ch_versions = ch_versions.mix(CREATE_PHYLOGENY.out.versions)
         }
 
@@ -389,44 +403,6 @@ workflow MYCOSNP {
     multiqc_report = MULTIQC.out.report
     versions = ch_versions
 
-
-/*
-========================================================================================
-    //                       SUBWORKFLOW: Run SNPEFF_BUILD
-    // take:
-    //     fasta
-    //     gff
-
-    // emit:
-    //     snpeffdb
-    //     snpeffconfig
-========================================================================================
-*/
-
-    // if(params.snpeff_build == true)
-    // {
-    //     SNPEFF_BUILD(
-    //         gff, fasta
-    //     )
-    // }
-
-   /*
-========================================================================================
-                          SUBWORKFLOW: Run SNPEFF
-    // take:
-    //     ch_snpeff_db
-    //     ch_snpeff_config
-    //     vcf
-    //     fasta (optional)
-
-    // emit:
-    //     csv
-    //     txt
-    //     html
-    //     tbi
-    //     vcf (gz)
-========================================================================================
-*/
 }
 /*
 ========================================================================================

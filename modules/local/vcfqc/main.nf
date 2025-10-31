@@ -11,8 +11,12 @@ process VCF_QC {
     path(vcffasta)
 
     output:
-    path("vcf-qc-report.txt"),   emit: vcf_qc_report
-    path("vcfqc_passed_samples.txt")    , emit: vcf_qc_passed
+    path("vcf-qc-report.txt"),        emit: vcf_qc_report
+    path("vcfqc_passed_samples.txt"), emit: vcf_qc_passed
+    path "versions.yml",              emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     """
@@ -70,7 +74,7 @@ process VCF_QC {
         if (passed_samples_count == 0) {
             printf "All SNPs were filtered because the ambiguity threshold was exceeded.\\n" >> "vcf-qc-report.txt"
         }
-    }' $vcffasta
+    }' ${vcffasta}
 
     # Ensure all outputs are generated
     if [ ! -s "vcfqc_passed_samples.txt" ]; then
@@ -80,11 +84,21 @@ process VCF_QC {
     if [ ! -s "vcfqc_passed_samples_ref.txt" ]; then
         touch vcfqc_passed_samples_ref.txt
     fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        awk: \$(awk --version 2>&1 | head -n1 | sed 's/GNU Awk //; s/,.*//; s/awk version //')
+    END_VERSIONS
     """
 
     stub:
     """
     touch vcf-qc-report.txt
     touch vcfqc_passed_samples.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        awk: \$(awk --version 2>&1 | head -n1 | sed 's/GNU Awk //; s/,.*//; s/awk version //')
+    END_VERSIONS
     """
 }

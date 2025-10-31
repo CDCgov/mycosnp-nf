@@ -12,11 +12,11 @@ process PICARD_MARKDUPLICATES {
 
 
     output:
-    tuple val(meta), path("*.bam") , emit: bam,  optional: true
-    tuple val(meta), path("*.bai") , emit: bai,  optional: true
-    tuple val(meta), path("*.cram"), emit: cram, optional: true
+    tuple val(meta), path("*.bam") ,        emit: bam,  optional: true
+    tuple val(meta), path("*.bai") ,        emit: bai,  optional: true
+    tuple val(meta), path("*.cram"),        emit: cram, optional: true
     tuple val(meta), path("*.metrics.txt"), emit: metrics
-    path  "versions.yml"                  , emit: versions
+    path  "versions.yml",                   emit: versions
 
     when:
     task.ext.when == null || task.ext.when

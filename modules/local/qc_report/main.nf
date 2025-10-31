@@ -9,11 +9,14 @@ process QC_REPORT {
 
     input:
     tuple val(meta), path(txt), path(results) //input values are from channel that joins FAQCS("txt") and QUALIMAP("results") outputs
-    path reference
+    path(reference)
 
     output:
     path("*_output.txt"), emit: qc_line
     path  "versions.yml", emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''

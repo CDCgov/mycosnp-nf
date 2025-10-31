@@ -53,4 +53,21 @@ jobs:
       only_changed: ${{ inputs.only_changed && 'true' || github.event_name != 'push' || github.event_name == 'pull_request' }}
       nft_profile: "${{ inputs.run_on_batch && 'dev' || 'standard,dev_reg' }}"
       nxf_version: ${{ matrix.NXF_VER }}
+      exclude_tests: "modules/local/gambit"
+    secrets: inherit
+
+  nf-test-aws:
+    strategy:
+      matrix:
+        NXF_VER: ["24.10.4"]
+    uses: cdcent/oamd-bio-gh-actions/.github/workflows/nf-test.yml@main
+    with:
+      run_on_aws: true
+      aws_s3_bucket: "amdp-dev-bio-development-work"
+      max_parallel: ${{ inputs.max_parallel || 2 }}
+      only_changed: ${{ !inputs.full_test }}
+      nft_profile: "dev"
+      nxf_version: ${{ matrix.NXF_VER }}
+      run_tests: "modules/local/gambit"
+      skip_coverage: true
     secrets: inherit

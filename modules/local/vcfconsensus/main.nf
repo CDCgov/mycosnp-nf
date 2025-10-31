@@ -13,8 +13,8 @@ process VCF_CONSENSUS {
 
     output:
     tuple val(meta), path("*.fasta.gz"), emit: fastas
-    tuple val(meta), path("*.txt"), emit: txt
-    path "versions.yml"           , emit: versions
+    tuple val(meta), path("*.txt"),      emit: txt
+    path("versions.yml"),                emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,15 +22,14 @@ process VCF_CONSENSUS {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
     """
     # First get a list of samples
     bcftools query \\
         -l \\
-        $vcf > samplelist.txt
+        ${vcf} > samplelist.txt
     for SAMPLE in \$(cat samplelist.txt); do
         echo ">\$SAMPLE" > \${SAMPLE}.fasta
-        bcftools consensus -s \$SAMPLE -f $fasta $vcf |  grep -E -v "^>" | grep -E -v "^\$" >> \${SAMPLE}.fasta
+        bcftools consensus -s \$SAMPLE -f ${fasta} ${vcf} |  grep -E -v "^>" | grep -E -v "^\$" >> \${SAMPLE}.fasta
         gzip \${SAMPLE}.fasta
     done
 
@@ -41,12 +40,10 @@ process VCF_CONSENSUS {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
     """
-    echo -n | gzip > "${prefix}.fasta.gz"
-    touch "${prefix}.txt"
+    touch samplesheet.txt
+    touch ${prefix}.fasta.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -9,11 +9,14 @@ process SUBTYPE {
 
     input:
     tuple val(meta), path(gambit_results), path(seq)
-    path subtype_db
+    path(subtype_db)
 
     output:
     tuple val(meta), path("*_subtype.csv"), emit: subtype
-    path "versions.yml", emit: versions
+    path "versions.yml",                    emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
@@ -40,10 +43,9 @@ process SUBTYPE {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch "${prefix}_subtype.csv"
+    touch ${prefix}_subtype.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

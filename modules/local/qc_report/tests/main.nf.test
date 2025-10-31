@@ -5,8 +5,7 @@ nextflow_process {
     process "QC_REPORT"
 
     tag "modules"
-    tag "modules/local/qc_report"
-    tag "QC_REPORT"
+    tag "qc_report"
 
     test("QC_REPORT - qc report for a single sample") {
 

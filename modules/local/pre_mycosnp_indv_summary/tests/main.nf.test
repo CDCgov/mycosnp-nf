@@ -5,8 +5,7 @@ nextflow_process {
     process "PRE_MYCOSNP_INDV_SUMMARY"
 
     tag "modules"
-    tag "modules/local/pre_mycosnp_indv_summary"
-    tag "PRE_MYCOSNP_INDV_SUMMARY"
+    tag "pre_mycosnp_indv_summary"
 
     test("PRE_MYCOSNP_INDV_SUMMARY - create line summary file for single sample") {
 

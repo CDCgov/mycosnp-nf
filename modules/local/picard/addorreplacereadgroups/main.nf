@@ -12,7 +12,7 @@ process PICARD_ADDORREPLACEREADGROUPS {
 
     output:
     tuple val(meta), path("*.bam"), emit: bam
-    path "versions.yml"           , emit: versions
+    path "versions.yml",            emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -54,7 +54,7 @@ process PICARD_ADDORREPLACEREADGROUPS {
     stub:
     def prefix = task.ext.prefix    ?: "${meta.id}"
     """
-    touch ${prefix}.bam
+    touch ${prefix}.replaced.bam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

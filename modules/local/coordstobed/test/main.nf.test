@@ -5,8 +5,7 @@ nextflow_process {
     process "COORDSTOBED"
 
     tag "modules"
-    tag "modules/local/coordstobed"
-    tag "COORDSTOBED"
+    tag "coordstobed"
 
     test("COORDSTOBED - convert detla to bed file") {
 

@@ -13,8 +13,8 @@ Contributions to the code are even more welcome ;)
 
 If you'd like to write some code for mycosnp, the standard workflow is as follows:
 
-1. Check that there isn't already an issue about your idea in the [mycosnp issues](https://github.com/cdcent/oamd-bio-fungal-mycosnp/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
-2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [mycosnp repository](https://github.com/cdcent/oamd-bio-fungal-mycosnp) to your GitHub account
+1. Check that there isn't already an issue about your idea in the [mycosnp issues](https://github.com/CDCgov/mycosnp-nf/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
+2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [mycosnp repository](https://github.com/CDCgov/mycosnp-nf) to your GitHub account
 3. Make the necessary changes / additions within your forked repository following [Pipeline conventions](#pipeline-contribution-conventions)
 4. Use `nf-core pipelines schema build` and add any new parameters to the pipeline JSON schema (requires [nf-core tools](https://github.com/nf-core/tools) >= 1.10).
 5. Submit a Pull Request against the `dev` branch and wait for the code to be reviewed and merged
@@ -108,7 +108,7 @@ This repo includes a devcontainer configuration which will create a GitHub Codes
 
 To get started:
 
-- Open the repo in [Codespaces](https://github.com/cdcent/oamd-bio-fungal-mycosnp/codespaces)
+- Open the repo in [Codespaces](https://github.com/CDCgov/mycosnp-nf/codespaces)
 - Tools installed
   - nf-core
   - Nextflow

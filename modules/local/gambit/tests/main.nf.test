@@ -5,8 +5,7 @@ nextflow_process {
     process "GAMBIT_QUERY"
 
     tag "modules"
-    tag "modules/local/gambit"
-    tag "GAMBIT_QUERY"
+    tag "gambit"
 
     test("GAMBIT_QUERY - script") {
 
@@ -32,6 +31,8 @@ nextflow_process {
     }
 
     test("GAMBIT_QUERY - stub") {
+
+        options "-stub"
 
         when {
             process {

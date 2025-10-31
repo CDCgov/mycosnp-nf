@@ -43,7 +43,7 @@ include { FAQCS                    } from '../modules/local/faqcs/main'
 include { GAMBIT_QUERY             } from '../modules/local/gambit/main'
 include { SUBTYPE                  } from '../modules/local/subtype/main'
 include { PRE_MYCOSNP_INDV_SUMMARY } from '../modules/local/pre_mycosnp_indv_summary/main'
-include { PRE_MYCOSNP_COMB_SUMMARY } from '../modules/local/pre_mycosnp_comb_summary/main'
+
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -65,43 +65,32 @@ include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfco
 ========================================================================================
 */
 
-// Info required for completion email and summary
-
-
 workflow PRE_MYCOSNP_WF {
 
     take:
-    samplesheet                 // New samplesheet combines ingestion for fastq reads, sra accessions, and vcf files for phylogeny
+    samplesheet // New samplesheet combines ingestion for fastq reads, sra accessions, and vcf files for phylogeny
 
     main:
-
     def ch_versions = Channel.empty()
-
-    // Create empty channels for reference files required by the main workflow
-    def fas_file  = Channel.empty()
-    def fai_file  = Channel.empty()
-    def bai_file  = Channel.empty()
-    def dict_file = Channel.empty()
-    def meta_val  = Channel.empty()
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    def ch_all_reads = Channel.empty()
-    def ch_sra_list  = Channel.empty()
-    INPUT_CHECK( params.input )
-    ch_all_reads = ch_all_reads.mix(INPUT_CHECK.out.ch_fastq_reads)       // channel: [ val(meta), [ reads ] ]
-    ch_sra_list  = ch_sra_list.mix (INPUT_CHECK.out.ch_sra_list)          // channel: [ val(meta), sra_id    ]
-    ch_versions  = ch_versions.mix (INPUT_CHECK.out.versions)             // channel: [ versions.yml         ]
-    // Other output channels from INPUT_CHECK for VCFs are not used in this wf
+    INPUT_CHECK (
+        params.input
+    )
+    ch_versions  = ch_versions.mix(INPUT_CHECK.out.versions)
 
+    ch_all_reads = INPUT_CHECK.out.ch_fastq_reads // channel: [ val(meta), [ reads ] ]
     //
     // SUBWORKFLOW: Fetch FASTQ reads from input SRA accession IDs, mix with fastq reads from samplesheet
     //
-    SRA_FASTQ_SRATOOLS(ch_sra_list)
-    ch_all_reads = ch_all_reads.mix(SRA_FASTQ_SRATOOLS.out.reads)
+    SRA_FASTQ_SRATOOLS (
+        INPUT_CHECK.out.ch_sra_list
+    )
     ch_versions  = ch_versions.mix(SRA_FASTQ_SRATOOLS.out.versions)
 
+    ch_all_reads = ch_all_reads.mix(SRA_FASTQ_SRATOOLS.out.reads)
     //
     // MODULE: Run Pre-FastQC
     //
@@ -113,7 +102,7 @@ workflow PRE_MYCOSNP_WF {
     //
     // MODULE: Run seqkit to remove unpaired reads
     //
-    SEQKIT_PAIR(
+    SEQKIT_PAIR (
         ch_all_reads
     )
     ch_versions = ch_versions.mix(SEQKIT_PAIR.out.versions.first())
@@ -121,7 +110,7 @@ workflow PRE_MYCOSNP_WF {
     //
     // MODULE: Run FAQCs - no downsampling option because a reference cannot be supplied before knowing the species
     //
-    FAQCS(
+    FAQCS (
         SEQKIT_PAIR.out.reads
     )
     ch_versions = ch_versions.mix(FAQCS.out.versions.first())
@@ -137,7 +126,7 @@ workflow PRE_MYCOSNP_WF {
     //
     // MODULE: Run Gambit
     //
-    GAMBIT_QUERY(
+    GAMBIT_QUERY (
         SHOVILL.out.contigs,
         params.gambit_db,
         params.gambit_h5_dir
@@ -145,8 +134,8 @@ workflow PRE_MYCOSNP_WF {
     ch_versions = ch_versions.mix(GAMBIT_QUERY.out.versions.first())
 
     // Join the GAMBIT output and the spades assembly into a single channel
-    SHOVILL.out.contigs.map  { meta, contigs -> [meta, contigs] }.set{ ch_contigs }
-    GAMBIT_QUERY.out.taxa.map{ meta, gambit  -> [meta, gambit]  }
+    SHOVILL.out.contigs.map { meta, contigs -> [meta, contigs] }.set { ch_contigs }
+    GAMBIT_QUERY.out.taxa.map { meta, gambit  -> [meta, gambit] }
         .join(ch_contigs)
         .set{ ch_gambit_assembly }
 
@@ -173,19 +162,23 @@ workflow PRE_MYCOSNP_WF {
         .join(ch_subtype)
         .set{ ch_line_summary_input }
 
-    PRE_MYCOSNP_INDV_SUMMARY(
+    PRE_MYCOSNP_INDV_SUMMARY (
         ch_line_summary_input
     )
     ch_versions = ch_versions.mix(PRE_MYCOSNP_INDV_SUMMARY.out.versions)
+
     //
-    // MODULE: Combine line summaries into single output
+    // Combine line summaries into single output using collectFile
     //
-    PRE_MYCOSNP_COMB_SUMMARY(
-        PRE_MYCOSNP_INDV_SUMMARY.out.result
-            .map{ meta, result -> [result] }
-            .collect()
-    )
-    ch_versions = ch_versions.mix(PRE_MYCOSNP_COMB_SUMMARY.out.versions)
+    ch_combined_summary = PRE_MYCOSNP_INDV_SUMMARY.out.result
+        .map { meta, result -> result }
+        .collectFile(
+            name: 'pre-mycosnp-summary.csv',
+            storeDir: "${params.outdir}/combined/pre-mycosnp_summary",
+            seed: "Sample,PM_Predicted_Rank,PM_Predicted_Taxon,PM_Subtype_Closest_Match,PM_Subtype_ANI,PM_Closest_GAMBIT_Entry_Description,PM_Closest_GAMBIT_Entry_Distance,PM_Trimmed_Reads,PM_Avg_Read_Quality,PM_Sample_Assembly_Length,PM_Sample_Assembly_GC,PM_Reference_Genome_Length,PM_Avg_Depth_Coverage,PM_Reference_GC\n",
+            newLine: false,
+            sort: true
+        )
 
     // Collate and save software versions
     softwareVersionsToYAML(ch_versions)
@@ -200,15 +193,13 @@ workflow PRE_MYCOSNP_WF {
     // MODULE: MultiQC
     //
     ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.map{it[1]})
 
     MULTIQC (
         ch_multiqc_files.collect(),
         ch_multiqc_config,
-        ch_multiqc_custom_config.collect().ifEmpty([]),
+        ch_multiqc_custom_config.toList(),
         [],
         [],
         []

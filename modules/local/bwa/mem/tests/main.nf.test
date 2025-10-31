@@ -1,12 +1,14 @@
 nextflow_process {
 
     name "Test Process BWA_MEM (local)"
-    tag "modules_local"
-    tag "modules"
-    tag "bwa"
-    tag "bwa/mem"
     script "../main.nf"
     process "BWA_MEM"
+
+    tag "modules"
+    tag "module_nfcore"
+    tag "bwa"
+    tag "bwa/mem"
+    tag "bwa/index"
 
     setup {
         run("BWA_INDEX") {
