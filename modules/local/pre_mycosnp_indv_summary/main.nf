@@ -6,7 +6,7 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     container 'quay.io/staphb/ncbi-datasets:16.41.0'
 
     input:
-    tuple val(meta), path(assembly), path(faqcs), path(gambit), path(subtype)
+    tuple val(meta), path(assembly), path(stats), path(debug_dir), path(gambit), path(subtype)
 
     output:
     tuple val(meta), path("*_linesummary.csv"), emit: result
@@ -62,8 +62,8 @@ process PRE_MYCOSNP_INDV_SUMMARY {
             -r ref.fa \\
             "${prefix}" \\
             "${assembly}" \\
-            "${prefix}.stats.txt" \\
-            "${prefix}.for_qual_histogram.txt" \\
+            "${stats}" \\
+            "${debug_dir}/${prefix}.for_qual_histogram.txt" \\
             > stats_cols
 
         # Extract subtype info if available
@@ -81,8 +81,8 @@ process PRE_MYCOSNP_INDV_SUMMARY {
         pre-mycosnp-stats.sh \\
             "${prefix}" \\
             "${assembly}" \\
-            "${prefix}.stats.txt" \\
-            "${prefix}.for_qual_histogram.txt" \\
+            "${stats}" \\
+            "${debug_dir}/${prefix}.for_qual_histogram.txt" \\
             > stats_cols
     fi
 

@@ -30,9 +30,9 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-29T11:38:47.958539526"
+        "timestamp": "2025-11-12T15:47:29.664164145"
     },
     "PRE_MYCOSNP_INDV_SUMMARY - stub test": {
         "content": [
@@ -65,8 +65,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-08T16:04:14.746057526"
+        "timestamp": "2025-11-12T15:52:48.961415463"
     }
 }

@@ -12,13 +12,19 @@ nextflow_process {
         when {
             process {
                 """
+                def debug_dir = file("\$PWD/debug")
+                debug_dir.mkdirs()
+
+                // Copy debug files
+                def debug_source = file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_dest = file("\$PWD/debug/SRR30604805.for_qual_histogram.txt")
+                debug_source.copyTo(debug_dest)
+
                 input[0] = [
                     [id:"SRR30604805", single_end: false],
                     file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.fa', checkIfExists: true),
-                    [
-                        file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.for_qual_histogram.txt', checkIfExists: true),
-                        file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.stats.txt', checkIfExists: true),
-                    ],
+                    file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.stats.txt', checkIfExists: true),
+                    debug_dir,
                     file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805_gambit.csv', checkIfExists: true),
                     file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805_subtype.csv', checkIfExists: true)
                 ]
@@ -41,13 +47,19 @@ nextflow_process {
         when {
             process {
                 """
+                def debug_dir = file("\$PWD/debug")
+                debug_dir.mkdirs()
+
+                // Copy debug files
+                def debug_source = file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_dest = file("\$PWD/debug/SRR30604805.for_qual_histogram.txt")
+                debug_source.copyTo(debug_dest)
+
                 input[0] = [
                     [id:"SRR30604805", single_end: false],
                     file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.fa', checkIfExists: true),
-                    [
-                        file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.for_qual_histogram.txt', checkIfExists: true),
-                        file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.stats.txt', checkIfExists: true),
-                    ],
+                    file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805.stats.txt', checkIfExists: true),
+                    debug_dir,
                     file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805_gambit.csv', checkIfExists: true),
                     file(params.modules_testdata_base_path + '/genomics/fungal/premycosnp_indv_comb_summary/SRR30604805_subtype.csv', checkIfExists: true)
                 ]

@@ -153,11 +153,14 @@ workflow PRE_MYCOSNP_WF {
     //
 
     // Combine trimmed reads and the QC reference into single channel
-    FAQCS.out.txt.map        { meta, txt     -> [meta, txt    ] }.set{ ch_faqcs_txt }
+    // PRE_MYCOSNP_INDV_SUMMARY needs both the stats.txt file and the debug directory from FAQCS
+    ch_faqcs_combined = FAQCS.out.stats
+        .join(FAQCS.out.debug)
+
     GAMBIT_QUERY.out.taxa.map{ meta, gambit  -> [meta, gambit ] }.set{ ch_gambit    }
     SUBTYPE.out.subtype.map  { meta, subtype -> [meta, subtype] }.set{ ch_subtype   }
     SHOVILL.out.contigs.map  { meta, contigs -> [meta, contigs] }
-        .join(ch_faqcs_txt)
+        .join(ch_faqcs_combined)
         .join(ch_gambit)
         .join(ch_subtype)
         .set{ ch_line_summary_input }
