@@ -1,3 +1,6 @@
-sample,fastq_1,fastq_2
-SAMPLE_PAIRED_END,/path/to/fastq/files/AEG588A1_S1_L002_R1_001.fastq.gz,/path/to/fastq/files/AEG588A1_S1_L002_R2_001.fastq.gz
-SAMPLE_SINGLE_END,/path/to/fastq/files/AEG588A4_S4_L003_R1_001.fastq.gz,
+sample,fastq_1,fastq_2,sra,vcf
+PAIRED_LANES_01,/data/reads/PAIRED_LANES_L001_R1.fastq.gz,/data/reads/PAIRED_LANES_L001_R2.fastq.gz,,
+EXTRA_PAIRED_06,/data/reads/EXTRA_PAIRED_L002_R1.fastq.gz,/data/reads/EXTRA_PAIRED_L002_R2.fastq.gz,,
+SINGLE_END_02,/data/reads/SINGLE_END_02_R1.fastq.gz,,,
+SRA_ONLY_03,,,SRR12345678,
+LEGACY_VCF_04,,,,/data/legacy/LEGACY_VCF_04.g.vcf.gz

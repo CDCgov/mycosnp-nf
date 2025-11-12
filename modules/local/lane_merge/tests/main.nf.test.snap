@@ -36,9 +36,9 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-24T13:41:35.072059594"
+        "timestamp": "2025-11-06T15:36:51.317088899"
     },
     "LANE_MERGE - multiple lane files": {
         "content": [
@@ -77,9 +77,9 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-24T13:43:01.816529205"
+        "timestamp": "2025-11-06T15:37:06.697848315"
     },
     "LANE_MERGE - stub - single end": {
         "content": [
@@ -112,9 +112,9 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-24T13:46:33.963837645"
+        "timestamp": "2025-11-06T15:37:22.612918372"
     },
     "LANE_MERGE - stub - paired-end": {
         "content": [
@@ -153,9 +153,9 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-24T13:47:52.915350301"
+        "timestamp": "2025-11-06T15:37:38.150641968"
     },
     "LANE_MERGE - single file": {
         "content": [
@@ -194,8 +194,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-24T13:40:30.94818103"
+        "timestamp": "2025-11-06T15:36:38.28686533"
     }
 }

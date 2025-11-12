@@ -8,8 +8,8 @@ process QC_REPORT {
         'quay.io/biocontainers/pandas:1.5.2' }"
 
     input:
-    tuple val(meta), path(txt), path(results) //input values are from channel that joins FAQCS("txt") and QUALIMAP("results") outputs
-    path(reference)
+    tuple val(meta), path(stats), path(debug_dir), path(results)
+    path reference
 
     output:
     path("*_output.txt"), emit: qc_line
@@ -22,16 +22,18 @@ process QC_REPORT {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
+    set -e
+
     qc_report_stats.py \\
         --sample ${meta.id} \\
-        --stats ${meta.id}.stats.txt \\
-        --base_content_before_trim qa.${meta.id}.base_content.txt \\
-        --base_content_after_trim ${meta.id}.base_content.txt \\
-        --qual_scores_before_trim qa.${meta.id}.for_qual_histogram.txt \\
-        --qual_scores_after_trim ${meta.id}.for_qual_histogram.txt \\
+        --stats ${stats} \\
+        --base_content_before_trim debug/qa.${meta.id}.base_content.txt \\
+        --base_content_after_trim debug/${meta.id}.base_content.txt \\
+        --qual_scores_before_trim debug/qa.${meta.id}.for_qual_histogram.txt \\
+        --qual_scores_after_trim debug/${meta.id}.for_qual_histogram.txt \\
         --reference ${reference} \\
-        --bam_coverage ${meta.id}/genome_results.txt \\
-        --genome_fraction ${meta.id}/raw_data_qualimapReport/genome_fraction_coverage.txt \\
+        --bam_coverage ${results}/genome_results.txt \\
+        --genome_fraction ${results}/raw_data_qualimapReport/genome_fraction_coverage.txt \\
         --min_depth ${params.min_depth} > ${meta.id}_output.txt
 
     cat <<-END_VERSIONS > versions.yml

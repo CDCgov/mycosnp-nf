@@ -6,16 +6,15 @@
 
 include { SEQKIT_PAIR                          } from '../../../modules/nf-core/seqkit/pair/main'
 include { SEQTK_SAMPLE                         } from '../../../modules/nf-core/seqtk/sample/main'
-include { FAQCS                                } from '../../../modules/local/faqcs/main'
+include { FAQCS                                } from '../../../modules/nf-core/faqcs/main'
 include { BWA_INDEX                            } from '../../../modules/nf-core/bwa/index/main'   //not used here
-include { BWA_MEM                              } from '../../../modules/local/bwa/mem/main'
+include { BWA_MEM                              } from '../../../modules/nf-core/bwa/mem/main'
 include { SAMTOOLS_SORT                        } from '../../../modules/nf-core/samtools/sort/main' //not used here
-include { PICARD_MARKDUPLICATES                } from '../../../modules/local/picard/markduplicates/main'
+include { PICARD_MARKDUPLICATES                } from '../../../modules/nf-core/picard/markduplicates/main'
 include { PICARD_CLEANSAM                      } from '../../../modules/nf-core/picard/cleansam/main'
 include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM } from '../../../modules/nf-core/samtools/view/main' //not used here
 include { PICARD_FIXMATEINFORMATION            } from '../../../modules/nf-core/picard/fixmateinformation/main'
-include { PICARD_ADDORREPLACEREADGROUPS        } from '../../../modules/local/picard/addorreplacereadgroups/main'
-include { SAMTOOLS_INDEX                       } from '../../../modules/nf-core/samtools/index/main'
+include { PICARD_ADDORREPLACEREADGROUPS        } from '../../../modules/nf-core/picard/addorreplacereadgroups/main'
 include { FASTQC as FASTQC_POST                } from '../../../modules/nf-core/fastqc/main'
 include { QUALIMAP_BAMQC                       } from '../../../modules/nf-core/qualimap/bamqc/main'
 include { DOWNSAMPLE_RATE                      } from '../../../modules/local/downsample_rate/main'
@@ -25,6 +24,19 @@ include { SAMTOOLS_FLAGSTAT                    } from '../../../modules/nf-core/
 include { QC_REPORT                            } from '../../../modules/local/qc_report/main'
 
 
+// Function to pair each item in a channel with a reference file
+def pairWithReference(input_channel, reference_channel) {
+    return input_channel
+        .map { meta, _file -> meta }
+        .combine( reference_channel.map { _m, ref -> ref } )
+        .map { meta, ref -> tuple(meta, ref) }
+}
+
+/*
+========================================================================================
+    Workflow
+========================================================================================
+*/
 
 workflow BWA_PREPROCESS {
 
@@ -41,6 +53,7 @@ workflow BWA_PREPROCESS {
     SEQKIT_PAIR (
         reads
     )
+
     ch_versions = ch_versions.mix(SEQKIT_PAIR.out.versions)
 
     if (coverage == 0) {
@@ -51,106 +64,157 @@ workflow BWA_PREPROCESS {
     }
     else {
         // DOWNSAMPLE_RATE expects a plain path for reference_fasta
-        DOWNSAMPLE_RATE (
-            SEQKIT_PAIR.out.reads,
-            ref_fasta.map{ meta, fa -> fa },
-            coverage
-        )
-        ch_versions = ch_versions.mix(DOWNSAMPLE_RATE.out.versions)
+    DOWNSAMPLE_RATE(
+        SEQKIT_PAIR.out.reads,
+        ref_fasta.map{ _meta, fa -> fa },
+        params.coverage
+    )
 
-        ch_seq_samplerate = SEQKIT_PAIR.out.reads.join(
-            DOWNSAMPLE_RATE.out.downsampled_rate.map {
-                meta, sr, snr -> [ meta, snr ]
+    ch_versions = ch_versions.mix(DOWNSAMPLE_RATE.out.versions)
+
+    ch_seq_samplerate = SEQKIT_PAIR.out.reads.join(
+        DOWNSAMPLE_RATE.out.downsampled_rate.map{
+            meta, _sr, snr -> [ meta, snr]
             }
         )
 
-        SEQTK_SAMPLE(
-            ch_seq_samplerate
-        )
-        ch_versions = ch_versions.mix(SEQTK_SAMPLE.out.versions)
+    SEQTK_SAMPLE(
+        ch_seq_samplerate
+    )
 
-        FAQCS (
-            SEQTK_SAMPLE.out.reads
-        )
-        ch_versions = ch_versions.mix(FAQCS.out.versions)
+    ch_versions = ch_versions.mix(SEQTK_SAMPLE.out.versions)
+
+    FAQCS (
+        SEQTK_SAMPLE.out.reads
+    )
+
+    ch_versions = ch_versions.mix(FAQCS.out.versions)
 
     }
     // Group trimmed reads by sample so BWA_MEM receives [meta, [R1,R2]]
     // Pass only reads + index path + sort flag as required by local BWA_MEM (3 inputs)
-    BWA_MEM (
+    // Reference index and fasta for nf-core BWA_MEM (requires reads,index,fasta,sort flag)
+    ch_bwa_index = pairWithReference(FAQCS.out.reads, ref_bwa )
+
+    ch_bwa_fasta = pairWithReference(FAQCS.out.reads, ref_fasta )
+
+    BWA_MEM(
         FAQCS.out.reads,
-        ref_bwa.map{ meta, idx -> idx },
+        ch_bwa_index,
+        ch_bwa_fasta,
         true
     )
-    ch_versions = ch_versions.mix(BWA_MEM.out.versions)
 
-    PICARD_MARKDUPLICATES (
-        BWA_MEM.out.bam
+    ch_versions = ch_versions.mix(
+        BWA_MEM.out.versions
     )
-    ch_versions = ch_versions.mix(PICARD_MARKDUPLICATES.out.versions)
+
+    // Reference fasta / fai for MarkDuplicates (nf-core variant requires both)
+    ch_md_ref_fasta = pairWithReference(BWA_MEM.out.bam, ref_fasta)
+    ch_md_ref_fai = pairWithReference(BWA_MEM.out.bam, ref_fai)
+
+    PICARD_MARKDUPLICATES(
+        BWA_MEM.out.bam,
+        ch_md_ref_fasta,
+        ch_md_ref_fai
+    )
+
+    ch_versions = ch_versions.mix( PICARD_MARKDUPLICATES.out.versions )
 
     PICARD_CLEANSAM (
         PICARD_MARKDUPLICATES.out.bam
     )
+
     ch_versions = ch_versions.mix(PICARD_CLEANSAM.out.versions)
 
     PICARD_FIXMATEINFORMATION (
         PICARD_CLEANSAM.out.bam
     )
+
     ch_versions = ch_versions.mix(PICARD_FIXMATEINFORMATION.out.versions)
 
-    PICARD_ADDORREPLACEREADGROUPS (
-        PICARD_FIXMATEINFORMATION.out.bam
-    )
-    ch_versions = ch_versions.mix(PICARD_ADDORREPLACEREADGROUPS.out.versions)
+    // Reference fasta / fai so each BAM gets paired with singleton reference files
+    ch_ref_fasta = pairWithReference(PICARD_FIXMATEINFORMATION.out.bam, ref_fasta)
+    ch_ref_fai = pairWithReference(PICARD_FIXMATEINFORMATION.out.bam, ref_fai)
 
-    SAMTOOLS_INDEX (
-        PICARD_ADDORREPLACEREADGROUPS.out.bam
+    // nf-core module expects: bam, fasta, fasta_index
+    PICARD_ADDORREPLACEREADGROUPS(
+        PICARD_FIXMATEINFORMATION.out.bam,
+        ch_ref_fasta,
+        ch_ref_fai
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
+
+    ch_versions = ch_versions.mix(PICARD_ADDORREPLACEREADGROUPS.out.versions)
 
     FASTQC_POST (
         FAQCS.out.reads
     )
+
     ch_versions = ch_versions.mix(FASTQC_POST.out.versions)
 
     QUALIMAP_BAMQC (
         PICARD_ADDORREPLACEREADGROUPS.out.bam,
         []
     )
+
     ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions)
 
     ch_alignment_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam
-        .join( SAMTOOLS_INDEX.out.bai )
+        .join( PICARD_ADDORREPLACEREADGROUPS.out.bai )
 
     SAMTOOLS_STATS (
         ch_alignment_combined,
         ref_fasta
     )
+
     ch_versions = ch_versions.mix(SAMTOOLS_STATS.out.versions)
 
     SAMTOOLS_FLAGSTAT (
         ch_alignment_combined
     )
+
     ch_versions = ch_versions.mix(SAMTOOLS_FLAGSTAT.out.versions)
 
     SAMTOOLS_IDXSTATS (
         ch_alignment_combined
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
 
-    // Use the full TXT bundle from FAQCS to ensure all required qa.* inputs are staged for QC_REPORT
-    ch_qcreport_input = FAQCS.out.txt.join(QUALIMAP_BAMQC.out.results)
+    // QC_REPORT needs both the stats.txt file and the debug directory from FAQCS
+    ch_qcreport_input = FAQCS.out.stats
+        .join(FAQCS.out.debug)
+        .join(QUALIMAP_BAMQC.out.results)
 
-    QC_REPORT (
+    QC_REPORT(
         ch_qcreport_input,
-        ref_fasta.map{ meta, fasta -> fasta }
+        ref_fasta.map{ _meta, fasta -> fasta }
     )
-    ch_versions = ch_versions.mix(QC_REPORT.out.versions)
+
+    ch_versions = ch_versions.mix(
+        SEQKIT_PAIR.out.versions,
+        FAQCS.out.versions,
+        BWA_MEM.out.versions,
+        PICARD_MARKDUPLICATES.out.versions,
+        PICARD_CLEANSAM.out.versions,
+        PICARD_FIXMATEINFORMATION.out.versions,
+        PICARD_ADDORREPLACEREADGROUPS.out.versions,
+        FASTQC_POST.out.versions,
+        SAMTOOLS_STATS.out.versions,
+        QUALIMAP_BAMQC.out.versions,
+        QC_REPORT.out.versions,
+        SAMTOOLS_IDXSTATS.out.versions,
+        SAMTOOLS_FLAGSTAT.out.versions
+    )
+
+    if (params.coverage != 0) {
+        ch_versions = ch_versions.mix(SEQTK_SAMPLE.out.versions)
+    }
+
+    ch_alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam
+    ch_alignment_index    = PICARD_ADDORREPLACEREADGROUPS.out.bai
+    ch_qcreport           = QC_REPORT.out.qc_line
 
     emit:
     alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam  // channel: [ val(meta), bam ]
-    alignment_index    = SAMTOOLS_INDEX.out.bai                 // channel: [ val(meta), bai ]
     alignment_combined = ch_alignment_combined                  // channel: [ val(meta), bam, bai ]
     qualimap           = QUALIMAP_BAMQC.out.results             // channel: [ val(meta), results ]
     stats              = SAMTOOLS_STATS.out.stats               // channel: [ val(meta), stats ]
