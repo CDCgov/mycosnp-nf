@@ -24,9 +24,7 @@ workflow GATK_VARIANTS {
     fai                 // channel: tuple val(meta), path(fai)
     bai                 // channel: tuple val(meta), path(bai)
     dict                // channel: tuple val(meta), path(dict)
-    thismeta            // channel: val(meta) for gvcf files
-    vcffile             // channels: tuple val(meta), path(vcf)
-    vcfidx              // channels: tuple val(meta), path(vcf), path(vcfidx)
+    combined_vcfidx     // channels: tuple val(meta), path(vcf), path(vcfidx)
     max_amb_samples     // val: maximum number of ambiguous samples allowed per variant
                             // to be retained in final VCF
                             // (e.g. if 5 samples, and max_amb_samples=2, variants with >2 amb samples are filtered out)
@@ -39,10 +37,9 @@ workflow GATK_VARIANTS {
 
     main:
     ch_versions = Channel.empty()
-    combined_gvcf = thismeta.combine(vcffile).combine(vcfidx)
 
     GATK4_GENOTYPEGVCFS (
-        combined_gvcf.map { meta, vcf, idx -> [ meta, vcf, idx, [], [] ] },
+        combined_vcfidx.map { meta, vcf, idx -> [ meta, vcf, idx, [], [] ] },
         fasta.map { f -> [[:], f] },
         fai.map { f -> [[:], f] },
         dict.map { d -> [[:], d] },

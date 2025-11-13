@@ -66,10 +66,10 @@ include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/fastqc/main'
 include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { GATK4_HAPLOTYPECALLER       } from '../modules/nf-core/gatk4/haplotypecaller/main'
-include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/gatk4/combinegvcfs/main' //not used here
 include { SEQKIT_REPLACE              } from '../modules/nf-core/seqkit/replace/main'
 include { SNPDISTS                    } from '../modules/nf-core/snpdists/main'
-include { GATK4_LOCALCOMBINEGVCFS     } from '../modules/local/gatk4_localcombinegvcfs/main'
+include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/gatk4/combinegvcfs/main'
+include { GATK4_INDEXFEATUREFILE      } from '../modules/nf-core/gatk4/indexfeaturefile/main'
 include { QC_PARSER                   } from '../modules/local/qc_parser/main'
 
 /*
@@ -263,37 +263,41 @@ workflow MYCOSNP {
     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
     if(! params.skip_combined_analysis) {
-        ch_vcf = GATK4_HAPLOTYPECALLER.out.vcf.map{ meta, vcf ->[ vcf ] }.collect()
-        ch_vcf = ch_vcf.mix (
-            ch_vcf_files.map{
-                meta, vcf ->[ vcf ]
-            }.collect()
-        )
-        ch_vcf_idx = GATK4_HAPLOTYPECALLER.out.tbi.map { meta, idx ->[ idx ] }.collect()
-        ch_vcf_idx = ch_vcf_idx.mix(
-            ch_vcfidx_files.map{
-                meta, idx ->[ idx ]
-            }.collect()
-        )
-        ch_vcfs = ch_vcf.mix(ch_vcf_idx).collect()
 
-        GATK4_LOCALCOMBINEGVCFS (
-            [id:'combined', single_end:false],
-            ch_vcfs,
+        def combined_meta_id = [ id:'combined', single_end:false ]
+
+        // vcf files
+        ch_vcf_hc = GATK4_HAPLOTYPECALLER.out.vcf.map{ meta, vcf -> vcf }
+        ch_vcf_raw = ch_vcf_files.map { meta, vcf -> vcf }
+        ch_vcf_all = ch_vcf_hc.concat(ch_vcf_raw).toSortedList().map { vcfs -> [ combined_meta_id, vcfs ] }
+        // index files
+        ch_tbi_hc = GATK4_HAPLOTYPECALLER.out.tbi.map{ meta, tbi -> tbi }
+        ch_tbi_raw = ch_vcfidx_files.map { meta, tbi -> tbi }
+        ch_tbi_all = ch_tbi_hc.concat(ch_tbi_raw).toSortedList().map { tbi -> [ combined_meta_id, tbi ] }
+
+        GATK4_COMBINEGVCFS (
+            ch_vcf_all.join(ch_tbi_all),
             ref_fasta_only,
             ref_fai_only,
             ref_dict_only
         )
-        ch_versions = ch_versions.mix(GATK4_LOCALCOMBINEGVCFS.out.versions)
+
+        ch_versions = ch_versions.mix(GATK4_COMBINEGVCFS.out.versions)
+
+        GATK4_INDEXFEATUREFILE (
+            GATK4_COMBINEGVCFS.out.combined_gvcf
+        )
+
+        ch_versions = ch_versions.mix(GATK4_INDEXFEATUREFILE.out.versions)
+
+        ch_gatk_variants = GATK4_COMBINEGVCFS.out.combined_gvcf.join( GATK4_INDEXFEATUREFILE.out.index )
 
         GATK_VARIANTS (
             ref_fasta_only,
             ref_fai_only,
             ch_ref_bwa.map { m, b -> b }.first(),
             ref_dict_only,
-            GATK4_LOCALCOMBINEGVCFS.out.combined_gvcf.map {meta, vcf, tbi->[ meta ]},
-            GATK4_LOCALCOMBINEGVCFS.out.gvcf,
-            GATK4_LOCALCOMBINEGVCFS.out.tbi,
+            ch_gatk_variants,
             params.max_amb_samples,
             params.max_perc_amb_samples,
             params.min_depth
