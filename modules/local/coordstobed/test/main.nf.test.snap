@@ -11,7 +11,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,cd39295cef658f32610021f0cb6b5bc3"
+                    "versions.yml:md5,ffddfd58eb2125b9e831479ba2a5425d"
                 ],
                 "bed": [
                     [
@@ -22,15 +22,15 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,cd39295cef658f32610021f0cb6b5bc3"
+                    "versions.yml:md5,ffddfd58eb2125b9e831479ba2a5425d"
                 ]
             }
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-25T15:02:46.397842962"
+        "timestamp": "2025-11-13T12:14:15.806039918"
     },
     "COORDSTOBED - convert detla to bed file": {
         "content": [
@@ -40,7 +40,7 @@
                         {
                             "id": "reference"
                         },
-                        "masked_ref.bed:md5,abad701c2a14cdf2425f39afb0574433"
+                        "masked_ref.bed:md5,a33256fab6238d3b86163ae1752170bc"
                     ]
                 ],
                 "1": [
@@ -51,7 +51,7 @@
                         {
                             "id": "reference"
                         },
-                        "masked_ref.bed:md5,abad701c2a14cdf2425f39afb0574433"
+                        "masked_ref.bed:md5,a33256fab6238d3b86163ae1752170bc"
                     ]
                 ],
                 "versions": [
@@ -61,8 +61,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-25T15:02:28.807859959"
+        "timestamp": "2025-11-13T12:14:01.398660193"
     }
 }

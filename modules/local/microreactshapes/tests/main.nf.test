@@ -16,12 +16,12 @@ nextflow_process {
                 // input[0]: tuple(val(meta), path(tree))
                 input[0] = [
                     [ id: "S1" ],
-                    file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/quicksnp_phylogeny.nwk")
+                    file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/microreactshapes/quicksnp_phylogeny.nwk")
                 ]
                 // input[1]: metadata table
-                input[1] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/metadata.csv")
+                input[1] = file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/microreactshapes/metadata.csv")
                 // input[2]: geolocation table
-                input[2] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/geolocation.csv")
+                input[2] = file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/microreactshapes/geolocation.csv")
                 """
             }
         }
@@ -48,12 +48,12 @@ nextflow_process {
                 // input[0]: tuple(val(meta), path(tree))
                 input[0] = [
                     [ id: "S1" ],
-                    file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/quicksnp_phylogeny.nwk")
+                    file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/microreactshapes/quicksnp_phylogeny.nwk")
                 ]
                 // input[1]: metadata table
-                input[1] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/metadata.csv")
+                input[1] = file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/microreactshapes/metadata.csv")
                 // input[2]: geolocation table
-                input[2] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/microreactshapes/geolocation.csv")
+                input[2] = file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/microreactshapes/geolocation.csv")
                 """
             }
         }

@@ -7,22 +7,22 @@
                         {
                             "id": "test_sample"
                         },
-                        "test_sample_gambit.csv:md5,6996dd433057946780ed5739de623787"
+                        "/amdp-dev-bio-development-work/ba/70263a1e24e407e7c5219f6e8dbd1f/test_sample_gambit.csv"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,172059ab6988038f9ca3938d07f65a35"
+                    "/amdp-dev-bio-development-work/ba/70263a1e24e407e7c5219f6e8dbd1f/versions.yml"
                 ],
                 "taxa": [
                     [
                         {
                             "id": "test_sample"
                         },
-                        "test_sample_gambit.csv:md5,6996dd433057946780ed5739de623787"
+                        "/amdp-dev-bio-development-work/ba/70263a1e24e407e7c5219f6e8dbd1f/test_sample_gambit.csv"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,172059ab6988038f9ca3938d07f65a35"
+                    "/amdp-dev-bio-development-work/ba/70263a1e24e407e7c5219f6e8dbd1f/versions.yml"
                 ]
             }
         ],
@@ -30,7 +30,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-10-27T10:25:49.375058887"
+        "timestamp": "2025-11-13T15:26:09.961856798"
     },
     "GAMBIT_QUERY - stub": {
         "content": [
@@ -40,22 +40,22 @@
                         {
                             "id": "test_sample"
                         },
-                        "test_sample_gambit.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "/amdp-dev-bio-development-work/df/eabb687bf9e3798c3e1918c8168834/test_sample_gambit.csv"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,172059ab6988038f9ca3938d07f65a35"
+                    "/amdp-dev-bio-development-work/df/eabb687bf9e3798c3e1918c8168834/versions.yml"
                 ],
                 "taxa": [
                     [
                         {
                             "id": "test_sample"
                         },
-                        "test_sample_gambit.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "/amdp-dev-bio-development-work/df/eabb687bf9e3798c3e1918c8168834/test_sample_gambit.csv"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,172059ab6988038f9ca3938d07f65a35"
+                    "/amdp-dev-bio-development-work/df/eabb687bf9e3798c3e1918c8168834/versions.yml"
                 ]
             }
         ],
@@ -63,6 +63,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-10-27T10:26:41.727670226"
+        "timestamp": "2025-11-13T15:27:06.332591591"
     }
 }

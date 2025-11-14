@@ -15,7 +15,7 @@ nextflow_process {
                 input[0] = [
                     [ id:'test_single', single_end: true ],
                     [
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true)
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true)
                     ]
                 ]
                 """
@@ -38,8 +38,8 @@ nextflow_process {
                 input[0] = [
                     [ id:'test_paired', single_end: false ],
                     [
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
                     ]
                 ]
                 """
@@ -62,10 +62,10 @@ nextflow_process {
                 input[0] = [
                     [ id:'test_multi_lane', single_end: false ],
                     [
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true),
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_cp_R1.paired.fastq.gz', checkIfExists: true),
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_cp_R2.paired.fastq.gz', checkIfExists: true)
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_cp_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_cp_R2.paired.fastq.gz', checkIfExists: true)
                     ]
                 ]
                 """
@@ -90,7 +90,7 @@ nextflow_process {
                 input[0] = [
                     [ id:'test_single', single_end: true ],
                     [
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true)
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true)
                     ]
                 ]
                 """
@@ -115,8 +115,8 @@ nextflow_process {
                 input[0] = [
                     [ id:'test_single', single_end: false ],
                     [
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
                     ]
                 ]
                 """

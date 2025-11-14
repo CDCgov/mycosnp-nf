@@ -15,11 +15,11 @@ nextflow_process {
                 input[0] = [
                     [ id:'test_sample'],
                     [
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
                     ]
                 ]
-                input[1] = file(params.modules_testdata_base_path + '/genomics/fungal/reference/test_reference.fasta', checkIfExists: true)
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
                 input[2] = 1
                 """
             }
@@ -43,11 +43,11 @@ nextflow_process {
                 input[0] = [
                     [ id:'test_sample'],
                     [
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
-                        file(params.modules_testdata_base_path + '/genomics/fungal/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
                     ]
                 ]
-                input[1] = file(params.modules_testdata_base_path + '/genomics/fungal/reference/test_reference.fasta', checkIfExists: true)
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
                 input[2] = 1
                 """
             }

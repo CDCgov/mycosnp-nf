@@ -13,7 +13,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/vcfqc/vcf-to-fasta.fasta")
+                input[0] = file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/vcfqc/vcf-to-fasta.fasta")
                 """
             }
         }
@@ -41,7 +41,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/vcfqc/vcf-to-fasta.fasta")
+                input[0] = file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/vcfqc/vcf-to-fasta.fasta")
                 """
             }
         }

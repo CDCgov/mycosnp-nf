@@ -13,7 +13,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/qc_parser/qc_report.txt")
+                input[0] = file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/qc_parser/qc_report.txt")
                 """
             }
         }
@@ -33,7 +33,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = file("https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/modules-fungal/data/genomics/fungal/qc_parser/qc_report.txt")
+                input[0] = file(params.modules_testdata_base_path + "/genomics/eukaryotes/candida_auris/qc_parser/qc_report.txt")
                 """
             }
         }

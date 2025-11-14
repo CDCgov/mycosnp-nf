@@ -32,7 +32,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-12T15:47:29.664164145"
+        "timestamp": "2025-11-13T15:19:27.848376928"
     },
     "PRE_MYCOSNP_INDV_SUMMARY - stub test": {
         "content": [
@@ -67,6 +67,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-12T15:52:48.961415463"
+        "timestamp": "2025-11-13T15:19:48.525224186"
     }
 }

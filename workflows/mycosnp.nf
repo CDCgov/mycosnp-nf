@@ -257,8 +257,8 @@ workflow MYCOSNP {
         ch_ref_fasta,
         ch_ref_fai,
         ch_ref_dict,
-        [[],[]],  // dbsnp (optional)
-        [[],[]]   // dbsnp_tbi (optional)
+        [[],[]],
+        [[],[]]
     )
     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 

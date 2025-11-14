@@ -21,8 +21,8 @@ nextflow_process {
                 def subdir = file("\$PWD/SRR30604805/raw_data_qualimapReport")
                 subdir.mkdirs()
 
-                def source_file1 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/genome_results.txt', checkIfExists: true)
-                def source_file2 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt', checkIfExists: true)
+                def source_file1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qualimap/SRR30604805/genome_results.txt', checkIfExists: true)
+                def source_file2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qualimap/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt', checkIfExists: true)
 
                 def dest_file1 = file("\$PWD/SRR30604805/genome_results.txt")
                 def dest_file2 = file("\$PWD/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt")
@@ -31,10 +31,10 @@ nextflow_process {
                 source_file2.copyTo(dest_file2)
 
                 // Copy debug files
-                def debug_source1 = file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.base_content.txt', checkIfExists: true)
-                def debug_source2 = file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
-                def debug_source3 = file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/qa.SRR30604805.base_content.txt', checkIfExists: true)
-                def debug_source4 = file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/qa.SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_source1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.base_content.txt', checkIfExists: true)
+                def debug_source2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_source3 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/qa.SRR30604805.base_content.txt', checkIfExists: true)
+                def debug_source4 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/qa.SRR30604805.for_qual_histogram.txt', checkIfExists: true)
 
                 def debug_dest1 = file("\$PWD/debug/SRR30604805.base_content.txt")
                 def debug_dest2 = file("\$PWD/debug/SRR30604805.for_qual_histogram.txt")
@@ -48,11 +48,11 @@ nextflow_process {
 
                 input[0] = [
                     [id:"SRR30604805", single_end: false],
-                    file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.stats.txt', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.stats.txt', checkIfExists: true),
                     debug_dir,
                     parent_dir
                 ]
-                input[1] = file(params.modules_testdata_base_path + '/genomics/fungal/reference/test_reference.fasta', checkIfExists: true)
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
                 """
             }
         }
@@ -82,8 +82,8 @@ nextflow_process {
                 def subdir = file("\$PWD/SRR30604805/raw_data_qualimapReport")
                 subdir.mkdirs()
 
-                def source_file1 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/genome_results.txt', checkIfExists: true)
-                def source_file2 = file(params.modules_testdata_base_path + '/genomics/fungal/qualimap/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt', checkIfExists: true)
+                def source_file1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qualimap/SRR30604805/genome_results.txt', checkIfExists: true)
+                def source_file2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qualimap/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt', checkIfExists: true)
                 def dest_file1 = file("\$PWD/SRR30604805/genome_results.txt")
                 def dest_file2 = file("\$PWD/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt")
 
@@ -91,10 +91,10 @@ nextflow_process {
                 source_file2.copyTo(dest_file2)
 
                 // Copy debug files
-                def debug_source1 = file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.base_content.txt', checkIfExists: true)
-                def debug_source2 = file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
-                def debug_source3 = file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/qa.SRR30604805.base_content.txt', checkIfExists: true)
-                def debug_source4 = file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/qa.SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_source1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.base_content.txt', checkIfExists: true)
+                def debug_source2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_source3 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/qa.SRR30604805.base_content.txt', checkIfExists: true)
+                def debug_source4 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/qa.SRR30604805.for_qual_histogram.txt', checkIfExists: true)
 
                 def debug_dest1 = file("\$PWD/debug/SRR30604805.base_content.txt")
                 def debug_dest2 = file("\$PWD/debug/SRR30604805.for_qual_histogram.txt")
@@ -108,11 +108,11 @@ nextflow_process {
 
                 input[0] = [
                     [id:"SRR30604805", single_end: false],
-                    file(params.modules_testdata_base_path + '/genomics/fungal/faqcs/SRR30604805.stats.txt', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.stats.txt', checkIfExists: true),
                     debug_dir,
                     parent_dir
                 ]
-                input[1] = file(params.modules_testdata_base_path + '/genomics/fungal/reference/test_reference.fasta', checkIfExists: true)
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
                 """
             }
         }
