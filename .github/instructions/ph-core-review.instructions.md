@@ -10,6 +10,7 @@ This file contains instructions for GitHub Copilot code review to ensure AMDP pr
 ## Review Scope
 
 Apply these standards when reviewing:
+
 - NextFlow workflow files (`.nf`)
 - Module and subworkflow implementations
 - Configuration files (`nextflow.config`, `*.config`)
@@ -20,9 +21,11 @@ Apply these standards when reviewing:
 ## Compliance Tiers
 
 ### Tier 1: AMDP Prerequisites (MANDATORY)
+
 Hard requirements for AMDP onboarding. Always check these first.
 
 **Workflow Requirements:**
+
 - ✅ Written in NextFlow with `.nf` files
 - ✅ Single command execution (`nextflow run`) - pipelines must run with a single command
 - ✅ Cloud compatibility (AWS/Azure/GCP executors) - must be tested on cloud computing environments
@@ -32,14 +35,17 @@ Hard requirements for AMDP onboarding. Always check these first.
 - ✅ Workflow specificity: single pipeline per data/analysis type
 
 **Module Requirements:**
+
 - ✅ Containers tagged in AMDP Elastic Container Registry
 - ✅ Specific version tags (never `latest`)
 - ✅ Pass Trivy security scans (no HIGH/CRITICAL vulnerabilities with no unresolved issues)
 
 ### Tier 2: ph-core Requirements
+
 Additional standards for ph-core namespace workflows.
 
 **Workflow:**
+
 - ✅ Built with nf-core template (custom branded)
 - ✅ MIT license
 - ✅ Semantic versioning (e.g., v1.2.3)
@@ -58,6 +64,7 @@ Additional standards for ph-core namespace workflows.
 - ✅ Remove nf-core branding: select "Custom" during pipeline creation
 
 **Modules:**
+
 - ✅ Specific container versions (NOT `latest`)
 - ✅ Single process per module
 - ✅ Standard meta fields (`meta.id`, `meta.single_end`)
@@ -67,11 +74,13 @@ Additional standards for ph-core namespace workflows.
 - ✅ Include nf-test coverage
 
 **Scripts:**
+
 - ✅ Placed in `bin/` directory
 - ✅ Shebang and executable permissions
 - ✅ Called directly in processes
 
 ### Tier 3: ph-core Recommendations
+
 Best practices for optimal quality.
 
 - Modern file formats (CRAM over BAM)
@@ -82,6 +91,7 @@ Best practices for optimal quality.
 - Optimized workflow size
 
 **Subworkflows:**
+
 - Minimum 2 modules per subworkflow
 - Comments describing input/output channel structures
 - Channel structure descriptions in meta.yml
@@ -102,6 +112,7 @@ Best practices for optimal quality.
 ## Key Standards Reference
 
 ### Naming Conventions
+
 - **Workflows**: lowercase, no punctuation (`myworkflow`)
 - **Modules**: lowercase directory (`modules/bwa/mem/`)
 - **Processes**: UPPERCASE with underscore (`BWA_MEM`)
@@ -111,12 +122,14 @@ Best practices for optimal quality.
 - **Outputs**: `${prefix}.ext` (e.g., `${prefix}.fq.gz`)
 
 ### Container Management
+
 - Use specific versions: `quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0`
 - Never use `latest` tag
 - AMDP containers must be in Elastic Container Registry
 - Run Trivy scans: `trivy image <container>`
 
 ### Module Structure Example
+
 ```nextflow
 process TOOL_NAME {
     tag "$meta.id"
@@ -157,6 +170,7 @@ process TOOL_NAME {
 ### Module Development Standards
 
 **General Requirements:**
+
 - All mandatory input files included in input channel definitions
 - All optional input files included in input channel definitions
 - Non-mandatory command-line tool non-file arguments provided via `$task.ext.args`
@@ -173,6 +187,7 @@ process TOOL_NAME {
 - Use only one tool per module if possible
 
 **Input/Output Management:**
+
 - Input channel path declarations for all possible input files (required and optional)
 - Options/flags/parameters not required by tool should use `ext.args`, not `val` channel input
 - Named file extensions for output channels (e.g., `path "*.txt", emit:txt`), with exceptions for datasets/directories
@@ -183,25 +198,30 @@ process TOOL_NAME {
 - Each output file type emitted in own channel (max one), with meta map if provided (except `versions.yml`)
 
 **Parameters:**
+
 - All params within module only initialized and used in local context
 - Parameters evaluated per sample (e.g., single-end/paired-end) defined within process
 - Module file should only define input/output files as command-line parameters
 
 **Resource Requirements:**
+
 - Appropriate resource label: `process_single`, `process_low`, `process_medium`, or `process_high`
 - If tool supports multi-threading: provide parameter using `$task.cpus`
 - If no multi-threading: consider `process_single` unless large RAM required
 - For multiple multi-threaded tools: assign CPUs per tool
 
 **Software/Container Requirements:**
+
 - Software requirements declared using Nextflow `container` directive
 - Multi-tool containers available on BioContainers (e.g., bwa and samtools)
 - New multi-tool containers: submit PR to BioContainers multi-package-containers repository
 
 **Deprecation:**
+
 - When alternative available on nf-core modules: add deprecation message at top and assert in code body
 
 ### Testing Requirements
+
 - Use nf-test framework
 - Minimal test data (subset datasets)
 - Test all input/output types
@@ -211,6 +231,7 @@ process TOOL_NAME {
 - Descriptive test names
 
 **Module-Specific Testing:**
+
 - Tags for dependent modules must be specified to trigger tests when upstream modules change
 - Minimum one success assertion and versions in snapshot
 - Only one snapshot per module test containing all assertions
@@ -219,6 +240,7 @@ process TOOL_NAME {
 - Input data referenced with `modules_testdata_base_path` parameter
 
 **Subworkflow-Specific Testing:**
+
 - Tags for dependent modules ensure upstream changes trigger tests
 - All output channels in snapshots or verified for existence
 - Test each input/output type combination
@@ -227,6 +249,7 @@ process TOOL_NAME {
 ### Documentation Requirements
 
 **README.md must include:**
+
 - SHARE IT Act metadata block at top (Org, Contact Email, Exemption, Status, Keywords, Version, Contract#)
 - Pipeline name with ph-core namespace
 - Badges (CI/CD, nf-test, Nextflow version, nf-core template)
@@ -240,6 +263,7 @@ process TOOL_NAME {
 - DISCLAIMER reference
 
 **meta.yml files must include:**
+
 - Tools section with `args_id`
 - Input/output types (map, file, directory, string, boolean, integer, float, list)
 - Mandatory/Optional markings
@@ -254,6 +278,7 @@ process TOOL_NAME {
 ## Review Process
 
 ### For Workflows
+
 1. Check file structure and naming (lowercase, no punctuation)
 2. Verify single-command execution
 3. Review container references and versioning
@@ -279,6 +304,7 @@ process TOOL_NAME {
 23. Check workflow runs on cloud environments (AWS/Azure/GCP)
 
 ### For Modules
+
 1. Verify directory structure: `modules/*/main.nf` + `meta.yaml`
 2. Check process naming (UPPERCASE with underscore)
 3. Review container directive (specific version)
@@ -311,6 +337,7 @@ process TOOL_NAME {
 30. Check multi-tool containers available on BioContainers or justify new container
 
 ### For Subworkflows
+
 1. Verify minimum 2 modules
 2. Check directory naming (lowercase)
 3. Review channel naming (`snake_case`, descriptive)
@@ -329,8 +356,9 @@ process TOOL_NAME {
 16. Verify no assumption of named params from parent workflow
 
 ### For README.md
+
 1. Verify SHARE IT Act metadata block format and completeness
-2. Check pipeline namespace (ph-core/*)
+2. Check pipeline namespace (ph-core/\*)
 3. Validate badge links and accuracy
 4. Ensure introduction is complete (no TODO comments)
 5. Verify workflow diagram exists
@@ -342,6 +370,7 @@ process TOOL_NAME {
 11. Check DISCLAIMER reference
 
 ### For Test Data
+
 1. Verify test data doesn't replicate existing test-data unnecessarily
 2. Check test data is publicly available with appropriate licenses
 3. Ensure test data is minimal size
@@ -380,4 +409,4 @@ When providing code review feedback, structure comments as:
 - Check all applicable standards for the tier
 - Acknowledge good patterns
 - Focus on ph-core and AMDP compliance standards
-- Ensure documentation completeness (no TODO placeholders in production code)
+- Ensure documentation completeness (no TODO placeholders in production code)
