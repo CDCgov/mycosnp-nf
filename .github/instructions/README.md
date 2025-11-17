@@ -17,6 +17,7 @@ This directory contains custom instructions for GitHub Copilot to provide contex
 **Excluded agents:** Coding agent (only used by code review)
 
 **Key features:**
+
 - Three-tier compliance checking (AMDP Prerequisites, ph-core Requirements, ph-core Recommendations)
 - NextFlow DSL2 standards enforcement
 - Module, subworkflow, and workflow compliance validation
@@ -42,4 +43,4 @@ Note: Currently, there's no way to enable instructions only for GitHub.com while
 ## References
 
 - [GitHub Copilot Custom Instructions Documentation](https://docs.github.com/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
-- [Agent-Specific Instructions Announcement](https://github.blog/changelog/2025-11-12-copilot-code-review-and-coding-agent-now-support-agent-specific-instructions/)
+- [Agent-Specific Instructions Announcement](https://github.blog/changelog/2025-11-12-copilot-code-review-and-coding-agent-now-support-agent-specific-instructions/)
