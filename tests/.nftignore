@@ -13,8 +13,6 @@ multiqc/multiqc_report.html
 **/reference.dict
 pipeline_info/*.{html,json,txt,yml}
 **/*.vcf.*
-combined/qualimap/*/raw_data_qualimapReport/*_histogram.txt
-**/qualimapReport.html
 **/insert_size_across_reference.txt
 **/coverage_across_reference.txt
 **/snpEff_summary.{html,csv}

@@ -3,6 +3,127 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.6.4 - [Unreleased]
+
+This release represents the AMD-P (Advanced Molecular Detection Platform) enhancement of the CDCgov/mycosnp-nf pipeline with public health-specific enhancements and workflow improvements.
+
+### `Added`
+
+- **AMD-P QC Extensions**
+  - `QC_PARSER` module for automated QC threshold evaluation
+  - `qc_parser.py` script parses QC reports and generates pass/fail determinations based on configurable thresholds
+  - `--qc_thresholds` parameter for customizable QC criteria (default: `GCrangePct:42-47.5,AvgQscore:28,RefLenCov:20,MeanCovDepth:20`)
+  - `aggregate_outputs/combined_QC_results.csv` output with per-sample pass/fail status
+  - AMD-P parameters: `--metadata_csv`, `--geolocation_csv`, `--test_samples`, `--percent_n`, `--amdp` (enabled by default)
+
+- **Microreact Integration**
+  - `MICROREACTSHAPES` module for phylogenetic visualization data preparation
+  - `update_microreact_shapes.py` script processes metadata and geolocation data for Microreact compatibility
+  - Test sample filtering and geolocation enrichment support
+
+- **Parameter Validation**
+  - Migrated from nf-validation to nf-schema@2.4.2 plugin
+  - Configurable parameter validation with ignore lists for non-standard parameters
+  - Help system parameters: `--help`, `--help_full`, `--show_hidden`
+
+- **Workflow Mode Selection**
+  - `--mode` parameter for workflow selection
+  - Supported modes: `PRE_MYCOSNP` and `NFCORE_MYCOSNP`
+
+- **nf-test Coverage**
+  - Unit tests added for all local modules
+  - Pipeline-level tests added for `PRE_MYCOSNP` workflow
+  - Profile-specific tests added for `singleSample` and `vcfs` execution profiles
+
+### `Changed`
+
+- **Parameter Validation Configuration**
+  - Updated validation block to nf-schema-compliant syntax
+  - Changed default `params.mode` to `NFCORE_MYCOSNP` (previously `params.workflow`)
+  - Set `params.igenomes_ignore = true` by default
+
+- **Samplesheet Format and Validation**
+  - Unified samplesheet format consolidates FASTQ, SRA, and VCF inputs into single CSV
+  - Required columns: `sample` plus at least one of `fastq_1`, `sra`, or `vcf`
+  - Optional columns: `fastq_2` (paired-end)
+  - Multi-lane support maintained (no `fastq_3`, `fastq_4` are added as an additional row, keeping the sample name the same)
+  - SRA accessions integrated directly via `sra` column (eliminates separate `--add_sra_file` parameter)
+  - Existing VCF files integrated via `vcf` column (eliminates separate `--add_vcf_file` parameter)
+  - `INPUT_CHECK` subworkflow provides comprehensive validation with file existence checking
+  - Automatic lane merging for samples with multiple FASTQ columns
+  - Enhanced error reporting for missing or invalid input files
+
+- **Module Migration to nf-core**
+  - Replaced local modules with nf-core versions for improved maintainability:
+    - `FAQCS` from nf-core/modules
+    - `BWA/MEM` from nf-core/modules
+    - `PICARD MARKDUPLICATES and ADDORREPLACEREADGROUPS` from nf-core/modules
+    - `SEQTK/SAMPLE` from nf-core/modules (replaced local `seqtk_sample.nf`)
+    - `GATK4/COMBINEGVCFS` from nf-core/modules (replaced local `gatk4_localcombinegvcfs.nf`)
+  - Added `GATK4/INDEXFEATUREFILE` module from nf-core/modules
+
+- **QC Metrics Transition**
+  - Replaced Qualimap with Samtools tools for alignment quality metrics:
+    - `SAMTOOLS/COVERAGE` for coverage statistics and mean depth calculations
+    - `SAMTOOLS/DEPTH` for per-position depth analysis and genome fraction metrics
+    - `SAMTOOLS/STATS` for comprehensive alignment statistics including mapped read counts
+  - Updated `QC_REPORT` module to process Samtools outputs instead of Qualimap results
+  - Maintained all QC report metrics while improving computational efficiency and consistency
+
+- **Module Organization**
+  - Reorganized local modules from flat structure (25 .nf files) to organized subdirectories (23 modules with main.nf/meta.yml structure)
+  - Added `INPUT_PROC` local module for reference genome preprocessing
+  - Updated module publication paths to `aggregate_outputs/` for cross-sample reports
+
+- **Output Directory Structure**
+  - QC parser outputs published to `aggregate_outputs/` directory
+  - Consolidated cross-sample reports in single output location
+
+### `Removed`
+
+- **Local Modules Removed**
+  - `seqtk_sample.nf`
+  - `gatk4_localcombinegvcfs.nf`
+  - `pre_mycosnp_comb_summary.nf`
+  - `snpeff_ann.nf`, `snpeff_build.nf`, `snpeff_local.nf`
+  - `faqcs.nf`
+  - `bwa_mem.nf`
+  - `picard_markduplicates.nf`
+  - `picard_addorreplacereadgroups.nf`
+  - `qualimap.nf` (replaced by Samtools tools for QC metrics)
+
+- **Deprecated Perl and Python Scripts**
+  - `check_samplesheet.py` (validation handled by nf-schema and INPUT_CHECK subworkflow)
+  - `mycosnp_combine_lanes.pl` (lane merging implemented in INPUT_CHECK subworkflow)
+  - `mycosnp_create_sample_sheet.pl`
+  - `mycosnp_full_samplesheet.sh`
+  - `fastq_dir_to_samplesheet.py`
+
+- **Deprecated Parameters**
+  - `--add_sra_file` parameter removed (SRA accessions now specified in `sra` column of samplesheet)
+  - `--add_vcf_file` parameter removed (VCF files now specified in `vcf` column of samplesheet)
+
+### `Deprecated`
+
+- `--workflow` parameter deprecated in favor of `--mode` (backward compatibility maintained)
+- nf-validation plugin replaced with nf-schema (no user action required)
+
+### `Notes`
+
+- AMD-P extensions enabled by default with `--amdp true`
+- Upstream features and fixes from v1.6.2 and earlier included
+- Requires Nextflow >= 24.10.4 (updated from >= 21.10.3)
+- Compatible with nf-schema@2.4.2 plugin
+- Optimized for AWS Batch execution with AMDP profiles
+
+### `Testing`
+
+- Existing test profiles maintained and functional
+- QC parser threshold parsing validated
+- Documentation examples updated with current parameter names
+
+---
+
 ## v1.6.2 - [2025-05-18]
 
 ### `Fixed`

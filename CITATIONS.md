@@ -60,10 +60,6 @@
 
   > "Picard Toolkit." 2019. Broad Institute, GitHub Repository. http://broadinstitute.github.io/picard/; Broad Institute
 
-- [Qualimap](https://pubmed.ncbi.nlm.nih.gov/26187896/)
-
-  > Okonechnikov K, Conesa A, García-Alcalde F. Qualimap 2: advanced multi-sample quality control for high-throughput sequencing data. Bioinformatics. 2016 Jan 15;32(2):292-4. doi: 10.1093/bioinformatics/btv566. Epub 2015 Oct 1. PubMed PMID: 26187896; PubMed Central PMCID: PMC4708105.
-
 - [RapidNJ](https://pubmed.ncbi.nlm.nih.gov/18988624/)
 
   > Simonsen M, Mailund T, Pedersen CN. Rapid neighbour-joining. Algorithms in Bioinformatics. 2008;5724:113-122. doi: 10.1007/978-3-540-87361-7_10.

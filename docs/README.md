@@ -3,7 +3,7 @@
 MycoSNP is a portable Nextflow workflow for whole-genome sequencing analysis of fungal pathogens (with a current focus on _Candida auris_). It supports two complementary modes:
 
 1. **Pre-MycoSNP (`--mode PRE_MYCOSNP`)** – Fast taxonomic classification (GAMBIT) and clade / subtype prediction (sourmash) plus minimal assembly/QC summaries.
-2. **Main MycoSNP (`--mode NFCORE_MYCOSNP`)** – Full reference-based variant calling (GATK), filtering, consensus construction, phylogeny, optional annotation (snpEff + snpeffr), and AMD-P public health QC extensions.
+2. **NFCORE_MYCOSNP (`--mode NFCORE_MYCOSNP`)** – Full reference-based variant calling (GATK), filtering, consensus construction, phylogeny, optional annotation (snpEff + snpeffr), and AMD-P public health QC extensions.
 
 This README gives a high-level orientation. See linked pages for full details.
 
@@ -46,14 +46,59 @@ This README gives a high-level orientation. See linked pages for full details.
 
 ### Workflows Overview
 
-| Mode           | Purpose                            | Core Steps                                                                                                                                                                                                                           | Principal Outputs                                                                                                                                     |
-| -------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PRE_MYCOSNP    | Rapid species & subtype prediction | FASTQC raw -> seqkit pairing -> FaQCs -> Shovill assembly -> GAMBIT -> subtype -> summaries -> MultiQC                                                                                                                               | Per-sample taxon summary CSVs, combined Pre-MycoSNP summary, taxonomy & subtype CSVs, assemblies.                                                     |
-| NFCORE_MYCOSNP | Full variant & phylogeny           | Reference prep (mask/index) -> FASTQC raw -> read QC / trimming -> alignment & BAM QC -> per-sample gVCFs -> combine / call / filter -> consensus / SNP fasta -> phylogeny (trees) -> annotation (optional) -> QC reports -> MultiQC | gVCFs, combined filtered SNP VCFs, consensus FASTA, SNP distance matrix, phylogeny trees, QC reports, annotation outputs, MultiQC, software versions. |
+#### PRE_MYCOSNP Mode
+
+**Purpose:** Rapid species identification and subtype prediction
+
+**Core Steps:**
+
+1. FastQC (raw reads)
+2. SeqKit pairing
+3. FaQCs (quality control and trimming)
+4. Shovill assembly
+5. GAMBIT taxonomic classification
+6. Subtype prediction (sourmash)
+7. Summary statistics
+8. MultiQC aggregation
+
+**Principal Outputs:**
+
+- Per-sample taxon summary CSVs
+- Combined Pre-MycoSNP summary report
+- Taxonomy and subtype classification tables
+- Draft assemblies
+
+#### NFCORE_MYCOSNP
+
+**Purpose:** Comprehensive variant calling and phylogenetic analysis
+
+**Core Steps:**
+
+1. Reference preparation (repeat masking and indexing)
+2. FastQC (raw reads)
+3. Read quality control and trimming
+4. Read alignment and BAM quality assessment
+5. Per-sample gVCF generation (GATK HaplotypeCaller)
+6. Joint variant calling and filtering
+7. Consensus sequence and SNP FASTA generation
+8. Phylogenetic tree construction (RapidNJ/FastTree)
+9. Optional variant annotation (snpEff)
+10. QC reporting and MultiQC aggregation
+
+**Principal Outputs:**
+
+- Per-sample gVCF files
+- Combined filtered SNP VCF
+- Consensus FASTA sequences
+- SNP distance matrix
+- Phylogenetic trees (Newick format)
+- QC reports (pass/fail thresholds)
+- Variant annotation outputs (if enabled)
+- MultiQC report with software versions
 
 ### Prerequisites
 
-- **Nextflow** ≥ version specified in `manifest.nextflowVersion`.
+- **Nextflow** ≥ version 24.10.4.
 - One supported execution profile: Docker, Singularity/Apptainer, Podman, Conda/Mamba, or Wave.
 - Adequate RAM / CPU for assembly and variant calling (adjust process resources via profiles).
 - Reference FASTA (unless using iGenomes key or supplying pre-built indices via `--ref_dir`).
@@ -113,7 +158,7 @@ Activated by default (`--amdp true`). Adds:
 See [`output.md`](output.md) for full tree. Key locations:
 
 - `samples/<sample_id>/faqcs/` – Trimmed read QC.
-- `samples/<sample_id>/finalbam/` – Final BAM + index (main workflow).
+- `samples/<sample_id>/finalbam/` – Final BAM + index (NFCORE_MYCOSNP).
 - `combined/gvcf/`, `combined/finalfiltered/`, `combined/phylogeny/*/` – Variant and phylogeny artifacts.
 - `aggregate_outputs/pre-mycosnp_summary/` – Combined Pre-MycoSNP summary.
 - `aggregate_outputs/` – Annotation aggregate outputs (e.g. FKS1 report) when snpEff enabled.
@@ -149,4 +194,4 @@ Please cite MycoSNP (CDCgov/mycosnp-nf) and underlying tools (GAMBIT, sourmash, 
 
 For broader nf-core usage, installation, and configuration guidance visit the [nf-core website](https://nf-co.re).
 
-Last updated: 2025-10-27
+Last updated: 2025-11-14

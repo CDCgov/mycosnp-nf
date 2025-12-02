@@ -8,7 +8,7 @@ process QC_REPORT {
         'quay.io/biocontainers/pandas:1.5.2' }"
 
     input:
-    tuple val(meta), path(stats), path(debug_dir), path(results)
+    tuple val(meta), path(stats), path(debug_dir), path(coverage), path(depth), path(samtools_stats)
     path reference
 
     output:
@@ -32,8 +32,9 @@ process QC_REPORT {
         --qual_scores_before_trim debug/qa.${meta.id}.for_qual_histogram.txt \\
         --qual_scores_after_trim debug/${meta.id}.for_qual_histogram.txt \\
         --reference ${reference} \\
-        --bam_coverage ${results}/genome_results.txt \\
-        --genome_fraction ${results}/raw_data_qualimapReport/genome_fraction_coverage.txt \\
+        --samtools_coverage ${coverage} \\
+        --samtools_depth ${depth} \\
+        --samtools_stats ${samtools_stats} \\
         --min_depth ${params.min_depth} > ${meta.id}_output.txt
 
     cat <<-END_VERSIONS > versions.yml

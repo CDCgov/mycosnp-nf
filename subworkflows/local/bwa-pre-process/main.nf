@@ -7,20 +7,18 @@
 include { SEQKIT_PAIR                          } from '../../../modules/nf-core/seqkit/pair/main'
 include { SEQTK_SAMPLE                         } from '../../../modules/nf-core/seqtk/sample/main'
 include { FAQCS                                } from '../../../modules/nf-core/faqcs/main'
-include { BWA_INDEX                            } from '../../../modules/nf-core/bwa/index/main'   //not used here
 include { BWA_MEM                              } from '../../../modules/nf-core/bwa/mem/main'
-include { SAMTOOLS_SORT                        } from '../../../modules/nf-core/samtools/sort/main' //not used here
 include { PICARD_MARKDUPLICATES                } from '../../../modules/nf-core/picard/markduplicates/main'
 include { PICARD_CLEANSAM                      } from '../../../modules/nf-core/picard/cleansam/main'
-include { SAMTOOLS_VIEW as PICARDDUPTOCLEANSAM } from '../../../modules/nf-core/samtools/view/main' //not used here
 include { PICARD_FIXMATEINFORMATION            } from '../../../modules/nf-core/picard/fixmateinformation/main'
 include { PICARD_ADDORREPLACEREADGROUPS        } from '../../../modules/nf-core/picard/addorreplacereadgroups/main'
 include { FASTQC as FASTQC_POST                } from '../../../modules/nf-core/fastqc/main'
-include { QUALIMAP_BAMQC                       } from '../../../modules/nf-core/qualimap/bamqc/main'
 include { DOWNSAMPLE_RATE                      } from '../../../modules/local/downsample_rate/main'
 include { SAMTOOLS_STATS                       } from '../../../modules/nf-core/samtools/stats/main'
 include { SAMTOOLS_IDXSTATS                    } from '../../../modules/nf-core/samtools/idxstats/main'
 include { SAMTOOLS_FLAGSTAT                    } from '../../../modules/nf-core/samtools/flagstat/main'
+include { SAMTOOLS_COVERAGE                    } from '../../../modules/nf-core/samtools/coverage/main'
+include { SAMTOOLS_DEPTH                       } from '../../../modules/nf-core/samtools/depth/main'
 include { QC_REPORT                            } from '../../../modules/local/qc_report/main'
 
 
@@ -152,13 +150,6 @@ workflow BWA_PREPROCESS {
 
     ch_versions = ch_versions.mix(FASTQC_POST.out.versions)
 
-    QUALIMAP_BAMQC (
-        PICARD_ADDORREPLACEREADGROUPS.out.bam,
-        []
-    )
-
-    ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions)
-
     ch_alignment_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam
         .join( PICARD_ADDORREPLACEREADGROUPS.out.bai )
 
@@ -179,10 +170,42 @@ workflow BWA_PREPROCESS {
         ch_alignment_combined
     )
 
-    // QC_REPORT needs both the stats.txt file and the debug directory from FAQCS
+    ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
+
+    // SAMTOOLS_COVERAGE needs bam, bai, fasta, and fai
+    ch_coverage_fasta = pairWithReference(PICARD_ADDORREPLACEREADGROUPS.out.bam, ref_fasta)
+    ch_coverage_fai = pairWithReference(PICARD_ADDORREPLACEREADGROUPS.out.bam, ref_fai)
+
+    // Create combined channel with bam+bai for SAMTOOLS_COVERAGE
+    ch_coverage_combined = PICARD_ADDORREPLACEREADGROUPS.out.bam
+        .join( PICARD_ADDORREPLACEREADGROUPS.out.bai )
+
+    SAMTOOLS_COVERAGE (
+        ch_coverage_combined,
+        ch_coverage_fasta,
+        ch_coverage_fai
+    )
+
+    ch_versions = ch_versions.mix(SAMTOOLS_COVERAGE.out.versions)
+
+    // SAMTOOLS_DEPTH needs bam and optional intervals
+    // Pass bam files and a matching channel with null intervals for each sample
+    ch_depth_intervals = PICARD_ADDORREPLACEREADGROUPS.out.bam
+        .map { meta, bam -> tuple(meta, []) }
+
+    SAMTOOLS_DEPTH (
+        PICARD_ADDORREPLACEREADGROUPS.out.bam,
+        ch_depth_intervals
+    )
+
+    ch_versions = ch_versions.mix(SAMTOOLS_DEPTH.out.versions)
+
+    // QC_REPORT needs FAQCS stats, debug, samtools coverage, samtools depth, and samtools stats
     ch_qcreport_input = FAQCS.out.stats
         .join(FAQCS.out.debug)
-        .join(QUALIMAP_BAMQC.out.results)
+        .join(SAMTOOLS_COVERAGE.out.coverage)
+        .join(SAMTOOLS_DEPTH.out.tsv)
+        .join(SAMTOOLS_STATS.out.stats)
 
     QC_REPORT(
         ch_qcreport_input,
@@ -199,10 +222,11 @@ workflow BWA_PREPROCESS {
         PICARD_ADDORREPLACEREADGROUPS.out.versions,
         FASTQC_POST.out.versions,
         SAMTOOLS_STATS.out.versions,
-        QUALIMAP_BAMQC.out.versions,
         QC_REPORT.out.versions,
         SAMTOOLS_IDXSTATS.out.versions,
-        SAMTOOLS_FLAGSTAT.out.versions
+        SAMTOOLS_FLAGSTAT.out.versions,
+        SAMTOOLS_COVERAGE.out.versions,
+        SAMTOOLS_DEPTH.out.versions
     )
 
     if (params.coverage != 0) {
@@ -216,10 +240,11 @@ workflow BWA_PREPROCESS {
     emit:
     alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam  // channel: [ val(meta), bam ]
     alignment_combined = ch_alignment_combined                  // channel: [ val(meta), bam, bai ]
-    qualimap           = QUALIMAP_BAMQC.out.results             // channel: [ val(meta), results ]
     stats              = SAMTOOLS_STATS.out.stats               // channel: [ val(meta), stats ]
     flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat         // channel: [ val(meta), flagstat ]
     idxstats           = SAMTOOLS_IDXSTATS.out.idxstats         // channel: [ val(meta), idxstats ]
+    coverage           = SAMTOOLS_COVERAGE.out.coverage         // channel: [ val(meta), txt ]
+    depth              = SAMTOOLS_DEPTH.out.tsv                 // channel: [ val(meta), tsv ]
     post_qc            = FASTQC_POST.out.zip                    // channel: [ val(meta), zip ]
     versions           = ch_versions                            // channel: [ ch_versions ]
     qc_lines           = QC_REPORT.out.qc_line                  // channel: [ qc_line ]

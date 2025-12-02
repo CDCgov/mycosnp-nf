@@ -15,21 +15,6 @@ nextflow_process {
                 def debug_dir = file("\$PWD/debug")
                 debug_dir.mkdirs()
 
-                def parent_dir = file("\$PWD/SRR30604805")
-                parent_dir.mkdirs()
-
-                def subdir = file("\$PWD/SRR30604805/raw_data_qualimapReport")
-                subdir.mkdirs()
-
-                def source_file1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qualimap/SRR30604805/genome_results.txt', checkIfExists: true)
-                def source_file2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qualimap/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt', checkIfExists: true)
-
-                def dest_file1 = file("\$PWD/SRR30604805/genome_results.txt")
-                def dest_file2 = file("\$PWD/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt")
-
-                source_file1.copyTo(dest_file1)
-                source_file2.copyTo(dest_file2)
-
                 // Copy debug files
                 def debug_source1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.base_content.txt', checkIfExists: true)
                 def debug_source2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
@@ -50,7 +35,9 @@ nextflow_process {
                     [id:"SRR30604805", single_end: false],
                     file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.stats.txt', checkIfExists: true),
                     debug_dir,
-                    parent_dir
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.txt', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.depth.tsv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.stats', checkIfExists: true)
                 ]
                 input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
                 """
@@ -76,20 +63,6 @@ nextflow_process {
                 def debug_dir = file("\$PWD/debug")
                 debug_dir.mkdirs()
 
-                def parent_dir = file("\$PWD/SRR30604805")
-                parent_dir.mkdirs()
-
-                def subdir = file("\$PWD/SRR30604805/raw_data_qualimapReport")
-                subdir.mkdirs()
-
-                def source_file1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qualimap/SRR30604805/genome_results.txt', checkIfExists: true)
-                def source_file2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qualimap/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt', checkIfExists: true)
-                def dest_file1 = file("\$PWD/SRR30604805/genome_results.txt")
-                def dest_file2 = file("\$PWD/SRR30604805/raw_data_qualimapReport/genome_fraction_coverage.txt")
-
-                source_file1.copyTo(dest_file1)
-                source_file2.copyTo(dest_file2)
-
                 // Copy debug files
                 def debug_source1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.base_content.txt', checkIfExists: true)
                 def debug_source2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
@@ -110,7 +83,9 @@ nextflow_process {
                     [id:"SRR30604805", single_end: false],
                     file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.stats.txt', checkIfExists: true),
                     debug_dir,
-                    parent_dir
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.txt', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.depth.tsv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.stats', checkIfExists: true)
                 ]
                 input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
                 """

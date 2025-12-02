@@ -19,7 +19,7 @@ The pipeline publishes files into a structured directory tree rooted at `<OUTDIR
 │   ├── vcf-to-fasta/                 # SNP alignment FASTA (vcf-to-fasta.fasta)
 │   ├── snpdists/                     # SNP distance matrix (.tsv)
 │   ├── phylogeny/rapidnj|fasttree|iqtree|raxmlng|quicksnp/  # Tree files (enabled methods only)
-│   ├── samtools_stats/ | samtools_flagstat/ | samtools_idxstats/ | qualimap/
+│   ├── samtools_stats/ | samtools_flagstat/ | samtools_idxstats/ | samtools_coverage/ | samtools_depth/
 │   └── consensus/                    # (Optional) consensus FASTA sequences
 ├── fastq/                            # FASTQ files (direct lanes or SRA retrieval) + MD5
 ├── multiqc/                          # Unified MultiQC report and data
@@ -52,7 +52,7 @@ Key conditional outputs:
   - [Taxonomic classification (GAMBIT)](#taxonomic-classification-gambit)
   - [Subtyping (sourmash)](#subtyping-sourmash)
   - [Pre-MycoSNP combined summary](#pre-mycosnp-combined-summary)
-- [MycoSNP ](#mycosnp)
+- [NFCORE_MYCOSNP](#nfcore_mycosnp)
   - [Reference preparation](#reference-preparation)
   - [Alignment + preprocessing](#alignment--preprocessing)
   - [Combined QC report](#combined-qc-report)
@@ -72,13 +72,13 @@ Key conditional outputs:
 
 ### Sample-level QC (Pre)
 
-Tools: FASTQC (raw), SeqKit (pair filtering), FaQCs (trimming + statistics).
+Tools: FastQC (raw), SeqKit (pair filtering), FaQCs (trimming + statistics).
 
 Per-sample directories under `samples/<sample_id>/`:
 
 | Directory                   | Contents                                                                                                                                            |
 | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `fastqc_raw/`               | Raw FASTQC reports (`*.html`, `*.zip`)                                                                                                              |
+| `fastqc_raw/`               | Raw FastQC reports (`*.html`, `*.zip`)                                                                                                              |
 | `faqcs/`                    | Trimmed reads (`*_1.trimmed.fastq.gz`, `*_2.trimmed.fastq.gz`), stats (`*.stats.txt`), per-base quality files (`*.for_qual_histogram.txt` if debug) |
 | `seqkit_pair/` (debug only) | Unpaired filtering intermediate fastqs                                                                                                              |
 
@@ -146,7 +146,7 @@ Column descriptions:
 
 ---
 
-## NFCORE_MycoSNP Mode
+## NFCORE_MYCOSNP
 
 ### Reference preparation
 
@@ -163,24 +163,25 @@ If `--fasta` (or `--ref_dir` / explicit indices) provided, repeats are masked (`
 
 Per-sample alignment and preprocessing steps (lane merge, pair filtering, optional downsampling if `--coverage > 0`, trimming, alignment, duplicate marking, cleaning, mate fixing, read group assignment, indexing). Key publication directories (some only with `--save_debug true`):
 
-| Directory                                            | Purpose                                        |
-| ---------------------------------------------------- | ---------------------------------------------- |
-| `samples/<sample_id>/fastqc_raw/`                    | Raw FASTQC                                     |
-| `samples/<sample_id>/faqcs/`                         | Trimmed reads + stats                          |
-| `samples/<sample_id>/bwamem/` (debug)                | Initial aligned BAM (unsorted or intermediate) |
-| `samples/<sample_id>/picard_markduplicates/` (debug) | Duplicate-marked BAM                           |
-| `samples/<sample_id>/picard_cleansam/` (debug)       | Cleaned BAM                                    |
-| `samples/<sample_id>/picard_fixmate/` (debug)        | Mate-fixed BAM                                 |
-| `samples/<sample_id>/finalbam/`                      | Final coordinate-sorted, RG added BAM + `.bai` |
-| `samples/<sample_id>/fastqc_post/`                   | FASTQC on filtered/trimmed reads               |
-| `combined/qualimap/`                                 | Qualimap alignment QC outputs                  |
-| `combined/samtools_stats/`                           | `*.stats` summaries                            |
-| `combined/samtools_flagstat/`                        | `*.flagstat` files                             |
-| `combined/samtools_idxstats/`                        | `*.idxstats` files                             |
+| Directory                                            | Purpose                                                  |
+| ---------------------------------------------------- | -------------------------------------------------------- |
+| `samples/<sample_id>/fastqc_raw/`                    | Raw FastQC                                               |
+| `samples/<sample_id>/faqcs/`                         | Trimmed reads + stats                                    |
+| `samples/<sample_id>/bwamem/` (debug)                | Initial aligned BAM (unsorted or intermediate)           |
+| `samples/<sample_id>/picard_markduplicates/` (debug) | Duplicate-marked BAM                                     |
+| `samples/<sample_id>/picard_cleansam/` (debug)       | Cleaned BAM                                              |
+| `samples/<sample_id>/picard_fixmate/` (debug)        | Mate-fixed BAM                                           |
+| `samples/<sample_id>/finalbam/`                      | Final coordinate-sorted, RG added BAM + `.bai`           |
+| `samples/<sample_id>/fastqc_post/`                   | FastQC on filtered/trimmed reads                         |
+| `combined/samtools_stats/`                           | `*.stats` summaries (comprehensive alignment statistics) |
+| `combined/samtools_flagstat/`                        | `*.flagstat` files (read flag statistics)                |
+| `combined/samtools_idxstats/`                        | `*.idxstats` files (index statistics)                    |
+| `combined/samtools_coverage/`                        | `*.txt` coverage summaries (mean depth, base quality)    |
+| `combined/samtools_depth/`                           | `*.tsv` per-position depth files                         |
 
 ### Combined QC report
 
-Generated by `QC_REPORTSHEET` from FaQCs + alignment metrics (Qualimap + Samtools). Path:
+Generated by `QC_REPORTSHEET` from FaQCs trimming statistics and Samtools alignment metrics (`samtools coverage`, `samtools depth`, and `samtools stats`). Path:
 
 | Path                  | File            |
 | --------------------- | --------------- |
@@ -195,6 +196,13 @@ If `--amdp true` (default) the parsed threshold evaluation appears at:
 QC Report columns (dynamic depth column label reflects `--min_depth`):
 
 `Sample Name, Reads Before Trimming, GC Before Trimming, Average Q Score Before Trimming, Reference Length Coverage Before Trimming, Reads After Trimming, Paired Reads After Trimming, Unpaired Reads After Trimming, GC After Trimming, Average Q Score After Trimming, Reference Length Coverage After Trimming, Mean Coverage Depth, Reads Mapped, Genome Fraction at <min_depth>X`
+
+**Metric Sources:**
+
+- Trimming metrics (reads, GC, Q scores): `FaQCs`
+- Mean Coverage Depth: `samtools coverage` (weighted mean across all references)
+- Reads Mapped: `samtools stats` (count and percentage)
+- Genome Fraction at depth threshold: `samtools depth` (positions ≥ min_depth / total reference length)
 
 ### Variant calling and consolidation
 
@@ -261,7 +269,7 @@ Files:
 | `workflow_summary_mqc.yaml`                                         | Parameter summary injected for traceability |
 | `premycosnp_software_versions.yml`, `mycosnp_software_versions.yml` | Included in report data set if present      |
 
-FASTQC plots here reflect raw (untrimmed) reads; trimming improvements appear in FaQCs statistics.
+FastQC plots here reflect raw (untrimmed) reads; trimming improvements appear in FaQCs statistics.
 
 ### Pipeline information
 
@@ -300,7 +308,7 @@ Database manifests reside under `assets/` (e.g. `assets/gambit_db/` and `assets/
 
 ## Citation
 
-Please cite the MycoSNP pipeline (CDCgov/mycosnp-nf) and underlying tools (GAMBIT, sourmash, Shovill, BWA, GATK, Qualimap, snpEff, MultiQC) as listed in `CITATIONS.md`.
+Please cite the MycoSNP pipeline (CDCgov/mycosnp-nf) and underlying tools (GAMBIT, sourmash, Shovill, BWA, GATK, snpEff, MultiQC) as listed in `CITATIONS.md`.
 
 ---
 
@@ -311,20 +319,19 @@ Please cite the MycoSNP pipeline (CDCgov/mycosnp-nf) and underlying tools (GAMBI
 3. Adjusted QC report path from `stats/qc_report/` to `combined/qc_report/` plus optional parsed thresholds in `qc/`.
 4. Added VCF QC report, consensus FASTA, snpdists, and per-method phylogeny directories.
 5. Clarified conditional publication controlled by parameters (`--snpeff`, `--skip_phylogeny`, etc.).
-6. Differentiated raw vs trimmed FASTQC context and integrated workflow parameter summary file.
+6. Differentiated raw vs trimmed FastQC context and integrated workflow parameter summary file.
 7. Explicit mapping for variant consolidation step outputs.
 
 ---
 
 ## Glossary
 
-| Term             | Definition                                                          |
-| ---------------- | ------------------------------------------------------------------- |
-| gVCF             | Genomic VCF with per-site reference confidence                      |
-| ANI              | Average Nucleotide Identity percentage                              |
-| Jaccard distance | 1 - Jaccard index (k-mer sketch distance metric)                    |
-| Consensus FASTA  | Per-sample sequence incorporating called variants                   |
-| Qualimap         | Tool generating alignment quality metrics (coverage, mapping stats) |
+| Term             | Definition                                        |
+| ---------------- | ------------------------------------------------- |
+| gVCF             | Genomic VCF with per-site reference confidence    |
+| ANI              | Average Nucleotide Identity percentage            |
+| Jaccard distance | 1 - Jaccard index (k-mer sketch distance metric)  |
+| Consensus FASTA  | Per-sample sequence incorporating called variants |
 
 ---
 

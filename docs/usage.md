@@ -1,6 +1,6 @@
 ## MycoSNP Usage <a id="top"></a>
 
-This guide explains how to prepare inputs and run both MycoSNP workflows: rapid taxonomic classification / subtyping (Pre-MycoSNP) and full reference-based variant analysis (Main MycoSNP). It reflects repository state as of 2025-10-27.
+This guide explains how to prepare inputs and run both MycoSNP workflows: rapid taxonomic classification / subtyping (Pre-MycoSNP) and full reference-based variant analysis (NFCORE_MYCOSNP). It reflects repository state as of 2025-11-14.
 
 ### Table of Contents
 
@@ -15,9 +15,9 @@ This guide explains how to prepare inputs and run both MycoSNP workflows: rapid 
    - [Integrating Existing VCFs](#integrated-vcfs)
    - [Automated Samplesheet Creation](#auto-samplesheet)
 7. [Pre-MycoSNP-specific Inputs](#premycosnp-inputs)
-8. [Reference Options (Main Workflow)](#reference-options)
+8. [Reference Options (NFCORE_MYCOSNP)](#reference-options)
 9. [Running Pre-MycoSNP](#run-premycosnp)
-10. [Running Main Workflow](#run-main)
+10. [Running NFCORE_MYCOSNP](#run-main)
 11. [AMD-P QC Extensions](#amdp)
 12. [Common Nextflow Arguments](#common-nextflow-arguments)
 13. [Resource / Configuration Customization](#resource--configuration-customization)
@@ -262,16 +262,6 @@ Profiles defined in `nextflow.config` tailor execution environment:
 | Reference build skipped    | Presence of `--ref_dir` overrides build from `--fasta`.                      |
 | QC combined results absent | `--amdp` disabled or thresholds file misformatted.                           |
 
-#### Glossary
-
-| Term             | Definition                                                                 |
-| ---------------- | -------------------------------------------------------------------------- |
-| gVCF             | Genomic VCF containing reference blocks and variant calls per sample.      |
-| Masking          | Repetition / low-complexity region masking prior to indexing.              |
-| Consensus        | FASTA assembled from filtered SNP positions (ambiguous or low depth -> N). |
-| ANI              | Average Nucleotide Identity percentage.                                    |
-| Jaccard distance | 1 - Jaccard index (k-mer sketch distance metric).                          |
-
 ### Samplesheet Format <a id="samplesheet-format"></a>
 
 Single integrated samplesheet handles FASTQ, SRA accessions, and existing VCF inclusion. Schema: `assets/schema_input.json`.
@@ -316,7 +306,7 @@ All Pre-MycoSNP inputs are read-level (FASTQ or SRA) plus optional subtyping dat
 - GAMBIT signatures: `--gambit_h5_dir` directory containing split signature chunks (`*.gs|*.h5[.gz]`).
 - Subtyping database: `--subtype_db` directory with `sourmash_taxa.csv` + signature files; `candida_auris_clades.sig` supports clade differentiation.
 
-### Reference Options (Main Workflow) <a id="reference-options"></a>
+### Reference Options (NFCORE_MYCOSNP) <a id="reference-options"></a>
 
 Supply ONE of the following strategies:
 
@@ -341,9 +331,9 @@ nextflow run CDCgov/mycosnp-nf --mode PRE_MYCOSNP \
 
 Key Outputs: assemblies (`samples/<id>/assembly/`), taxonomy CSVs, subtype CSVs, per-sample line summaries, combined summary, MultiQC.
 
-### Running Main Workflow <a id="run-main"></a>
+### Running NFCORE_MYCOSNP <a id="run-main"></a>
 
-Minimum viable main workflow run requires: samplesheet with at least one read source (FASTQ or SRA) and `--fasta` OR pre-built indices. For large cohorts consider providing pre-built indices via `--ref_dir` to save setup time.
+Minimum viable run requires: samplesheet with at least one read source (FASTQ or SRA) and `--fasta` OR pre-built indices. For large cohorts consider providing pre-built indices via `--ref_dir` to save setup time.
 
 Basic full run example (variant analysis + phylogeny):
 

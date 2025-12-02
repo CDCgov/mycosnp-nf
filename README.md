@@ -16,12 +16,13 @@
 
 This repository contains two workflows that are run independently:
 
-- **Pre-MycoSNP workflow**: A first-pass workflow for quick answers
+- **Pre-MycoSNP workflow (`--mode PRE_MYCOSNP`)**: A first-pass workflow for quick answers
   - Fungal taxonomic classification and _Candida auris_ clade typing, using de novo assemblies
-- **Main MycoSNP workflow (default workflow)**:
+- **Main MycoSNP workflow (default workflow)**: Comprehensive reference-based analysis
   - Reference-based SNP calling
   - Tree building
   - Identification of antifungal-resistance mutations
+  - Optional variant annotation (snpEff + snpeffr)
 
 ## 📚 Full Documentation
 
@@ -55,15 +56,19 @@ This repository contains two workflows that are run independently:
 
 4. Start running your own analysis!
    > [!NOTE]
-   > The `--workflow` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `workflow` is specified), the main MycoSNP workflow is executed. See summaries of each workflow in the next section, or more detailed documentation in the [Full Documentation](docs/README.md).
+   > The `--mode` option specifies which workflow to run (Pre-MycoSNP workflow or main MycoSNP workflow). By default (when no `mode` is specified), the main MycoSNP workflow is executed. See summaries of each workflow in the next section, or more detailed documentation in the [Full Documentation](docs/README.md).
 
 - [Pre-MycoSNP workflow](#pre-mycosnp-workflow-summary):
   ```console
-  nextflow run CDCgov/mycosnp-nf --workflow PRE_MYCOSNP -profile <docker/singularity/other/institute> --input samplesheet.csv
+  nextflow run CDCgov/mycosnp-nf --mode PRE_MYCOSNP -profile <docker/singularity/other/institute> --input samplesheet.csv
   ```
 - [Main MycoSNP workflow](#main-mycosnp-workflow-default-workflow-summary) (default workflow):
   ```console
   nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference_genome.fasta
+  ```
+- Generate per-sample gVCFs only (no joint analysis):
+  ```console
+  nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference_genome.fasta --skip_combined_analysis true
   ```
 
 5. It is advisable to delete large temporary or log files after the successful completion of the run. It takes a lot of space and may cause issues in future runs.
@@ -102,7 +107,7 @@ This repository contains two workflows that are run independently:
 - Filter unpaired reads from FASTQ files (`SeqKit`).
 - Down sample FASTQ files to a desired coverage or sampling rate (`SeqTK`).
 - Trim reads and assess quality (`FaQCs`).
-- Generate a QC report by extracting data from FaQCs report data.
+- Generate a QC report extracting data from FaQCs, samtools coverage, samtools depth, and samtools stats.
 - Align FASTQ reads to a reference (`BWA`).
 - Sort BAM files (`SAMTools`).
 - Mark and remove duplicates in the BAM file (`Picard`).
@@ -110,15 +115,15 @@ This repository contains two workflows that are run independently:
 - Fix mate information in the BAM file (`Picard "FixMateInformation"`).
 - Add read groups to the BAM file (`Picard "AddOrReplaceReadGroups"`).
 - Index the BAM file (`SAMTools`).
+- Collect alignment statistics (`SAMTools stats`, `SAMTools coverage`, `SAMTools depth`, `SAMTools flagstat`, `SAMTools idxstats`).
 - FastQC - Filtered reads QC.
-- Qualimap mapping quality report.
 - MultiQC - Aggregate report describing results and QC from the whole pipeline
 
 ### Variant calling and analysis
 
 > **Calls variants and generates a multi-FASTA file and phylogeny.**
 
-- Call variants (`GATK HaplotypeCaller`).
+- Call variants per sample (`GATK HaplotypeCaller` - generates gVCF files).
 - Combine gVCF files from the HaplotypeCaller into a single VCF (`GATK CombineGVCFs`).
 - Call genotypes using the (`GATK GenotypeGVCFs`).
 - Filter the variants (`GATK VariantFiltration`) [default (but customizable) filter: 'QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10'].
@@ -127,12 +132,14 @@ This repository contains two workflows that are run independently:
 - Select only SNPs from the VCF files (`GATK SelectVariants`).
 - Split the VCF file with SNPs by sample.
 - Create a multi-fasta file from the VCF SNP positions using a custom script (Broad Institute).
-- Create a distance matrix file using multi-fasta file(`SNPdists`).
-- Create phylogeny from multi-fasta file (`rapidNJ`, `FastTree2`, `quicksnp`, `RaxML(optional)`, `IQTree(optional)`)
+- Create a distance matrix file using multi-fasta file (`SNPdists`).
+- Create phylogeny from multi-fasta file (`RapidNJ`, `FastTree2`, optional `IQTree`, optional `RAxML-NG`)
 
-### Variant annotation analysis (currently available for _C. auris_ B11205 genome only)
+### Variant annotation analysis (optional, currently available for _C. auris_ B11205 genome only)
 
-- annotated VCF file (`snpEff`)
+> **Annotates variants and generates FKS1 hotspot reports when enabled with `--snpeff true`.**
+
+- Annotated VCF file (`snpEff`)
 - [`snpeffr`](https://github.com/CDCgov/snpeffr) report. Non-synonymous variants in FKS1 hotspot regions are included in the report.
 
 ## Pre-configured Nextflow development environment using Gitpod

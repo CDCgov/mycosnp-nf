@@ -3,13 +3,13 @@
         "content": [
             {
                 "0": [
-                    "SRR30604805_output.txt:md5,356f354b05dfff90ae4dd29d259fbfe1"
+                    "SRR30604805_output.txt:md5,6a7c76a089ecb734aa8301c312e70c03"
                 ],
                 "1": [
                     "versions.yml:md5,2736fecf6820c03e77e197812cf5ec7b"
                 ],
                 "qc_line": [
-                    "SRR30604805_output.txt:md5,356f354b05dfff90ae4dd29d259fbfe1"
+                    "SRR30604805_output.txt:md5,6a7c76a089ecb734aa8301c312e70c03"
                 ],
                 "versions": [
                     "versions.yml:md5,2736fecf6820c03e77e197812cf5ec7b"
@@ -20,7 +20,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T12:37:58.893240908"
+        "timestamp": "2025-11-21T11:17:55.033601803"
     },
     "QC_REPORT - stub test": {
         "content": [
@@ -43,6 +43,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T12:38:21.089096891"
+        "timestamp": "2025-11-21T11:19:06.084847511"
     }
 }

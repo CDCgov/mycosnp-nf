@@ -200,14 +200,16 @@ workflow MYCOSNP {
         reference          channel:  [ tuple reference_fasta, samtools_faidx, bwa_index ]
         reads              channel:  [ val(meta), [ fastq ] ]
     emit:
-        alignment           channel: [ val(meta), bam ]
-        alignment_index     channel: [ val(meta), bai ]
-        alignment_combined  channel: [ val(meta), bam, bai ]
-        qualimap            channel: [ val(meta), results ]
-        stats               channel: [ val(meta), stats ]
-        flagstat            channel: [ val(meta), flagstat ]
-        idxstats            channel: [ val(meta), idxstats ]
-        versions            channel: [ ch_versions ]
+        alignment          = PICARD_ADDORREPLACEREADGROUPS.out.bam  // channel: [ val(meta), bam ]
+        alignment_combined = ch_alignment_combined                  // channel: [ val(meta), bam, bai ]
+        stats              = SAMTOOLS_STATS.out.stats               // channel: [ val(meta), stats ]
+        flagstat           = SAMTOOLS_FLAGSTAT.out.flagstat         // channel: [ val(meta), flagstat ]
+        idxstats           = SAMTOOLS_IDXSTATS.out.idxstats         // channel: [ val(meta), idxstats ]
+        coverage           = SAMTOOLS_COVERAGE.out.coverage         // channel: [ val(meta), txt ]
+        depth              = SAMTOOLS_DEPTH.out.tsv                 // channel: [ val(meta), tsv ]
+        post_qc            = FASTQC_POST.out.zip                    // channel: [ val(meta), zip ]
+        versions           = ch_versions                            // channel: [ ch_versions ]
+        qc_lines           = QC_REPORT.out.qc_line                  // channel: [ qc_line ]
 ========================================================================================
 */
     // Pass reference channels separately to BWA_PREPROCESS
@@ -391,7 +393,6 @@ workflow MYCOSNP {
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.stats.map{meta, stats -> [stats]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.flagstat.map{meta, stats -> [stats]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.idxstats.map{meta, stats -> [stats]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.qualimap.map{meta, stats -> [stats]}.ifEmpty([]))
 
 
     MULTIQC (
