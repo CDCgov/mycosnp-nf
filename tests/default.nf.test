@@ -12,6 +12,7 @@ nextflow_pipeline {
                 coverage = 70
                 skip_phylogeny = true
                 snpeff = true
+                amdp = true
             }
         }
 

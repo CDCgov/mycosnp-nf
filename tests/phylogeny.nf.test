@@ -11,6 +11,7 @@ nextflow_pipeline {
                 input           = "https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/mycosnp/samplesheets/phylogeny_samplesheet.csv"
                 outdir          = "$outputDir"
                 fasta           = "https://raw.githubusercontent.com/CDCgov/oamd-bio-test-data/mycosnp/assets/reference/masked/reference.fa"
+                amdp            = true
             }
         }
 

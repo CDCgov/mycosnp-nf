@@ -14,7 +14,7 @@ This release represents the AMD-P (Advanced Molecular Detection Platform) enhanc
   - `qc_parser.py` script parses QC reports and generates pass/fail determinations based on configurable thresholds
   - `--qc_thresholds` parameter for customizable QC criteria (default: `GCrangePct:42-47.5,AvgQscore:28,RefLenCov:20,MeanCovDepth:20`)
   - `aggregate_outputs/combined_QC_results.csv` output with per-sample pass/fail status
-  - AMD-P parameters: `--metadata_csv`, `--geolocation_csv`, `--test_samples`, `--percent_n`, `--amdp` (enabled by default)
+  - AMD-P parameters: `--metadata_csv`, `--geolocation_csv`, `--test_samples`, `--percent_n`, `--amdp` (disabled by default, enable with `--amdp true`)
 
 - **Microreact Integration**
   - `MICROREACTSHAPES` module for phylogenetic visualization data preparation
@@ -46,7 +46,7 @@ This release represents the AMD-P (Advanced Molecular Detection Platform) enhanc
   - Unified samplesheet format consolidates FASTQ, SRA, and VCF inputs into single CSV
   - Required columns: `sample` plus at least one of `fastq_1`, `sra`, or `vcf`
   - Optional columns: `fastq_2` (paired-end)
-  - Multi-lane support maintained (no `fastq_3`, `fastq_4` are added as an additional row, keeping the sample name the same)
+  - Multi-lane support maintained (`fastq_3`, `fastq_4` are added as an additional row under column headers `fastq_1` and `fastq_2`, keeping the sample name the same)
   - SRA accessions integrated directly via `sra` column (eliminates separate `--add_sra_file` parameter)
   - Existing VCF files integrated via `vcf` column (eliminates separate `--add_vcf_file` parameter)
   - `INPUT_CHECK` subworkflow provides comprehensive validation with file existence checking
@@ -110,7 +110,7 @@ This release represents the AMD-P (Advanced Molecular Detection Platform) enhanc
 
 ### `Notes`
 
-- AMD-P extensions enabled by default with `--amdp true`
+- AMD-P extensions (disabled by default, enable with `--amdp true`)
 - Upstream features and fixes from v1.6.2 and earlier included
 - Requires Nextflow >= 24.10.4 (updated from >= 21.10.3)
 - Compatible with nf-schema@2.4.2 plugin
@@ -121,6 +121,14 @@ This release represents the AMD-P (Advanced Molecular Detection Platform) enhanc
 - Existing test profiles maintained and functional
 - QC parser threshold parsing validated
 - Documentation examples updated with current parameter names
+
+---
+
+## v1.6.3 - [2025-07-25]
+
+### Fixed
+
+- [Pre-MycoSNP workflow] GC content calculation for closest GAMBIT match (`Reference_GC` field in pre-mycosnp-summary.csv) excluded lowercase (soft-masked) bases, i.e. "c" and "g", leading to underestimates for `Reference_GC`. This fix includes lowercase "g" and "c" in the GC content calculation in `bin/pre-mycosnp-stats.sh`, for both the closest GAMBIT match and the sample assembly. However, the sample assembly shouldn't contain any soft-masked bases to begin with, so this shouldn't result in any differences in `Sample_Assembly_GC`.
 
 ---
 

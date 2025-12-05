@@ -9,7 +9,6 @@ def checkPathParamList = [
     params.input,
     params.multiqc_config,
     params.fasta
-    // params.snpeffdb
 ]
 
 // check for skip_samples_file
@@ -18,9 +17,6 @@ if (params.skip_samples_file) { checkPathParamList.add(params.skip_samples_file)
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet file not specified!' }
-
-// if (params.snpeffdb == null) { exit 1, 'Input path to snpeffdb not specified!' }
-// if (params.snpeffconfig == null) { exit 1, 'Input snpeff config file not specified' }
 
 
 /*
@@ -393,7 +389,7 @@ workflow MYCOSNP {
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.stats.map{meta, stats -> [stats]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.flagstat.map{meta, stats -> [stats]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.idxstats.map{meta, stats -> [stats]}.ifEmpty([]))
-
+    ch_multiqc_files = ch_multiqc_files.mix(BWA_PREPROCESS.out.coverage.map{meta, txt -> [txt]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),

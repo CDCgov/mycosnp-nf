@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# pre-mycosnp-stats.sh v1.1.0
+# pre-mycosnp-stats.sh v1.1.1
 # Authors:
 # Jared Johnson, jared.johnson@doh.wa.gov
 # Zack Mudge, ZMudge@cdc.gov
 
-version="v1.1.0"
+version="v1.1.1"
 
 #----- HELP & VERSION -----#
 # help message
@@ -72,7 +72,7 @@ if [[ -n "$ref" ]]; then # Check if ref is provided (not empty)
     ref_length=$(cat "${ref%.gz}" | grep -v ">" | tr -d '\n\t\r ' | wc -c)
 
     # reference %GC, to 2 decimal places
-    ref_gc_count=$(cat "${ref%.gz}" | grep -v ">" | grep -Eo "G|C" | wc -l)
+    ref_gc_count=$(cat "${ref%.gz}" | grep -v ">" | grep -Eo "G|C|g|c" | wc -l)
     ref_gc_perc=$(echo -e "${ref_gc_count}\t${ref_length}" | awk '{printf "%.2f", 100*$1/$2}')
 
     # estimated average depth of coverage, to 1 decimal place
@@ -85,7 +85,7 @@ else
 fi
 
 # sample assembly % GC, to 2 decimal places
-sample_gc_count=$(cat "${assembly%.gz}" | grep -v ">" | grep -Eo "G|C" | wc -l)
+sample_gc_count=$(cat "${assembly%.gz}" | grep -v ">" | grep -Eo "G|C|g|c" | wc -l)
 sample_gc_perc=$(echo -e "${sample_gc_count}\t${sample_length}" | awk '{printf "%.2f", 100*$1/$2}')
 
 #----- OUTPUT -----#

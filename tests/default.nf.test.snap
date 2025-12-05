@@ -185,6 +185,7 @@
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_samtools_coverage.txt",
                 "multiqc/multiqc_data/multiqc_samtools_flagstat.txt",
                 "multiqc/multiqc_data/multiqc_samtools_idxstats.txt",
                 "multiqc/multiqc_data/multiqc_samtools_stats.txt",
@@ -299,7 +300,8 @@
                 "vcfqc_passed_samples.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "vcf-to-fasta.fasta:md5,6c8994e2d535b92cf78b55aac74489ee",
                 "multiqc_citations.txt:md5,ce96770552b458754bb83dce77df722b",
-                "multiqc_general_stats.txt:md5,5dd8ca95b883487a4b4f4644f66a8787",
+                "multiqc_general_stats.txt:md5,abd08a78ff6697a33f7179e3a0ac5941",
+                "multiqc_samtools_coverage.txt:md5,91754d737115daae13ea4f4174cbc5e7",
                 "multiqc_samtools_flagstat.txt:md5,5cda3cb90461ef07b0b04eed53fb8472",
                 "multiqc_samtools_idxstats.txt:md5,6754f2f7690509ff86801124f5585d6f",
                 "multiqc_samtools_stats.txt:md5,e5cff4f70d90f79348b821782786d146",
@@ -330,6 +332,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-25T14:44:07.02262387"
+        "timestamp": "2025-12-05T11:48:56.345607132"
     }
 }

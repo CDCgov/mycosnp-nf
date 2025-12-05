@@ -237,11 +237,6 @@
                     "default": true,
                     "fa_icon": "fas fa-tree"
                 },
-                "snpeffconfig": {
-                    "type": "string",
-                    "description": "Path to SnpEff configuration directory.",
-                    "fa_icon": "fas fa-cog"
-                },
                 "snpeffcache": {
                     "type": "string",
                     "format": "directory-path",

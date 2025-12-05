@@ -146,12 +146,11 @@ nextflow run CDCgov/mycosnp-nf -profile singularity \
 
 ### AMD-P Extensions
 
-Activated by default (`--amdp true`). Adds:
+Disabled by default. Enable with `--amdp true` to add:
 
 - QC threshold evaluation (`combined_QC_results.csv`).
 - Metadata and geolocation hooks (future integration).
 - Percent N and coverage thresholds into pass/fail logic.
-  Disable with `--amdp false` for leaner runs if thresholds not needed.
 
 ### Typical Outputs (High-Level)
 

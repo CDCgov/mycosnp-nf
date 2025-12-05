@@ -9,26 +9,91 @@ This guide describes the outputs produced by the two selectable modes of the pip
 
 The pipeline publishes files into a structured directory tree rooted at `<OUTDIR>` (parameter `--outdir`). Below is a high-level map (subdirectories omitted for brevity). Actual directories are created only when the corresponding process runs (e.g. phylogeny trees skipped if `--skip_phylogeny`).
 
+### NFCORE_MYCOSNP Output Structure (Reference-based variant calling mode)
+
 ```text
 <OUTDIR>/
-├── aggregate_outputs/                # Cross-sample aggregated reports (Pre-MycoSNP summary, snpeffr)
-├── combined/                         # Combined (multi-sample) reference + alignment + variant + phylogeny outputs
-│   ├── qc_report/                    # Combined QC report (QC_REPORTSHEET)
-│   ├── gvcf/ / genotypegvcfs/ / filteredgvcfs/ / selectedsnps/ / selectedsnpsfiltered/ / finalfiltered/
-│   ├── vcf-qc-report/                # VCF-level QC summary/report
-│   ├── vcf-to-fasta/                 # SNP alignment FASTA (vcf-to-fasta.fasta)
-│   ├── snpdists/                     # SNP distance matrix (.tsv)
-│   ├── phylogeny/rapidnj|fasttree|iqtree|raxmlng|quicksnp/  # Tree files (enabled methods only)
-│   ├── samtools_stats/ | samtools_flagstat/ | samtools_idxstats/ | samtools_coverage/ | samtools_depth/
-│   └── consensus/                    # (Optional) consensus FASTA sequences
-├── fastq/                            # FASTQ files (direct lanes or SRA retrieval) + MD5
-├── multiqc/                          # Unified MultiQC report and data
-├── pipeline_info/                    # Nextflow trace, timeline, report, DAG, software version YAMLs
-├── reference/                        # Masked reference + indices (if built or saved)
-│   ├── masked/  bwa/  fai/  dict/
-├── samples/                          # Per-sample outputs (structure detailed below)
-│   └── <sample_id>/                  # Each sample's directories (fastqc_raw, faqcs, assembly, taxonomy, subtype, finalbam, etc.)
-└── qc/                               # (Conditional) combined_QC_results.csv from QC_PARSER when --amdp true
+├── aggregate_outputs/                # Cross-sample aggregated reports
+│   ├── combined_QC_results.csv       # QC threshold evaluation results (if --amdp true)
+│   └── combined_cauris_refB11205_fks1.csv  # snpeffr FKS1 hotspot report (if --snpeff true)
+├── combined/                         # Combined (multi-sample) variant calling and phylogeny outputs
+│   ├── filteredgvcfs/                # Filtered combined genotype VCF files with indices
+│   ├── finalfiltered/                # Final filtered VCF for downstream analysis
+│   ├── genotypegvcfs/                # Combined genotyped gVCF files with indices
+│   ├── gvcf/                         # Combined gVCF files with indices
+│   ├── microreact/                   # Microreact metadata CSV for visualization (if generated)
+│   ├── phylogeny/                    # Tree files organized by method
+│   │   ├── fasttree/                 # FastTree phylogeny outputs (if --fasttree true)
+│   │   ├── iqtree/                   # IQ-TREE phylogeny outputs (if --iqtree true)
+│   │   ├── quicksnp/                 # QuickSNP tree outputs (if generated)
+│   │   ├── raxmlng/                  # RAxML-NG phylogeny outputs (if --raxmlng true)
+│   │   └── rapidnj/                  # RapidNJ phylogeny outputs (if --rapidnj true)
+│   ├── qc_report/                    # Combined QC report from QC_REPORTSHEET
+│   ├── samtools_coverage/            # Per-sample coverage summary files
+│   ├── samtools_depth/               # Per-sample depth files
+│   ├── samtools_flagstat/            # Per-sample flagstat files
+│   ├── samtools_idxstats/            # Per-sample index statistics
+│   ├── samtools_stats/               # Per-sample comprehensive alignment statistics
+│   ├── selectedsnps/                 # Selected SNP VCF files with indices
+│   ├── selectedsnpsfiltered/         # Filtered selected SNPs with indices
+│   ├── snpdists/                     # SNP distance matrix (combined.tsv)
+│   ├── snpeff/                       # snpEff annotation outputs (if --snpeff true)
+│   ├── splitvcf/                     # Per-sample split VCF files and sample list
+│   ├── vcf-qc-report/                # VCF-level QC summary and passed samples list
+│   └── vcf-to-fasta/                 # SNP alignment FASTA (vcf-to-fasta.fasta)
+├── multiqc/                          # Unified MultiQC report
+│   ├── multiqc_data/                 # MultiQC data files and logs
+│   ├── multiqc_plots/                # Plot exports (pdf, png, svg subdirectories)
+│   └── multiqc_report.html           # Interactive HTML report
+├── pipeline_info/                    # Nextflow execution reports and metadata
+│   ├── execution_report_*.html       # Execution report with resource usage
+│   ├── execution_timeline_*.html     # Timeline visualization
+│   ├── execution_trace_*.txt         # Detailed process execution trace
+│   ├── params_*.json                 # Run parameters
+│   ├── pipeline_dag_*.html           # Pipeline DAG visualization
+│   └── software_versions.yml         # Software versions used
+├── reference/                        # Masked reference + indices (if --save_reference true)
+│   ├── bwa/                          # BWA index files
+│   ├── dict/                         # Picard sequence dictionary
+│   ├── fai/                          # Samtools FASTA index
+│   └── masked/                       # Masked reference FASTA and masking coordinates
+└── samples/                          # Per-sample outputs
+    └── <sample_id>/
+        ├── faqcs/                    # Trimmed reads and trimming statistics
+        ├── fastqc_post/              # FastQC reports on trimmed reads
+        ├── fastqc_raw/               # FastQC reports on raw reads
+        ├── finalbam/                 # Final coordinate-sorted BAM with index
+        ├── qc_report/                # Per-sample QC summary
+        └── variant_calling/          # Per-sample variant calling outputs
+            └── haplotypecaller/      # GATK HaplotypeCaller gVCF files with indices
+```
+
+### PRE_MYCOSNP Output Structure (Rapid taxonomic classification mode)
+
+```text
+<OUTDIR>/
+├── aggregate_outputs/                # Cross-sample aggregated reports
+│   └── pre-mycosnp_summary/
+│       └── pre-mycosnp-summary.csv   # Combined summary of all samples
+├── multiqc/                          # Unified MultiQC report
+│   ├── multiqc_data/                 # MultiQC data files and logs
+│   ├── multiqc_plots/                # Plot exports (pdf, png, svg subdirectories)
+│   └── multiqc_report.html           # Interactive HTML report
+├── pipeline_info/                    # Nextflow execution reports and metadata
+│   ├── execution_report_*.html       # Execution report with resource usage
+│   ├── execution_timeline_*.html     # Timeline visualization
+│   ├── execution_trace_*.txt         # Detailed process execution trace
+│   ├── params_*.json                 # Run parameters
+│   ├── pipeline_dag_*.html           # Pipeline DAG visualization
+│   └── software_versions.yml         # Software versions used
+└── samples/                          # Per-sample outputs
+    └── <sample_id>/
+        ├── assembly/                 # De novo assembly FASTA
+        ├── faqcs/                    # Trimmed reads and trimming statistics
+        ├── fastqc_raw/               # FastQC reports on raw reads
+        ├── pre-mycosnp_summary/      # Per-sample line summary CSV
+        ├── subtype/                  # Subtype prediction CSV (if applicable)
+        └── taxonomy/                 # GAMBIT taxonomic classification CSV
 ```
 
 Key conditional outputs:
@@ -39,7 +104,7 @@ Key conditional outputs:
 | `--skip_combined_analysis` | Skips combining gVCFs and downstream variant consolidation (no combined/\* variant directories)      |
 | `--skip_phylogeny`         | Skips tree-building subdirectories under `combined/phylogeny/`                                       |
 | `--snpeff`                 | Generates per-sample snpEff outputs + snpeffr aggregate CSV                                          |
-| `--amdp` (default true)    | Runs QC_PARSER producing `qc/combined_QC_results.csv`                                                |
+| `--amdp` (default false)   | Runs QC_PARSER producing `qc/combined_QC_results.csv` (enable with `--amdp true`)                    |
 | `--save_reference false`   | Suppresses publishing of `reference/*` indices                                                       |
 | `--save_alignment false`   | Suppresses publication of trimmed reads, final BAMs, alignment QC outputs                            |
 | `--save_debug true`        | Publishes additional intermediate/debug BAMs and stats (picard*\* directories, seqkit*\* etc.)       |
@@ -187,7 +252,7 @@ Generated by `QC_REPORTSHEET` from FaQCs trimming statistics and Samtools alignm
 | --------------------- | --------------- |
 | `combined/qc_report/` | `qc_report.txt` |
 
-If `--amdp true` (default) the parsed threshold evaluation appears at:
+If `--amdp true` is enabled, the parsed threshold evaluation appears at:
 
 | Path  | File                                                                      |
 | ----- | ------------------------------------------------------------------------- |

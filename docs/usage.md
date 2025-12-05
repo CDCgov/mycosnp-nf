@@ -107,14 +107,14 @@ The following sections detail all user-facing parameters grouped by function.
 #### Pre-MycoSNP Assembly & Classification Parameters
 
 | Param              | Default | Description                                                                                                               |
-| ------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| ------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `--assembler`      | `skesa` | Shovill assembler (`skesa`, `spades`, `megahit`, `velvet`).                                                               |
 | `--shovill_depth`  | 70      | Downsample target depth passed to Shovill.                                                                                |
 | `--genome_size`    | ''      | Approx genome size; empty = auto / skip.                                                                                  |
 | `--min_contig_cov` | 10      | Minimum contig coverage retained.                                                                                         |
 | `--min_contig_len` | 300     | Minimum contig length retained.                                                                                           |
 | `--gambit_db`      | null    | Path to GAMBIT metadata db (`.gdb`/`.db`). Required for taxonomic classification.                                         |
-| `--gambit_h5_dir`  | null    | Directory of GAMBIT signature chunks (`\*.gs                                                                              | \*.h5[.gz]`). Required with `--gambit_db`. |
+| `--gambit_h5_dir`  | null    | Directory of GAMBIT signature chunks (`\*.gs\|\*.h5[.gz]`). Required with `--gambit_db`.                                  |
 | `--subtype_db`     | null    | Directory containing `sourmash_taxa.csv` and signature files for subtype prediction. Optional but enables subtype output. |
 
 #### Reference Genome & Masking Parameters
@@ -178,11 +178,11 @@ Provide either: (A) `--fasta` raw reference (masking + indexing performed) OR (B
 
 #### AMD-P (Public Health) Extension Parameters
 
-Enabled by default (`--amdp true`). Adds QC parsing and threshold evaluation.
+Disabled by default. Enable with `--amdp true` to add QC parsing and threshold evaluation.
 
 | Param               | Default                                                        | Description                                                                      |
 | ------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `--amdp`            | true                                                           | Activate AMD-P specific outputs (QC parsing, thresholds, metadata hooks).        |
+| `--amdp`            | false                                                          | Activate AMD-P specific outputs (QC parsing, thresholds, metadata hooks).        |
 | `--qc_thresholds`   | `GCrangePct:42-47.5,AvgQscore:28,RefLenCov:20,MeanCovDepth:20` | Key:value or range list evaluated by `qc_parser.py` to derive pass/fail summary. |
 | `--metadata_csv`    | ""                                                             | Optional metadata file (future ingestion / reporting).                           |
 | `--geolocation_csv` | null                                                           | Optional geolocation data for downstream integration.                            |
@@ -364,7 +364,7 @@ results/       # Published outputs (controlled by --outdir)
 
 ### AMD-P QC Extensions <a id="amdp"></a>
 
-Enabled by default (`--amdp true`): parses QC into `combined_QC_results.csv` using thresholds in `--qc_thresholds`. Disable with `--amdp false` for leaner output.
+Disabled by default. Enable with `--amdp true` to parse QC into `combined_QC_results.csv` using thresholds in `--qc_thresholds`.
 
 ### Common Nextflow Arguments <a id="nextflow-args"></a>
 

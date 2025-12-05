@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            18,
+            19,
             {
                 "BCFTOOLS_INDEX": {
                     "bcftools": 1.14
@@ -15,17 +15,20 @@
                 "FILTER_GATK_GENOTYPES": {
                     "python": "3.12.3"
                 },
-                "GATK4_GENOTYPEGVCFS": {
-                    "gatk4": "4.2.4.0"
+                "GATK4_COMBINEGVCFS": {
+                    "gatk4": "4.6.2.0-SNAPSHOT"
                 },
-                "GATK4_LOCALCOMBINEGVCFS": {
-                    "gatk4": "4.2.4.0"
+                "GATK4_GENOTYPEGVCFS": {
+                    "gatk4": "4.6.2.0-SNAPSHOT"
+                },
+                "GATK4_INDEXFEATUREFILE": {
+                    "gatk4": "4.6.2.0-SNAPSHOT"
                 },
                 "GATK4_SELECTVARIANTS": {
-                    "gatk4": "4.2.4.0"
+                    "gatk4": "4.6.2.0-SNAPSHOT"
                 },
                 "GATK4_VARIANTFILTRATION": {
-                    "gatk4": "4.2.4.0"
+                    "gatk4": "4.6.2.0-SNAPSHOT"
                 },
                 "MICROREACTSHAPES": {
                     "python": "3.12.3"
@@ -71,17 +74,16 @@
                 "combined/genotypegvcfs/combined_genotype.vcf.gz.tbi",
                 "combined/gvcf",
                 "combined/gvcf/combined.combined.g.vcf.gz",
-                "combined/gvcf/combined.combined.g.vcf.gz.tbi",
+                "combined/gvcf_index",
+                "combined/gvcf_index/combined.combined.g.vcf.gz.tbi",
                 "combined/phylogeny",
                 "combined/phylogeny/fasttree",
                 "combined/phylogeny/fasttree/fasttree_phylogeny.nh",
-                "combined/phylogeny/fasttree/versions.yml",
                 "combined/phylogeny/quicksnp",
                 "combined/phylogeny/quicksnp/quicksnp_phylogeny.nwk",
                 "combined/phylogeny/rapidnj",
                 "combined/phylogeny/rapidnj/alignment.sth",
                 "combined/phylogeny/rapidnj/rapidnj_phylogeny.nh",
-                "combined/phylogeny/rapidnj/versions.yml",
                 "combined/selectedsnps",
                 "combined/selectedsnps/combined_genotype_filtered_snps.vcf.gz",
                 "combined/selectedsnps/combined_genotype_filtered_snps.vcf.gz.tbi",
@@ -112,11 +114,9 @@
             ],
             [
                 "fasttree_phylogeny.nh:md5,fe2c05a349e53495babfa57e2dc601ab",
-                "versions.yml:md5,a91365e9d59b5cb50603c3d7e174defc",
                 "quicksnp_phylogeny.nwk:md5,2b6670b336bf8c5ca63a5026da99dac0",
                 "alignment.sth:md5,ad2787968772af26a1b188206aad1442",
                 "rapidnj_phylogeny.nh:md5,1de0290d2a59f1c784d70db0e6d1db4f",
-                "versions.yml:md5,070461421db70f79f17ab805b5035d15",
                 "combined.tsv:md5,cd1729a47fccfb17c743419643c4c34e",
                 "samplelist.txt:md5,0a68476d8b93680bbdc57dbca3e12d78",
                 "vcf-qc-report.txt:md5,f06671d835478a3f380eea92fcfd1d42",
@@ -128,8 +128,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-28T11:53:46.895705423"
+        "timestamp": "2025-12-05T12:17:41.605564274"
     }
 }

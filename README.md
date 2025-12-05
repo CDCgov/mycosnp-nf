@@ -1,3 +1,14 @@
+```md
+Org: NCEZID
+Contact Email: ncezid_shareit@cdc.gov
+Exemption: exemptByLaw
+Exemption Justification: Contains code developed by a third party with license restrictions that prevent distribution
+Status: Maintained
+Keywords: bioinformatics
+Version: 1.6.4
+Contract#: 47QFCA23F0058
+```
+
 # 🍄🧬 MycoSNP: Whole Genome Sequencing Analysis of Fungal Isolates
 
 [![GitHub Actions CI Status](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/test-pipeline.yml/badge.svg)](https://github.com/cdcent/oamd-bio-fungal-mycosnp/actions/workflows/test-pipeline.yml)
@@ -22,7 +33,7 @@ This repository contains two workflows that are run independently:
   - Reference-based SNP calling
   - Tree building
   - Identification of antifungal-resistance mutations
-  - Optional variant annotation (snpEff + snpeffr)
+  - Optional variant annotation for C. auris clade I w/ B11205 genome (snpEff + snpeffr)
 
 ## 📚 Full Documentation
 
@@ -39,9 +50,9 @@ This repository contains two workflows that are run independently:
 > [!TIP]
 > Using Apptainer/Singularity with Nextflow version >=23 can result in failures in Linux server environments due to peculiarities with container directory mounting. If you are experiencing `No such file or directory` errors, try running with an earlier version of Nextflow (we've had success with 22.10.6). 3. Test the main MycoSNP workflow on pre-defined minimal test samples with a single command:
 
-    ```console
-    nextflow run CDCgov/mycosnp-nf -profile test,YOURPROFILE
-    ```
+```console
+nextflow run CDCgov/mycosnp-nf -profile test,YOURPROFILE
+```
 
 > [!NOTE]
 > The samples for the test run are bacterial (_N. gonorrhoeae_), not fungal. This is intentional so the test finishes in a few minutes (as opposed to longer for fungal samples with much larger genomes).
@@ -64,11 +75,11 @@ This repository contains two workflows that are run independently:
   ```
 - [Main MycoSNP workflow](#main-mycosnp-workflow-default-workflow-summary) (default workflow):
   ```console
-  nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference_genome.fasta
+  nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference.fa
   ```
 - Generate per-sample gVCFs only (no joint analysis):
   ```console
-  nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference_genome.fasta --skip_combined_analysis true
+  nextflow run CDCgov/mycosnp-nf -profile <docker/singularity/other/institute> --input samplesheet.csv --fasta reference.fa --skip_combined_analysis true
   ```
 
 5. It is advisable to delete large temporary or log files after the successful completion of the run. It takes a lot of space and may cause issues in future runs.
