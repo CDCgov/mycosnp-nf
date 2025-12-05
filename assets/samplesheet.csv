@@ -1,4 +1,6 @@
-sample_id,fastq_1,fastq_2
-SRR2584863,path/to/SRR2584863_1.fastq.gz,path/to/SRR2584863_2.fastq.gz
-SRR2584866,path/to/SRR2584866_1.fastq.gz,path/to/SRR2584866_2.fastq.gz
-SRR2589044,path/to/SRR2589044_1.fastq.gz,path/to/SRR2589044_2.fastq.gz
+sample,fastq_1,fastq_2,sra,vcf
+PAIRED_LANES_01,/data/reads/PAIRED_LANES_L001_R1.fastq.gz,/data/reads/PAIRED_LANES_L001_R2.fastq.gz,,
+EXTRA_PAIRED_06,/data/reads/EXTRA_PAIRED_L002_R1.fastq.gz,/data/reads/EXTRA_PAIRED_L002_R2.fastq.gz,,
+SINGLE_END_02,/data/reads/SINGLE_END_02_R1.fastq.gz,,,
+SRA_ONLY_03,,,SRR12345678,
+LEGACY_VCF_04,,,,/data/legacy/LEGACY_VCF_04.g.vcf.gz

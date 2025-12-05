@@ -1,0 +1,337 @@
+{
+    "-profile test": {
+        "content": [
+            74,
+            {
+                "BCFTOOLS_INDEX": {
+                    "bcftools": 1.14
+                },
+                "BCFTOOLS_VIEW_CONVERT": {
+                    "bcftools": 1.14
+                },
+                "BWA_MEM": {
+                    "bwa": "0.7.19-r1273",
+                    "samtools": 1.21
+                },
+                "DOWNSAMPLE_RATE": {
+                    "python": "3.12.3"
+                },
+                "FAQCS": {
+                    "faqcs": 2.1
+                },
+                "FASTQC_POST": {
+                    "fastqc": "0.11.9"
+                },
+                "FASTQC_RAW": {
+                    "fastqc": "0.11.9"
+                },
+                "FILTER_GATK_GENOTYPES": {
+                    "python": "3.12.3"
+                },
+                "GATK4_COMBINEGVCFS": {
+                    "gatk4": "4.6.2.0-SNAPSHOT"
+                },
+                "GATK4_GENOTYPEGVCFS": {
+                    "gatk4": "4.6.2.0-SNAPSHOT"
+                },
+                "GATK4_HAPLOTYPECALLER": {
+                    "gatk4": "4.6.2.0-SNAPSHOT"
+                },
+                "GATK4_INDEXFEATUREFILE": {
+                    "gatk4": "4.6.2.0-SNAPSHOT"
+                },
+                "GATK4_SELECTVARIANTS": {
+                    "gatk4": "4.6.2.0-SNAPSHOT"
+                },
+                "GATK4_VARIANTFILTRATION": {
+                    "gatk4": "4.6.2.0-SNAPSHOT"
+                },
+                "PICARD_ADDORREPLACEREADGROUPS": {
+                    "picard": "2.26.10"
+                },
+                "PICARD_CLEANSAM": {
+                    "picard": "2.26.10"
+                },
+                "PICARD_FIXMATEINFORMATION": {
+                    "picard": "2.26.10"
+                },
+                "PICARD_MARKDUPLICATES": {
+                    "picard": "2.26.10"
+                },
+                "QC_PARSER": {
+                    "python": "3.12.3"
+                },
+                "QC_REPORT": {
+                    "python": "3.12.3"
+                },
+                "SAMTOOLS_COVERAGE": {
+                    "samtools": 1.21
+                },
+                "SAMTOOLS_DEPTH": {
+                    "samtools": 1.21
+                },
+                "SAMTOOLS_FLAGSTAT": {
+                    "samtools": 1.21
+                },
+                "SAMTOOLS_IDXSTATS": {
+                    "samtools": 1.21
+                },
+                "SAMTOOLS_STATS": {
+                    "samtools": 1.21
+                },
+                "SEQKIT_PAIR": {
+                    "seqkit": "2.1.0"
+                },
+                "SEQKIT_REPLACE": {
+                    "seqkit": "2.1.0"
+                },
+                "SEQTK_SAMPLE": {
+                    "seqtk": "1.3-r106"
+                },
+                "SNPDISTS": {
+                    "snpdists": "0.8.2"
+                },
+                "SNPEFFR": null,
+                "snpeffr": null,
+                "SNPEFF_ANN": {
+                    "snpeff": "4.3t"
+                },
+                "SPLIT_VCF": {
+                    "bcftools": 1.14
+                },
+                "TABIX_BGZIPTABIX": {
+                    "tabix": 1.21
+                },
+                "VCF_CONSENSUS": {
+                    "bcftools": 1.14
+                },
+                "VCF_QC": {
+                    "awk": "mawk 1.3.4 20240123"
+                },
+                "VCF_TO_FASTA": {
+                    "python": "3.12.3"
+                },
+                "Workflow": {
+                    "CDCgov/mycosnp-nf": "v1.6.4"
+                }
+            },
+            [
+                "aggregate_outputs",
+                "aggregate_outputs/combined_QC_results.csv",
+                "aggregate_outputs/combined_cauris_refB11205_fks1.csv",
+                "combined",
+                "combined/filteredgvcfs",
+                "combined/filteredgvcfs/combined_genotype_filtered.vcf.gz",
+                "combined/filteredgvcfs/combined_genotype_filtered.vcf.gz.tbi",
+                "combined/finalfiltered",
+                "combined/finalfiltered/finalfiltered.vcf.gz",
+                "combined/genotypegvcfs",
+                "combined/genotypegvcfs/combined_genotype.vcf.gz",
+                "combined/genotypegvcfs/combined_genotype.vcf.gz.tbi",
+                "combined/gvcf",
+                "combined/gvcf/combined.combined.g.vcf.gz",
+                "combined/gvcf_index",
+                "combined/gvcf_index/combined.combined.g.vcf.gz.tbi",
+                "combined/qc_report",
+                "combined/qc_report/qc_report.txt",
+                "combined/samtools_coverage",
+                "combined/samtools_coverage/ERR2172265.txt",
+                "combined/samtools_coverage/ERR2172266.txt",
+                "combined/samtools_coverage/ERR2172267.txt",
+                "combined/samtools_depth",
+                "combined/samtools_depth/ERR2172265.tsv",
+                "combined/samtools_depth/ERR2172266.tsv",
+                "combined/samtools_depth/ERR2172267.tsv",
+                "combined/samtools_flagstat",
+                "combined/samtools_flagstat/ERR2172265.flagstat",
+                "combined/samtools_flagstat/ERR2172266.flagstat",
+                "combined/samtools_flagstat/ERR2172267.flagstat",
+                "combined/samtools_idxstats",
+                "combined/samtools_idxstats/ERR2172265.idxstats",
+                "combined/samtools_idxstats/ERR2172266.idxstats",
+                "combined/samtools_idxstats/ERR2172267.idxstats",
+                "combined/samtools_stats",
+                "combined/samtools_stats/ERR2172265.stats",
+                "combined/samtools_stats/ERR2172266.stats",
+                "combined/samtools_stats/ERR2172267.stats",
+                "combined/selectedsnps",
+                "combined/selectedsnps/combined_genotype_filtered_snps.vcf.gz",
+                "combined/selectedsnps/combined_genotype_filtered_snps.vcf.gz.tbi",
+                "combined/selectedsnpsfiltered",
+                "combined/selectedsnpsfiltered/finalfiltered.vcf.gz.csi",
+                "combined/snpdists",
+                "combined/snpdists/combined.tsv",
+                "combined/snpeff",
+                "combined/snpeff/combined.csv",
+                "combined/snpeff/combined.genes.txt",
+                "combined/snpeff/combined.snpeff.vcf.gz",
+                "combined/snpeff/combined.snpeff.vcf.gz.tbi",
+                "combined/snpeff/snpEff_summary.html",
+                "combined/splitvcf",
+                "combined/splitvcf/ERR2172265.vcf.gz",
+                "combined/splitvcf/ERR2172266.vcf.gz",
+                "combined/splitvcf/ERR2172267.vcf.gz",
+                "combined/splitvcf/samplelist.txt",
+                "combined/vcf-qc-report",
+                "combined/vcf-qc-report/vcf-qc-report.txt",
+                "combined/vcf-qc-report/vcfqc_passed_samples.txt",
+                "combined/vcf-to-fasta",
+                "combined/vcf-to-fasta/vcf-to-fasta.fasta",
+                "downsample",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_fastqc.txt",
+                "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_samtools_coverage.txt",
+                "multiqc/multiqc_data/multiqc_samtools_flagstat.txt",
+                "multiqc/multiqc_data/multiqc_samtools_idxstats.txt",
+                "multiqc/multiqc_data/multiqc_samtools_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_report.html",
+                "pipeline_info",
+                "pipeline_info/mycosnp_software_versions.yml",
+                "samples",
+                "samples/ERR2172265",
+                "samples/ERR2172265/faqcs",
+                "samples/ERR2172265/faqcs/ERR2172265.log",
+                "samples/ERR2172265/faqcs/ERR2172265.stats.txt",
+                "samples/ERR2172265/faqcs/ERR2172265.trimmed.unpaired.fastq.gz",
+                "samples/ERR2172265/faqcs/ERR2172265_1.trimmed.fastq.gz",
+                "samples/ERR2172265/faqcs/ERR2172265_2.trimmed.fastq.gz",
+                "samples/ERR2172265/faqcs/ERR2172265_qc_report.pdf",
+                "samples/ERR2172265/fastqc_post",
+                "samples/ERR2172265/fastqc_post/ERR2172265_1_fastqc.html",
+                "samples/ERR2172265/fastqc_post/ERR2172265_1_fastqc.zip",
+                "samples/ERR2172265/fastqc_post/ERR2172265_2_fastqc.html",
+                "samples/ERR2172265/fastqc_post/ERR2172265_2_fastqc.zip",
+                "samples/ERR2172265/fastqc_raw",
+                "samples/ERR2172265/fastqc_raw/ERR2172265.raw_1_fastqc.html",
+                "samples/ERR2172265/fastqc_raw/ERR2172265.raw_1_fastqc.zip",
+                "samples/ERR2172265/fastqc_raw/ERR2172265.raw_2_fastqc.html",
+                "samples/ERR2172265/fastqc_raw/ERR2172265.raw_2_fastqc.zip",
+                "samples/ERR2172265/finalbam",
+                "samples/ERR2172265/finalbam/ERR2172265.final.bam",
+                "samples/ERR2172265/qc_report",
+                "samples/ERR2172265/qc_report/ERR2172265_output.txt",
+                "samples/ERR2172265/variant_calling",
+                "samples/ERR2172265/variant_calling/haplotypecaller",
+                "samples/ERR2172265/variant_calling/haplotypecaller/ERR2172265.g.vcf.gz",
+                "samples/ERR2172265/variant_calling/haplotypecaller/ERR2172265.g.vcf.gz.tbi",
+                "samples/ERR2172266",
+                "samples/ERR2172266/faqcs",
+                "samples/ERR2172266/faqcs/ERR2172266.log",
+                "samples/ERR2172266/faqcs/ERR2172266.stats.txt",
+                "samples/ERR2172266/faqcs/ERR2172266.trimmed.unpaired.fastq.gz",
+                "samples/ERR2172266/faqcs/ERR2172266_1.trimmed.fastq.gz",
+                "samples/ERR2172266/faqcs/ERR2172266_2.trimmed.fastq.gz",
+                "samples/ERR2172266/faqcs/ERR2172266_qc_report.pdf",
+                "samples/ERR2172266/fastqc_post",
+                "samples/ERR2172266/fastqc_post/ERR2172266_1_fastqc.html",
+                "samples/ERR2172266/fastqc_post/ERR2172266_1_fastqc.zip",
+                "samples/ERR2172266/fastqc_post/ERR2172266_2_fastqc.html",
+                "samples/ERR2172266/fastqc_post/ERR2172266_2_fastqc.zip",
+                "samples/ERR2172266/fastqc_raw",
+                "samples/ERR2172266/fastqc_raw/ERR2172266.raw_1_fastqc.html",
+                "samples/ERR2172266/fastqc_raw/ERR2172266.raw_1_fastqc.zip",
+                "samples/ERR2172266/fastqc_raw/ERR2172266.raw_2_fastqc.html",
+                "samples/ERR2172266/fastqc_raw/ERR2172266.raw_2_fastqc.zip",
+                "samples/ERR2172266/finalbam",
+                "samples/ERR2172266/finalbam/ERR2172266.final.bam",
+                "samples/ERR2172266/qc_report",
+                "samples/ERR2172266/qc_report/ERR2172266_output.txt",
+                "samples/ERR2172266/variant_calling",
+                "samples/ERR2172266/variant_calling/haplotypecaller",
+                "samples/ERR2172266/variant_calling/haplotypecaller/ERR2172266.g.vcf.gz",
+                "samples/ERR2172266/variant_calling/haplotypecaller/ERR2172266.g.vcf.gz.tbi",
+                "samples/ERR2172267",
+                "samples/ERR2172267/faqcs",
+                "samples/ERR2172267/faqcs/ERR2172267.log",
+                "samples/ERR2172267/faqcs/ERR2172267.stats.txt",
+                "samples/ERR2172267/faqcs/ERR2172267.trimmed.unpaired.fastq.gz",
+                "samples/ERR2172267/faqcs/ERR2172267_1.trimmed.fastq.gz",
+                "samples/ERR2172267/faqcs/ERR2172267_2.trimmed.fastq.gz",
+                "samples/ERR2172267/faqcs/ERR2172267_qc_report.pdf",
+                "samples/ERR2172267/fastqc_post",
+                "samples/ERR2172267/fastqc_post/ERR2172267_1_fastqc.html",
+                "samples/ERR2172267/fastqc_post/ERR2172267_1_fastqc.zip",
+                "samples/ERR2172267/fastqc_post/ERR2172267_2_fastqc.html",
+                "samples/ERR2172267/fastqc_post/ERR2172267_2_fastqc.zip",
+                "samples/ERR2172267/fastqc_raw",
+                "samples/ERR2172267/fastqc_raw/ERR2172267.raw_1_fastqc.html",
+                "samples/ERR2172267/fastqc_raw/ERR2172267.raw_1_fastqc.zip",
+                "samples/ERR2172267/fastqc_raw/ERR2172267.raw_2_fastqc.html",
+                "samples/ERR2172267/fastqc_raw/ERR2172267.raw_2_fastqc.zip",
+                "samples/ERR2172267/finalbam",
+                "samples/ERR2172267/finalbam/ERR2172267.final.bam",
+                "samples/ERR2172267/qc_report",
+                "samples/ERR2172267/qc_report/ERR2172267_output.txt",
+                "samples/ERR2172267/variant_calling",
+                "samples/ERR2172267/variant_calling/haplotypecaller",
+                "samples/ERR2172267/variant_calling/haplotypecaller/ERR2172267.g.vcf.gz",
+                "samples/ERR2172267/variant_calling/haplotypecaller/ERR2172267.g.vcf.gz.tbi"
+            ],
+            [
+                "combined_QC_results.csv:md5,b7af16fbaac29edac6e979903555e4f6",
+                "combined_cauris_refB11205_fks1.csv:md5,9a7a353c70fc3c75cc470e038bed4e3e",
+                "qc_report.txt:md5,a887aabe4c8f1f6896aaae525845ebbf",
+                "ERR2172265.txt:md5,9dc73722d2d18b21603efb48eeddea11",
+                "ERR2172266.txt:md5,b192bb32a0729d4943b9829b357358fd",
+                "ERR2172267.txt:md5,46ee28d48a7f10d6f60d7ff308a02c21",
+                "ERR2172265.tsv:md5,8cb0cd2c23a7b9626cc75a71853cec5a",
+                "ERR2172266.tsv:md5,ef18c6b31ddf4666ed9fc409a829375e",
+                "ERR2172267.tsv:md5,c1e09838cc561fac7022e67bc1c8290c",
+                "ERR2172265.flagstat:md5,7eb3a2466e557b6ea9613e832400f6fa",
+                "ERR2172266.flagstat:md5,be5d4112346a6500853ea507dfea9db0",
+                "ERR2172267.flagstat:md5,a938e3a1d79e9a6660c666bacd9d78be",
+                "ERR2172265.idxstats:md5,fbe69304e34f7a84ee3ab1559beb43fd",
+                "ERR2172266.idxstats:md5,53ba9081bc05eab5df973fcbabe41b74",
+                "ERR2172267.idxstats:md5,fba07fb7c122c8491d7d39d6b453dbf7",
+                "ERR2172265.stats:md5,8c5dc05551ae6b743a6be1f4e95e8025",
+                "ERR2172266.stats:md5,43cc3e45db93937795ceb9872f7f63cf",
+                "ERR2172267.stats:md5,72983d56a6314b8f1074cd151c9ca1ab",
+                "combined.tsv:md5,9f7693a4c766cea1a58b9d6e929cd628",
+                "combined.genes.txt:md5,130536bf0237d7f3f746d32aaa32840a",
+                "samplelist.txt:md5,d73ddd6c3a6a101187243a2b7257186a",
+                "vcf-qc-report.txt:md5,3fb3c79c52b89d25088ec5cfea0804ee",
+                "vcfqc_passed_samples.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "vcf-to-fasta.fasta:md5,6c8994e2d535b92cf78b55aac74489ee",
+                "multiqc_citations.txt:md5,ce96770552b458754bb83dce77df722b",
+                "multiqc_general_stats.txt:md5,abd08a78ff6697a33f7179e3a0ac5941",
+                "multiqc_samtools_coverage.txt:md5,91754d737115daae13ea4f4174cbc5e7",
+                "multiqc_samtools_flagstat.txt:md5,5cda3cb90461ef07b0b04eed53fb8472",
+                "multiqc_samtools_idxstats.txt:md5,6754f2f7690509ff86801124f5585d6f",
+                "multiqc_samtools_stats.txt:md5,e5cff4f70d90f79348b821782786d146",
+                "ERR2172265.log:md5,be79dc893f87de1f82faf749cdfb848c",
+                "ERR2172265.stats.txt:md5,33f7fdeaaa24a33c8ee10df8924d7878",
+                "ERR2172265.trimmed.unpaired.fastq.gz:md5,b2a058cc61cdfddb6673378e6313a9c3",
+                "ERR2172265_1.trimmed.fastq.gz:md5,6d273d44a03658a9d0469e9cb49005eb",
+                "ERR2172265_2.trimmed.fastq.gz:md5,62fafead482855f5a97aff6540b901d6",
+                "ERR2172265.final.bam:md5,ed65caeb69f498fb6497727e65411c76",
+                "ERR2172265_output.txt:md5,dca46b4a58fd8bd12774298c6fef430c",
+                "ERR2172266.log:md5,be79dc893f87de1f82faf749cdfb848c",
+                "ERR2172266.stats.txt:md5,70eeab6cec56debd81077cdb1d1cffc5",
+                "ERR2172266.trimmed.unpaired.fastq.gz:md5,c0154506f305eb6e741cf1c506430624",
+                "ERR2172266_1.trimmed.fastq.gz:md5,2599236b386ec7601dc067bee8205d37",
+                "ERR2172266_2.trimmed.fastq.gz:md5,328e7a54e95d32af4b147e8b5b590e94",
+                "ERR2172266.final.bam:md5,8444a77a736d9a122ae29670bd11fef2",
+                "ERR2172266_output.txt:md5,1b94ddbae07dbe27f747bd6786aa1b68",
+                "ERR2172267.log:md5,be79dc893f87de1f82faf749cdfb848c",
+                "ERR2172267.stats.txt:md5,5d891a9e684f781f2a3e561f78e54e04",
+                "ERR2172267.trimmed.unpaired.fastq.gz:md5,967f6c3c4324b8f90ee2eabceb038348",
+                "ERR2172267_1.trimmed.fastq.gz:md5,566c84e59721f7393ad492328b257980",
+                "ERR2172267_2.trimmed.fastq.gz:md5,b6ca4cce544d6916853f275029482a19",
+                "ERR2172267.final.bam:md5,ae924f7d9fcc3d80c1a30f164219f35c",
+                "ERR2172267_output.txt:md5,2c5962995ca2111ee3767b6179ccfe21"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-12-05T11:48:56.345607132"
+    }
+}

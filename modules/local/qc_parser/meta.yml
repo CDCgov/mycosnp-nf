@@ -1,0 +1,39 @@
+name: qc_parser
+description: Parse per-sample QC report sheet and apply threshold rules to produce a combined QC results CSV.
+keywords:
+  - qc
+  - filtering
+  - summary
+tools:
+  - pandas:
+      description: Data analysis library used for QC table parsing.
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3-Clause"]
+input:
+  - - qc_reportsheet:
+        type: file
+        description: Consolidated QC report sheet (CSV/TSV) to parse.
+        pattern: "*.{csv,tsv,txt}"
+output:
+  - qc_fail_pass:
+      - "combined_QC_results.csv":
+          type: file
+          description: QC decision table with pass/fail annotations.
+          pattern: "combined_QC_results.csv"
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

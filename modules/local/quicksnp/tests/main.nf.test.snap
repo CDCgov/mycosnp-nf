@@ -1,0 +1,68 @@
+{
+    "QUICKSNP - create nwk file based on distance matrix TSV file": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "quicksnp_tree.nwk:md5,6da5ce8fc15f1a3b23afb80ec0bf47e4"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,2166e171fa0ee68cb66db0b352579c6a"
+                ],
+                "quicksnp_tree": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "quicksnp_tree.nwk:md5,6da5ce8fc15f1a3b23afb80ec0bf47e4"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,2166e171fa0ee68cb66db0b352579c6a"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-11-13T12:40:15.36601791"
+    },
+    "QUICKSNP - stub test": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "quicksnp_tree.nwk:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,2166e171fa0ee68cb66db0b352579c6a"
+                ],
+                "quicksnp_tree": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "quicksnp_tree.nwk:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,2166e171fa0ee68cb66db0b352579c6a"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-11-13T12:40:33.98520407"
+    }
+}

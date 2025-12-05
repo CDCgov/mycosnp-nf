@@ -1,0 +1,103 @@
+nextflow_process {
+
+    name "Test Process QC_REPORT"
+    script "../main.nf"
+    process "QC_REPORT"
+
+    tag "modules"
+    tag "qc_report"
+
+    test("QC_REPORT - qc report for a single sample") {
+
+        when {
+            process {
+                """
+                def debug_dir = file("\$PWD/debug")
+                debug_dir.mkdirs()
+
+                // Copy debug files
+                def debug_source1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.base_content.txt', checkIfExists: true)
+                def debug_source2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_source3 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/qa.SRR30604805.base_content.txt', checkIfExists: true)
+                def debug_source4 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/qa.SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+
+                def debug_dest1 = file("\$PWD/debug/SRR30604805.base_content.txt")
+                def debug_dest2 = file("\$PWD/debug/SRR30604805.for_qual_histogram.txt")
+                def debug_dest3 = file("\$PWD/debug/qa.SRR30604805.base_content.txt")
+                def debug_dest4 = file("\$PWD/debug/qa.SRR30604805.for_qual_histogram.txt")
+
+                debug_source1.copyTo(debug_dest1)
+                debug_source2.copyTo(debug_dest2)
+                debug_source3.copyTo(debug_dest3)
+                debug_source4.copyTo(debug_dest4)
+
+                input[0] = [
+                    [id:"SRR30604805", single_end: false],
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.stats.txt', checkIfExists: true),
+                    debug_dir,
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.txt', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.depth.tsv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.stats', checkIfExists: true)
+                ]
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            // Use named emitted channels instead of aggregate process.out
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() },
+            )
+        }
+    }
+
+    test("QC_REPORT - stub test") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                def debug_dir = file("\$PWD/debug")
+                debug_dir.mkdirs()
+
+                // Copy debug files
+                def debug_source1 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.base_content.txt', checkIfExists: true)
+                def debug_source2 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_source3 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/qa.SRR30604805.base_content.txt', checkIfExists: true)
+                def debug_source4 = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/qa.SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+
+                def debug_dest1 = file("\$PWD/debug/SRR30604805.base_content.txt")
+                def debug_dest2 = file("\$PWD/debug/SRR30604805.for_qual_histogram.txt")
+                def debug_dest3 = file("\$PWD/debug/qa.SRR30604805.base_content.txt")
+                def debug_dest4 = file("\$PWD/debug/qa.SRR30604805.for_qual_histogram.txt")
+
+                debug_source1.copyTo(debug_dest1)
+                debug_source2.copyTo(debug_dest2)
+                debug_source3.copyTo(debug_dest3)
+                debug_source4.copyTo(debug_dest4)
+
+                input[0] = [
+                    [id:"SRR30604805", single_end: false],
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/faqcs/SRR30604805.stats.txt', checkIfExists: true),
+                    debug_dir,
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.txt', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.depth.tsv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/qc_report/SRR30604805.stats', checkIfExists: true)
+                ]
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            // Stub mode still emits the same named channels
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

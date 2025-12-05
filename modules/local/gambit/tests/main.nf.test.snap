@@ -1,0 +1,68 @@
+{
+    "GAMBIT_QUERY - script": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "/amdp-dev-bio-development-work/ba/70263a1e24e407e7c5219f6e8dbd1f/test_sample_gambit.csv"
+                    ]
+                ],
+                "1": [
+                    "/amdp-dev-bio-development-work/ba/70263a1e24e407e7c5219f6e8dbd1f/versions.yml"
+                ],
+                "taxa": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "/amdp-dev-bio-development-work/ba/70263a1e24e407e7c5219f6e8dbd1f/test_sample_gambit.csv"
+                    ]
+                ],
+                "versions": [
+                    "/amdp-dev-bio-development-work/ba/70263a1e24e407e7c5219f6e8dbd1f/versions.yml"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-11-13T15:26:09.961856798"
+    },
+    "GAMBIT_QUERY - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "/amdp-dev-bio-development-work/df/eabb687bf9e3798c3e1918c8168834/test_sample_gambit.csv"
+                    ]
+                ],
+                "1": [
+                    "/amdp-dev-bio-development-work/df/eabb687bf9e3798c3e1918c8168834/versions.yml"
+                ],
+                "taxa": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "/amdp-dev-bio-development-work/df/eabb687bf9e3798c3e1918c8168834/test_sample_gambit.csv"
+                    ]
+                ],
+                "versions": [
+                    "/amdp-dev-bio-development-work/df/eabb687bf9e3798c3e1918c8168834/versions.yml"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-11-13T15:27:06.332591591"
+    }
+}

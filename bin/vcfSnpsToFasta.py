@@ -145,5 +145,4 @@ for ind_genome in genome_list:
 					sequence += ref_bases[sorted_chrom][sorted_position]
 	for i in range(0,len(sequence),60):
 		print(sequence[i:i+60])
-
 #sys.stderr.write(str(num_masked) + " sites filtered.\n")

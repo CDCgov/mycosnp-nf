@@ -1,0 +1,57 @@
+nextflow_process {
+
+    name "Test Process GAMBIT_QUERY"
+    script "../main.nf"
+    process "GAMBIT_QUERY"
+
+    tag "modules"
+    tag "gambit"
+
+    test("GAMBIT_QUERY - script") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sample'],
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/genome/assembly/test_data_SRR30604805.fa', checkIfExists: true)
+                ]
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/gambit/gambit-fungal-metadata-1.0.0-20241213.gdb', checkIfExists: true)
+                input[2] = params.gambit_h5_dir
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+
+    test("GAMBIT_QUERY - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sample'],
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/genome/assembly/test_data_SRR30604805.fa', checkIfExists: true)
+                ]
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/gambit/gambit-fungal-metadata-1.0.0-20241213.gdb', checkIfExists: true)
+                input[2] = params.gambit_h5_dir
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot( process.out ).match() }
+            )
+        }
+    }
+}

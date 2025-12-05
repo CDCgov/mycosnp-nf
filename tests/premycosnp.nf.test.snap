@@ -1,0 +1,143 @@
+{
+    "-profile test": {
+        "content": [
+            22,
+            {
+                "FAQCS": {
+                    "faqcs": 2.1
+                },
+                "FASTQC_RAW": {
+                    "fastqc": "0.11.9"
+                },
+                "GAMBIT_QUERY": {
+                    "gambit": "1.1.0"
+                },
+                "PRE_MYCOSNP_INDV_SUMMARY": {
+                    "ncbi-datasets-cli": "18.6.0"
+                },
+                "SEQKIT_PAIR": {
+                    "seqkit": "2.1.0"
+                },
+                "SHOVILL": {
+                    "shovill": "1.1.0"
+                },
+                "SUBTYPE": {
+                    "sourmash": "4.8.14"
+                },
+                "Workflow": {
+                    "CDCgov/mycosnp-nf": "v1.6.4"
+                }
+            },
+            [
+                "aggregate_outputs",
+                "aggregate_outputs/pre-mycosnp-summary.csv",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_fastqc.txt",
+                "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_report.html",
+                "pipeline_info",
+                "pipeline_info/premycosnp_software_versions.yml",
+                "samples",
+                "samples/ERR2172265",
+                "samples/ERR2172265/assembly",
+                "samples/ERR2172265/assembly/ERR2172265.fa",
+                "samples/ERR2172265/faqcs",
+                "samples/ERR2172265/faqcs/ERR2172265.log",
+                "samples/ERR2172265/faqcs/ERR2172265.stats.txt",
+                "samples/ERR2172265/faqcs/ERR2172265.trimmed.unpaired.fastq.gz",
+                "samples/ERR2172265/faqcs/ERR2172265_1.trimmed.fastq.gz",
+                "samples/ERR2172265/faqcs/ERR2172265_2.trimmed.fastq.gz",
+                "samples/ERR2172265/faqcs/ERR2172265_qc_report.pdf",
+                "samples/ERR2172265/fastqc_raw",
+                "samples/ERR2172265/fastqc_raw/ERR2172265.raw_1_fastqc.html",
+                "samples/ERR2172265/fastqc_raw/ERR2172265.raw_1_fastqc.zip",
+                "samples/ERR2172265/fastqc_raw/ERR2172265.raw_2_fastqc.html",
+                "samples/ERR2172265/fastqc_raw/ERR2172265.raw_2_fastqc.zip",
+                "samples/ERR2172265/pre-mycosnp_summary",
+                "samples/ERR2172265/pre-mycosnp_summary/ERR2172265_linesummary.csv",
+                "samples/ERR2172265/subtype",
+                "samples/ERR2172265/subtype/ERR2172265_subtype.csv",
+                "samples/ERR2172265/taxonomy",
+                "samples/ERR2172265/taxonomy/ERR2172265_gambit.csv",
+                "samples/ERR2172266",
+                "samples/ERR2172266/assembly",
+                "samples/ERR2172266/assembly/ERR2172266.fa",
+                "samples/ERR2172266/faqcs",
+                "samples/ERR2172266/faqcs/ERR2172266.log",
+                "samples/ERR2172266/faqcs/ERR2172266.stats.txt",
+                "samples/ERR2172266/faqcs/ERR2172266.trimmed.unpaired.fastq.gz",
+                "samples/ERR2172266/faqcs/ERR2172266_1.trimmed.fastq.gz",
+                "samples/ERR2172266/faqcs/ERR2172266_2.trimmed.fastq.gz",
+                "samples/ERR2172266/faqcs/ERR2172266_qc_report.pdf",
+                "samples/ERR2172266/fastqc_raw",
+                "samples/ERR2172266/fastqc_raw/ERR2172266.raw_1_fastqc.html",
+                "samples/ERR2172266/fastqc_raw/ERR2172266.raw_1_fastqc.zip",
+                "samples/ERR2172266/fastqc_raw/ERR2172266.raw_2_fastqc.html",
+                "samples/ERR2172266/fastqc_raw/ERR2172266.raw_2_fastqc.zip",
+                "samples/ERR2172266/pre-mycosnp_summary",
+                "samples/ERR2172266/pre-mycosnp_summary/ERR2172266_linesummary.csv",
+                "samples/ERR2172266/subtype",
+                "samples/ERR2172266/subtype/ERR2172266_subtype.csv",
+                "samples/ERR2172266/taxonomy",
+                "samples/ERR2172266/taxonomy/ERR2172266_gambit.csv",
+                "samples/ERR2172267",
+                "samples/ERR2172267/assembly",
+                "samples/ERR2172267/assembly/ERR2172267.fa",
+                "samples/ERR2172267/faqcs",
+                "samples/ERR2172267/faqcs/ERR2172267.log",
+                "samples/ERR2172267/faqcs/ERR2172267.stats.txt",
+                "samples/ERR2172267/faqcs/ERR2172267.trimmed.unpaired.fastq.gz",
+                "samples/ERR2172267/faqcs/ERR2172267_1.trimmed.fastq.gz",
+                "samples/ERR2172267/faqcs/ERR2172267_2.trimmed.fastq.gz",
+                "samples/ERR2172267/faqcs/ERR2172267_qc_report.pdf",
+                "samples/ERR2172267/fastqc_raw",
+                "samples/ERR2172267/fastqc_raw/ERR2172267.raw_1_fastqc.html",
+                "samples/ERR2172267/fastqc_raw/ERR2172267.raw_1_fastqc.zip",
+                "samples/ERR2172267/fastqc_raw/ERR2172267.raw_2_fastqc.html",
+                "samples/ERR2172267/fastqc_raw/ERR2172267.raw_2_fastqc.zip",
+                "samples/ERR2172267/pre-mycosnp_summary",
+                "samples/ERR2172267/pre-mycosnp_summary/ERR2172267_linesummary.csv",
+                "samples/ERR2172267/subtype",
+                "samples/ERR2172267/subtype/ERR2172267_subtype.csv",
+                "samples/ERR2172267/taxonomy",
+                "samples/ERR2172267/taxonomy/ERR2172267_gambit.csv"
+            ],
+            [
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "multiqc_general_stats.txt:md5,0a35982d9596e23b474439e192a93fc3",
+                "ERR2172265.log:md5,be79dc893f87de1f82faf749cdfb848c",
+                "ERR2172265.stats.txt:md5,33f7fdeaaa24a33c8ee10df8924d7878",
+                "ERR2172265.trimmed.unpaired.fastq.gz:md5,b2a058cc61cdfddb6673378e6313a9c3",
+                "ERR2172265_1.trimmed.fastq.gz:md5,6d273d44a03658a9d0469e9cb49005eb",
+                "ERR2172265_2.trimmed.fastq.gz:md5,62fafead482855f5a97aff6540b901d6",
+                "ERR2172265_subtype.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "ERR2172265_gambit.csv:md5,43a5ddb4233829c58dcbe6b7f430d025",
+                "ERR2172266.log:md5,be79dc893f87de1f82faf749cdfb848c",
+                "ERR2172266.stats.txt:md5,70eeab6cec56debd81077cdb1d1cffc5",
+                "ERR2172266.trimmed.unpaired.fastq.gz:md5,c0154506f305eb6e741cf1c506430624",
+                "ERR2172266_1.trimmed.fastq.gz:md5,2599236b386ec7601dc067bee8205d37",
+                "ERR2172266_2.trimmed.fastq.gz:md5,328e7a54e95d32af4b147e8b5b590e94",
+                "ERR2172266_subtype.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "ERR2172266_gambit.csv:md5,6d0e2b2fff34bf18da542851a654fa81",
+                "ERR2172267.log:md5,be79dc893f87de1f82faf749cdfb848c",
+                "ERR2172267.stats.txt:md5,5d891a9e684f781f2a3e561f78e54e04",
+                "ERR2172267.trimmed.unpaired.fastq.gz:md5,967f6c3c4324b8f90ee2eabceb038348",
+                "ERR2172267_1.trimmed.fastq.gz:md5,566c84e59721f7393ad492328b257980",
+                "ERR2172267_2.trimmed.fastq.gz:md5,b6ca4cce544d6916853f275029482a19",
+                "ERR2172267_subtype.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "ERR2172267_gambit.csv:md5,bc21ddf0cbaa815fe9a95fa007ca57be"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-12-05T12:33:38.915334925"
+    }
+}

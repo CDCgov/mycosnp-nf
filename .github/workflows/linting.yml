@@ -1,0 +1,42 @@
+name: nf-core linting
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      nf-core_version:
+        type: choice
+        description: "NF-Core version to use"
+        required: true
+        default: "3.3.2"
+        options:
+          - "3.2.0"
+          - "3.2.1"
+          - "3.3.2"
+      lint_options:
+        type: choice
+        description: "Linting options"
+        required: true
+        default: "pipelines"
+        options:
+          - "all"
+          - "pipelines"
+          - "modules"
+          - "subworkflows"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  nf-core-lint:
+    uses: cdcent/oamd-bio-gh-actions/.github/workflows/lint.yml@main
+    with:
+      nf-core_version: ${{ inputs.nf-core_version || '3.3.2' }}
+      lint_options: ${{ inputs.lint_options || 'pipelines' }}
+    secrets: inherit

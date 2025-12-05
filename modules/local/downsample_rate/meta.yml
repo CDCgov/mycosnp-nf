@@ -1,0 +1,65 @@
+name: downsample_rate
+description: Calculate downsampling rate and number of reads to achieve target coverage
+keywords:
+  - downsample
+  - coverage
+  - reads
+  - sampling
+  - rate
+  - python
+tools:
+  - python:
+      description: |
+        Python is a programming language that lets you work quickly and integrate systems more effectively.
+        This module uses Python along with awk for calculating downsampling parameters.
+      homepage: https://www.python.org/
+      documentation: https://docs.python.org/
+      licence: ["Python Software Foundation License"]
+      identifier: biotools:python
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - reads:
+        type: file
+        description: Input sequencing reads file(s)
+        pattern: "*.{fastq,fq,fastq.gz,fq.gz}"
+        ontologies: []
+  - - reference_fasta:
+        type: file
+        description: Reference genome FASTA file for coverage calculation
+        pattern: "*.{fasta,fa,fasta.gz,fa.gz}"
+        ontologies: []
+  - - coverage:
+        type: value
+        description: Target coverage depth for downsampling calculation
+output:
+  downsampled_rate:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - SAMPLE_RATE:
+          type: value
+          description: Calculated sampling rate (between 0 and 1)
+      - SAMPLED_NUM_READS:
+          type: value
+          description: Number of reads after sampling
+  number_to_sample:
+    - SAMPLED_NUM_READS:
+        type: value
+        description: Number of reads to sample for target coverage
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "AMD Platform"
+maintainers:
+  - "AMD Platform"

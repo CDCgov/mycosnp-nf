@@ -1,0 +1,64 @@
+lint:
+  files_exist:
+    - .gitattributes
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - assets/email_template.html
+    - assets/sendmail_template.txt
+    - assets/email_template.txt
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-mycosnp_logo_light.png
+    - docs/images/nf-core-mycosnp_logo_light.png
+    - docs/images/nf-core-mycosnp_logo_dark.png
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+    - .github/workflows/branch.yml
+    - .github/actions/get-shards/action.yml
+    - .github/actions/nf-test/action.yml
+    - assets/nf-core-mycosnp-nf_logo_light.png
+    - docs/images/nf-core-mycosnp-nf_logo_light.png
+    - docs/images/nf-core-mycosnp-nf_logo_dark.png
+    - ro-crate-metadata.json
+    - .github/workflows/linting_comment.yml
+  files_unchanged:
+    - .prettierignore
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-mycosnp_logo_light.png
+    - docs/images/nf-core-mycosnp_logo_light.png
+    - docs/images/nf-core-mycosnp_logo_dark.png
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/CONTRIBUTING.md
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - docs/README.md
+    - .github/workflows/linting.yml
+    - assets/email_template.html
+    - assets/email_template.txt
+    - assets/sendmail_template.txt
+    - .github/workflows/branch.yml
+  multiqc_config:
+    - report_comment
+  nextflow_config:
+    - manifest.name
+    - manifest.homePage
+nf_core_version: 3.3.2
+repository_type: pipeline
+template:
+  author: CDC
+  description: MycoSNP is a portable workflow for performing whole genome
+    sequencing analysis of fungal organisms, including Candida auris. This
+    method prepares the reference, performs quality control, and calls variants
+    using a reference. MycoSNP generates several output files that are
+    compatible with downstream analytic tools, such as those for used for
+    phylogenetic tree-building and gene variant annotations.
+  force: false
+  is_nfcore: false
+  name: mycosnp
+  org: CDCgov
+  outdir: .
+  skip_features:
+    - igenomes
+    - email
+    - adaptivecard
+    - slackreport
+  version: 1.6.4

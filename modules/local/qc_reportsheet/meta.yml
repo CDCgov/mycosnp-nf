@@ -1,0 +1,43 @@
+name: qc_reportsheet
+description: Combine multiple QC report lines into a comprehensive quality control report sheet
+keywords:
+  - qc
+  - quality control
+  - report
+  - combine
+  - statistics
+  - summary
+  - concatenate
+tools:
+  - python:
+      description: |
+        Python is a programming language that lets you work quickly and integrate systems more effectively.
+        This module uses Python for text processing and report generation.
+      homepage: https://www.python.org/
+      documentation: https://docs.python.org/
+      licence: ["PSF-2.0"]
+      identifier: "biotools:python"
+input:
+  - qc_lines:
+      type: file
+      description: |
+        Collection of individual QC report line files from multiple samples
+        containing quality control statistics that need to be combined into
+        a single comprehensive report.
+      pattern: "*_output.txt"
+      ontologies: []
+output:
+  qc_reportsheet:
+    - "qc_report.txt":
+        type: file
+        description: |
+          Comprehensive quality control report sheet combining all individual
+          sample QC statistics with headers including Sample Name, Reads Before/After
+          Trimming, GC Content, Quality Scores, Coverage metrics, Mapped Reads,
+          and Genome Fraction at specified depth threshold.
+        pattern: "qc_report.txt"
+        ontologies: []
+authors:
+  - "AMD Platform"
+maintainers:
+  - "AMD Platform"

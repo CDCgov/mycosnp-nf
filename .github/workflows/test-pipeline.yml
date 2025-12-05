@@ -1,0 +1,34 @@
+name: Run Pipeline Tests CI/CD
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      run_tests:
+        description: "Run comma separated tests on the pipeline (Ex: tests/default.nf.test,tests/cdc_entry.nf.test)"
+        required: false
+        default: "tests/default.nf.test"
+
+# This concurrency group ensures that only one workflow run is active at a time for the same pull request or branch.
+# If a new run is triggered, the previous one will be cancelled.
+# This is useful to avoid multiple runs of the same workflow for the same pull request or branch.
+# It also helps to save resources and time by not running multiple instances of the same workflow in parallel.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pipeline-test:
+    uses: cdcent/oamd-bio-gh-actions/.github/workflows/nf-test.yml@main
+    with:
+      run_on_aws: true
+      aws_s3_bucket: "amdp-dev-bio-development-work"
+      component_type: "pipeline"
+      max_parallel: 2
+      run_tests: ${{ inputs.run_tests || 'tests/default.nf.test,tests/phylogeny.nf.test,tests/premycosnp.nf.test' }}
+      nft_profile: "test,dev"
+      nxf_version: "24.10.4"
+    secrets: inherit

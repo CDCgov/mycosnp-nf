@@ -1,0 +1,64 @@
+nextflow_process {
+
+    name "Test Process SPLIT_VCF"
+    script "../main.nf"
+    process "SPLIT_VCF"
+
+    tag "modules"
+    tag "splitvcf"
+    tag "local/splitvcf"
+
+    test("test-split-vcf") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],
+                    file(params.nfcore_modules_testdata_base_path + '/genomics/homo_sapiens/illumina/gvcf/test.genome.vcf.gz', checkIfExists: true),
+                    file(params.nfcore_modules_testdata_base_path + '/genomics/homo_sapiens/illumina/gvcf/test.genome.vcf.gz.tbi', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert process.out.vcfs.size() > 0 },
+                { assert snapshot(
+                    process.out.txt,
+                    process.out.versions
+                    ).match()
+                }
+            )
+        }
+    }
+
+    test("test-split-vcf-stub") {
+        options '-stub'
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],
+                    file(params.nfcore_modules_testdata_base_path + '/genomics/homo_sapiens/illumina/gvcf/test.genome.vcf.gz', checkIfExists: true),
+                    file(params.nfcore_modules_testdata_base_path + '/genomics/homo_sapiens/illumina/gvcf/test.genome.vcf.gz.tbi', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert process.out.vcfs.size() > 0 },
+                { assert snapshot(
+                    process.out.txt,
+                    process.out.versions
+                    ).match()
+                }
+            )
+        }
+    }
+}

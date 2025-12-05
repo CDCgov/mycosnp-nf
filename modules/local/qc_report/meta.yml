@@ -1,0 +1,89 @@
+name: qc_report
+description: Generate quality control report statistics from FAQCS and samtools
+keywords:
+  - qc
+  - quality control
+  - statistics
+  - report
+  - faqcs
+  - samtools
+  - coverage
+  - mapping
+  - reads
+  - depth
+tools:
+  - pandas:
+      description: |
+        pandas is a fast, powerful, flexible and easy to use open source data analysis
+        and manipulation tool, built on top of the Python programming language.
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3-Clause"]
+      identifier: "biotools:pandas"
+  - samtools:
+      description: |
+        SAM Tools provide various utilities for manipulating alignments in the SAM format,
+        including sorting, merging, indexing and generating alignments in a per-position format
+      homepage: http://www.htslib.org/
+      documentation: http://www.htslib.org/doc/samtools.html
+      doi: 10.1093/bioinformatics/btp352
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - stats:
+        type: file
+        description: |
+          FAQCS statistics text file containing read quality metrics
+        pattern: "*.txt"
+        ontologies: []
+    - debug_dir:
+        type: directory
+        description: |
+          FAQCS debug directory containing base content and quality score histograms
+          before and after trimming
+        pattern: "debug/"
+        ontologies: []
+    - coverage:
+        type: file
+        description: |
+          samtools coverage output file containing coverage statistics per reference sequence
+        pattern: "*.txt"
+        ontologies: []
+    - depth:
+        type: file
+        description: |
+          samtools depth output file containing per-base depth information
+        pattern: "*.tsv"
+        ontologies: []
+    - samtools_stats:
+        type: file
+        description: |
+          samtools stats output file containing comprehensive alignment statistics
+        pattern: "*.txt"
+        ontologies: []
+  - reference:
+      type: file
+      description: |
+        Reference genome file in FASTA format used for mapping and coverage calculations
+      pattern: "*.{fasta,fa,fna}"
+      ontologies:
+        - edam: "http://edamontology.org/data_2044" # Sequence
+        - edam: "http://edamontology.org/format_1929" # FASTA
+output:
+  qc_line:
+    - "*_output.txt":
+        type: file
+        description: |
+          Quality control report line containing comprehensive statistics including
+          read counts, quality scores, GC content, coverage metrics, and genome
+          fraction coverage at specified minimum depth.
+        pattern: "*_output.txt"
+        ontologies: []
+authors:
+  - "AMD Platform"
+maintainers:
+  - "AMD Platform"

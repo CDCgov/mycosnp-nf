@@ -29,10 +29,12 @@ or have something addressed, you can open an issue in this repository. Team
 members will respond to the issue as soon as possible.
 
 ### Submit a pull request
+
 If you would like to contribute, please submit a pull request. In order for us
 to merge a pull request, it must:
-   * Be at least seven days old. Pull requests may be held longer if necessary
-     to give people the opportunity to assess it.
-   * Receive a +1 from a majority of team members associated with the request.
-     If there is significant dissent between the team, a meeting will be held to
-     discuss a plan of action for the pull request.
+
+- Be at least seven days old. Pull requests may be held longer if necessary
+  to give people the opportunity to assess it.
+- Receive a +1 from a majority of team members associated with the request.
+  If there is significant dissent between the team, a meeting will be held to
+  discuss a plan of action for the pull request.

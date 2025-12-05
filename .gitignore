@@ -1,5 +1,14 @@
 .nextflow*
-work
-results*
+work/
+data/
+results/
+.DS_Store
+testing/
+*.pyc
+null/
 bin/vcfTools.pyc*
 bin/__pycache__/
+.venv*
+.nf-test.*
+.nf-test
+.pre-commit-config.yaml

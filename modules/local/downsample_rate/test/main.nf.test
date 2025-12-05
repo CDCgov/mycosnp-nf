@@ -1,0 +1,63 @@
+nextflow_process {
+
+    name "Test Process DOWNSAMPLE_RATE"
+    script "../main.nf"
+    process "DOWNSAMPLE_RATE"
+
+    tag "modules"
+    tag "downsample_rate"
+
+    test("DOWNSAMPLE_RATE - down sample reads from a fastq file") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sample'],
+                    [
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
+                    ]
+                ]
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
+                input[2] = 1
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("DOWNSAMPLE_RATE - stub test") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sample'],
+                    [
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R1.paired.fastq.gz', checkIfExists: true),
+                        file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/downsample_rate/fastq/test_R2.paired.fastq.gz', checkIfExists: true)
+                    ]
+                ]
+                input[1] = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/reference/test_reference.fasta', checkIfExists: true)
+                input[2] = 1
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

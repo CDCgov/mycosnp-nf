@@ -4,16 +4,16 @@
   |\\ | |__  __ /  ` /  \\ |__) |__         }  {
   | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                         `._,._,'
-  nf-core/mycosnp v${version}
+  CDCgov/mycosnp-nf v${version}
 ----------------------------------------------------
 
 Run Name: $runName
 
 <% if (success){
-    out << "## nf-core/mycosnp execution completed successfully! ##"
+    out << "## CDCgov/mycosnp-nf execution completed successfully! ##"
 } else {
     out << """####################################################
-## nf-core/mycosnp execution completed unsuccessfully! ##
+## CDCgov/mycosnp-nf execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -33,8 +33,15 @@ The command used to launch the workflow was as follows:
 
 Pipeline Configuration:
 -----------------------
-<% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
+<%
+summary.each{ k,v ->
+    def keyStr = (k?.toString() ?: 'null')
+    def valStr = (v?.toString() ?: 'null')
+    // Use concatenation / format to avoid embedding raw double-quotes in the generated Groovy source
+    out << String.format(" - %s: %s\n", keyStr.replaceAll("'", "\\\\'"), valStr.replaceAll("'", "\\\\'"))
+}
+%>
 
 --
-nf-core/mycosnp
-https://github.com/nf-core/mycosnp
+CDCgov/mycosnp
+https://github.com/CDCgov/mycosnp-nf
