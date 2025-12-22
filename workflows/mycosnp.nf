@@ -348,7 +348,8 @@ workflow MYCOSNP {
                 params.raxmlng,
                 params.amdp,
                 params.metadata_csv,
-                params.geolocation_csv
+                params.geolocation_csv,
+                params.input
             )
             ch_versions = ch_versions.mix(CREATE_PHYLOGENY.out.versions)
         }

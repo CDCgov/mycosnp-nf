@@ -1,0 +1,48 @@
+{
+    "QC_PARSER - Output Validation": {
+        "content": [
+            {
+                "0": [
+                    "combined_QC_results.csv:md5,ce33d0c51c26515bbc6b6584daf8e188"
+                ],
+                "1": [
+                    "versions.yml:md5,176da8fd7d230c88b6aa943c505a5c27"
+                ],
+                "qc_fail_pass": [
+                    "combined_QC_results.csv:md5,ce33d0c51c26515bbc6b6584daf8e188"
+                ],
+                "versions": [
+                    "versions.yml:md5,176da8fd7d230c88b6aa943c505a5c27"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-12-18T21:55:09.816143016"
+    },
+    "QC_PARSER - stub test": {
+        "content": [
+            {
+                "0": [
+                    "combined_QC_results.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "versions.yml:md5,176da8fd7d230c88b6aa943c505a5c27"
+                ],
+                "qc_fail_pass": [
+                    "combined_QC_results.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,176da8fd7d230c88b6aa943c505a5c27"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-12-18T21:55:23.071595898"
+    }
+}

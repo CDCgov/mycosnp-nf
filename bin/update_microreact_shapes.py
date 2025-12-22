@@ -2,6 +2,8 @@
 
 import argparse
 import pandas as pd
+import sys
+from datetime import datetime
 
 
 def create_df(infile: str) -> pd.DataFrame:
@@ -12,6 +14,107 @@ def create_df(infile: str) -> pd.DataFrame:
 def format_test_samples(sample_list: list) -> list:
     """return list removing whitespace if found"""
     return [item.strip() for entry in sample_list for item in entry.split(',') if item.strip()]
+
+def parse_date_columns(df: pd.DataFrame, date_column='sample_collection_date') -> pd.DataFrame:
+    """parse date column and add day, month, year columns"""
+
+    if date_column not in df.columns:
+        raise KeyError(f"Column '{date_column}' not found in dataframe")
+
+    def extract_date_parts(date_str):
+        """extract day, month, year from date string, handle various formats"""
+        if pd.isna(date_str) or date_str == '' or date_str == 'Not Provided':
+            return pd.Series({'day': None, 'month': None, 'year': None})
+
+        try:
+            # Try MM/DD/YYYY format
+            date_obj = datetime.strptime(str(date_str).strip(), '%m/%d/%Y')
+            return pd.Series({
+                'day': date_obj.day,
+                'month': date_obj.month,
+                'year': date_obj.year
+            })
+        except ValueError:
+            try:
+                # Try YYYY-MM-DD format
+                date_obj = datetime.strptime(str(date_str).strip(), '%Y-%m-%d')
+                return pd.Series({
+                    'day': date_obj.day,
+                    'month': date_obj.month,
+                    'year': date_obj.year
+                })
+            except ValueError:
+                # If parsing fails, return None
+                return pd.Series({'day': None, 'month': None, 'year': None})
+
+    # Apply date parsing
+    date_parts = df[date_column].apply(extract_date_parts)
+    df['day'] = date_parts['day'].astype('Int64')  # Use Int64 to handle NaN
+    df['month'] = date_parts['month'].astype('Int64')
+    df['year'] = date_parts['year'].astype('Int64')
+
+    return df
+
+def rename_colour_column(df: pd.DataFrame) -> pd.DataFrame:
+    """rename clade_color to clade_colour if it exists"""
+    if 'clade_color' in df.columns:
+        df = df.rename(columns={'clade_color': 'clade_colour'})
+    return df
+
+def validate_sample_ids(samplesheet_file: str, metadata_df: pd.DataFrame) -> None:
+    """
+    Validate that sample IDs in samplesheet match those in metadata.
+    Exits with error code 1 if validation fails.
+
+    Args:
+        samplesheet_file: Path to the input samplesheet CSV
+        metadata_df: DataFrame containing metadata with sample_id column
+    """
+
+    # Read samplesheet
+    try:
+        df_samplesheet = create_df(samplesheet_file)
+    except Exception as e:
+        print(f"\nERROR: Failed to read samplesheet file '{samplesheet_file}'", file=sys.stderr)
+        print(f"Details: {str(e)}\n", file=sys.stderr)
+        sys.exit(1)
+
+    # Check for required columns
+    if 'sample_id' not in metadata_df.columns:
+        print("\nERROR: Metadata file must contain a 'sample_id' column", file=sys.stderr)
+        print(f"Available columns: {', '.join(metadata_df.columns)}\n", file=sys.stderr)
+        sys.exit(1)
+
+    # Extract sample IDs (remove empty/null values)
+    samplesheet_samples = set(df_samplesheet['sample'].dropna().astype(str).str.strip())
+    metadata_samples = set(metadata_df['sample_id'].dropna().astype(str).str.strip())
+
+    # Remove empty strings
+    samplesheet_samples = {s for s in samplesheet_samples if s}
+    metadata_samples = {s for s in metadata_samples if s}
+
+    # Check if samplesheet samples are in metadata
+    missing_in_metadata = samplesheet_samples - metadata_samples
+    extra_in_metadata = metadata_samples - samplesheet_samples
+
+    # Report validation results only if there are mismatches
+    if missing_in_metadata or extra_in_metadata:
+        print("\nERROR: Sample ID validation failed", file=sys.stderr)
+
+        if missing_in_metadata:
+            print(f"The following {len(missing_in_metadata)} sample(s) in samplesheet are NOT found in metadata:\n", file=sys.stderr)
+            for sample in sorted(missing_in_metadata):
+                print(f"  {sample}", file=sys.stderr)
+            print("", file=sys.stderr)
+
+        if extra_in_metadata:
+            print(f"The following {len(extra_in_metadata)} sample(s) in metadata are NOT found in samplesheet:\n", file=sys.stderr)
+            for sample in sorted(extra_in_metadata):
+                print(f"  {sample}", file=sys.stderr)
+            print("", file=sys.stderr)
+
+        print("Sample IDs in samplesheet and metadata must match exactly.\n", file=sys.stderr)
+        sys.exit(1)
 
 def add_geolocation(df_meta: pd.DataFrame, df_geo: pd.DataFrame, shared_column='state_country') -> pd.DataFrame:
     """check df for correct state_country code, convert if needed, and merge left df and df_geo"""
@@ -102,6 +205,14 @@ def opts() -> argparse.Namespace:
         dest='geolocation',
         metavar="file"
     )
+    parser.add_argument(
+        '-s','--samplesheet',
+        type=str,
+        help='Input samplesheet CSV file to validate sample IDs against metadata',
+        dest='samplesheet',
+        metavar="file",
+        default=None
+    )
 
     return parser.parse_args()
 
@@ -116,6 +227,14 @@ def main():
     # import files
     df_metadata_raw = create_df(infile=microreact_metadata)
     df_geolocation_raw = create_df(infile=geolocation)
+
+    # validate sample IDs if samplesheet provided
+    if args.samplesheet:
+        validate_sample_ids(samplesheet_file=args.samplesheet, metadata_df=df_metadata_raw)
+
+    # rename color column and parse dates
+    df_metadata_raw = rename_colour_column(df=df_metadata_raw)
+    df_metadata_raw = parse_date_columns(df=df_metadata_raw)
 
     # merge df's and add shapes column
     metadata_shape_geo_df = add_geolocation(df_meta=df_metadata_raw, df_geo=df_geolocation_raw)

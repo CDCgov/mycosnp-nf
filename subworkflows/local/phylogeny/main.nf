@@ -21,6 +21,7 @@ workflow CREATE_PHYLOGENY {
     amdp                  // val: whether to run amdp
     metadata_csv          // val: metadata CSV file for microreact shapes
     geolocation_csv       // val: geolocation CSV file for microreact shapes
+    samplesheet           // val: input samplesheet for sample ID validation
 
 
     main:
@@ -76,7 +77,8 @@ workflow CREATE_PHYLOGENY {
         MICROREACTSHAPES (
             QUICKSNP.out.quicksnp_tree,
             metadata_csv,
-            geolocation_csv
+            geolocation_csv,
+            samplesheet
         )
         ch_versions = ch_versions.mix(MICROREACTSHAPES.out.versions)
 
