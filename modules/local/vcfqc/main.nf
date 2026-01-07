@@ -87,7 +87,7 @@ process VCF_QC {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        awk: \$(awk --version 2>&1 | head -n1 | sed 's/GNU Awk //; s/,.*//; s/awk version //')
+        awk: \$(awk 'BEGIN {print PROCINFO["version"]}' 2>/dev/null || echo "unknown")
     END_VERSIONS
     """
 
@@ -98,7 +98,7 @@ process VCF_QC {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        awk: \$(awk --version 2>&1 | head -n1 | sed 's/GNU Awk //; s/,.*//; s/awk version //')
+        awk: \$(awk 'BEGIN {print PROCINFO["version"]}' 2>/dev/null || echo "unknown")
     END_VERSIONS
     """
 }
