@@ -6,13 +6,16 @@ keywords:
   - ambiguity
   - consensus
 tools:
-  - awk:
-      description: Pattern scanning and processing language used for per-sequence statistics.
+  - gawk:
+      description: GNU Awk pattern scanning and processing language used for per-sequence statistics.
       homepage: https://www.gnu.org/software/gawk/
+      documentation: https://www.gnu.org/software/gawk/manual/
+      tool_dev_url: https://git.savannah.gnu.org/cgit/gawk.git
       licence: ["GPL-3.0-or-later"]
   - coreutils:
-      description: GNU core utilities used for shell operations.
+      description: GNU core utilities (printf, touch, cat) used for shell operations.
       homepage: https://www.gnu.org/software/coreutils/
+      documentation: https://www.gnu.org/software/coreutils/manual/
       licence: ["GPL-3.0-or-later"]
 input:
   - - vcffasta:
