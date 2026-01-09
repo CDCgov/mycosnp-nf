@@ -2,10 +2,9 @@ process VCF_QC {
     tag "vcf-qc"
     label 'process_low'
 
-    conda (params.enable_conda ? "conda-forge::python=3.8.3" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/python:3.8.3' :
-        'quay.io/biocontainers/python:3.8.3' }"
+        'https://depot.galaxyproject.org/singularity/centos:7.9.2009':
+        'quay.io/centos/centos:centos7.9.2009' }"
 
     input:
     path(vcffasta)
@@ -87,7 +86,7 @@ process VCF_QC {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        awk: \$(awk --version 2>/dev/null | head -n1 || awk -W version 2>/dev/null | head -n1 || echo "unknown")
+        awk: \$(awk --version 2>&1 | head -n1 | sed 's/GNU Awk //; s/,.*//; s/awk version //')
     END_VERSIONS
     """
 
@@ -98,7 +97,7 @@ process VCF_QC {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        awk: \$(awk --version 2>/dev/null | head -n1 || awk -W version 2>/dev/null | head -n1 || echo "unknown")
+        awk: \$(awk --version 2>&1 | head -n1 | sed 's/GNU Awk //; s/,.*//; s/awk version //')
     END_VERSIONS
     """
 }

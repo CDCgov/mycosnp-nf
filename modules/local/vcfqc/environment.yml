@@ -1,8 +1,11 @@
----
+# This module uses a CentOS 7.9 base container with system-provided tools.
+# No conda environment is required; dependencies are built into the container.
+# System tools included:
+#   - gawk 4.0.2 (GNU Awk)
+#   - coreutils 8.22 (GNU core utilities)
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - conda-forge::python=3.8.3
-  - conda-forge::gawk=5.1.0
-  - conda-forge::coreutils=9.5
+  - conda-forge::gawk=4.0.2
+  - conda-forge::coreutils=8.22
