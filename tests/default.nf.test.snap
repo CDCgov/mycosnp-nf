@@ -94,7 +94,7 @@
                 "SNPEFFR": null,
                 "snpeffr": null,
                 "SNPEFF_ANN": {
-                    "snpeff": "4.3t"
+                    "snpeff": "up"
                 },
                 "SPLIT_VCF": {
                     "bcftools": 1.14
@@ -301,7 +301,7 @@
                 "vcf-to-fasta.fasta:md5,6c8994e2d535b92cf78b55aac74489ee",
                 "multiqc_citations.txt:md5,ce96770552b458754bb83dce77df722b",
                 "multiqc_general_stats.txt:md5,abd08a78ff6697a33f7179e3a0ac5941",
-                "multiqc_samtools_coverage.txt:md5,91754d737115daae13ea4f4174cbc5e7",
+                "multiqc_samtools_coverage.txt:md5,931c7452872a5dd35fb8d4fb56f16c8b",
                 "multiqc_samtools_flagstat.txt:md5,5cda3cb90461ef07b0b04eed53fb8472",
                 "multiqc_samtools_idxstats.txt:md5,6754f2f7690509ff86801124f5585d6f",
                 "multiqc_samtools_stats.txt:md5,e5cff4f70d90f79348b821782786d146",
@@ -310,21 +310,21 @@
                 "ERR2172265.trimmed.unpaired.fastq.gz:md5,b2a058cc61cdfddb6673378e6313a9c3",
                 "ERR2172265_1.trimmed.fastq.gz:md5,6d273d44a03658a9d0469e9cb49005eb",
                 "ERR2172265_2.trimmed.fastq.gz:md5,62fafead482855f5a97aff6540b901d6",
-                "ERR2172265.final.bam:md5,ed65caeb69f498fb6497727e65411c76",
+                "ERR2172265.final.bam:md5,bafd34b9b75aa1434e4bc6b1ddeaf1f3",
                 "ERR2172265_output.txt:md5,dca46b4a58fd8bd12774298c6fef430c",
                 "ERR2172266.log:md5,be79dc893f87de1f82faf749cdfb848c",
                 "ERR2172266.stats.txt:md5,70eeab6cec56debd81077cdb1d1cffc5",
                 "ERR2172266.trimmed.unpaired.fastq.gz:md5,c0154506f305eb6e741cf1c506430624",
                 "ERR2172266_1.trimmed.fastq.gz:md5,2599236b386ec7601dc067bee8205d37",
                 "ERR2172266_2.trimmed.fastq.gz:md5,328e7a54e95d32af4b147e8b5b590e94",
-                "ERR2172266.final.bam:md5,8444a77a736d9a122ae29670bd11fef2",
+                "ERR2172266.final.bam:md5,f831f7f933a0855ed88819e331ee7cc2",
                 "ERR2172266_output.txt:md5,1b94ddbae07dbe27f747bd6786aa1b68",
                 "ERR2172267.log:md5,be79dc893f87de1f82faf749cdfb848c",
                 "ERR2172267.stats.txt:md5,5d891a9e684f781f2a3e561f78e54e04",
                 "ERR2172267.trimmed.unpaired.fastq.gz:md5,967f6c3c4324b8f90ee2eabceb038348",
                 "ERR2172267_1.trimmed.fastq.gz:md5,566c84e59721f7393ad492328b257980",
                 "ERR2172267_2.trimmed.fastq.gz:md5,b6ca4cce544d6916853f275029482a19",
-                "ERR2172267.final.bam:md5,ae924f7d9fcc3d80c1a30f164219f35c",
+                "ERR2172267.final.bam:md5,78fca756a485bc205762f6952008e335",
                 "ERR2172267_output.txt:md5,2c5962995ca2111ee3767b6179ccfe21"
             ]
         ],
@@ -332,6 +332,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-12-05T11:48:56.345607132"
+        "timestamp": "2026-01-09T14:22:40.019865594"
     }
 }
