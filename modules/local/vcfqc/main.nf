@@ -3,8 +3,8 @@ process VCF_QC {
     label 'process_low'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/centos:7.9.2009':
-        'quay.io/centos/centos:centos7.9.2009' }"
+        'https://depot.galaxyproject.org/singularity/gawk:5.3.0' :
+        'biocontainers/gawk:5.3.0' }"
 
     input:
     path(vcffasta)
