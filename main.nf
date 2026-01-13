@@ -87,10 +87,10 @@ workflow {
     multiqc_report = Channel.empty()
 
     if (params.mode == 'PRE_MYCOSNP') {
-        PRE_MYCOSNP(PIPELINE_INITIALISATION.out.samplesheet)
+        PRE_MYCOSNP(Channel.fromPath(params.input))
         multiqc_report = PRE_MYCOSNP.out.multiqc_report.ifEmpty([])
     } else if (params.mode == 'NFCORE_MYCOSNP') {
-        NFCORE_MYCOSNP(PIPELINE_INITIALISATION.out.samplesheet)
+        NFCORE_MYCOSNP(Channel.fromPath(params.input))
         multiqc_report = NFCORE_MYCOSNP.out.multiqc_report.ifEmpty([])
     } else {
         log.error "Invalid workflow specified. Use 'PRE_MYCOSNP' or 'NFCORE_MYCOSNP'."

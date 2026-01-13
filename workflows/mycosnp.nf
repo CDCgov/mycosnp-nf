@@ -12,21 +12,13 @@ def checkPathParamList = [
 ]
 
 // check for skip_samples_file
+/*
 if (params.skip_samples_file) { checkPathParamList.add(params.skip_samples_file) }
 
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet file not specified!' }
-
-
-/*
-========================================================================================
-    CONFIG FILES
-========================================================================================
 */
-
-ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
-ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
 
 /*
 ========================================================================================
@@ -47,6 +39,8 @@ include { CREATE_PHYLOGENY     } from '../subworkflows/local/phylogeny/main'
 include { SNPEFF               } from '../subworkflows/local/snpeff/main'
 include { paramsSummaryMultiqc } from '../subworkflows/nf-core/utils_nfcore_pipeline/main'
 include { paramsSummaryMap     } from 'plugin/nf-schema'
+include { QC_PARSER                   } from '../modules/local/qc_parser/main'
+include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet/main'
 
 /*
 ========================================================================================
@@ -59,14 +53,13 @@ include { paramsSummaryMap     } from 'plugin/nf-schema'
 //
 include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/fastqc/main'
-include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { GATK4_HAPLOTYPECALLER       } from '../modules/nf-core/gatk4/haplotypecaller/main'
 include { SEQKIT_REPLACE              } from '../modules/nf-core/seqkit/replace/main'
 include { SNPDISTS                    } from '../modules/nf-core/snpdists/main'
 include { GATK4_COMBINEGVCFS          } from '../modules/nf-core/gatk4/combinegvcfs/main'
 include { GATK4_INDEXFEATUREFILE      } from '../modules/nf-core/gatk4/indexfeaturefile/main'
-include { QC_PARSER                   } from '../modules/local/qc_parser/main'
+
 
 /*
 ========================================================================================
@@ -94,7 +87,7 @@ workflow MYCOSNP {
     //
 
     INPUT_CHECK (
-        params.input
+        samplesheet
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
@@ -348,7 +341,8 @@ workflow MYCOSNP {
                 params.raxmlng,
                 params.amdp,
                 params.metadata_csv,
-                params.geolocation_csv
+                params.geolocation_csv,
+                params.input
             )
             ch_versions = ch_versions.mix(CREATE_PHYLOGENY.out.versions)
         }
@@ -375,6 +369,9 @@ workflow MYCOSNP {
     //
     // MODULE: MultiQC
     //
+
+    ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
+    ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
     workflow_summary    = paramsSummaryMultiqc(summary_params)
     ch_workflow_summary = Channel.from(workflow_summary)

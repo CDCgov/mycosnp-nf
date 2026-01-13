@@ -18,7 +18,7 @@
 
   > Danecek P, Bonfield JK, et al. Twelve years of SAMtools and BCFtools. Gigascience. 2021 Feb 16;10(2):giab008. doi: 10.1093/gigascience/giab008. PMID: 33590861; PMCID: PMC7931819.
 
-- [bedtools](https://pubmed.ncbi.nlm.nih.gov/20110278/)
+- [BEDtools](https://pubmed.ncbi.nlm.nih.gov/20110278/)
 
   > Quinlan AR, Hall IM. BEDTools: a flexible suite of utilities for comparing genomic features. Bioinformatics. 2010 Mar 15;26(6):841-2. doi: 10.1093/bioinformatics/btq033. Epub 2010 Jan 28. PubMed PMID: 20110278; PubMed Central PMCID: PMC2832824.
 
@@ -26,19 +26,21 @@
 
   > Li H, Durbin R. Fast and accurate short read alignment with Burrows-Wheeler transform. Bioinformatics. 2009 Jul 15;25(14):1754-60. doi: 10.1093/bioinformatics/btp324. Epub 2009 May 18. PubMed PMID: 19451168; PubMed Central PMCID: PMC2705234.
 
-- [FaQCs](https://pubmed.ncbi.nlm.nih.gov/25165095/)
+- [FaQCs](https://pubmed.ncbi.nlm.nih.gov/25408143/)
 
   > Lo CC, Chain PS. Rapid evaluation and quality control of next generation sequencing data with FaQCs. BMC Bioinformatics. 2014 Aug 28;15:366. doi: 10.1186/s12859-014-0366-2. PMID: 25165095; PMCID: PMC4180166.
 
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
+  > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
+
 - [FastTree](https://pubmed.ncbi.nlm.nih.gov/20224823/)
 
   > Price MN, Dehal PS, Arkin AP. FastTree 2--approximately maximum-likelihood trees for large alignments. PLoS One. 2010 Mar 10;5(3):e9490. doi: 10.1371/journal.pone.0009490. PMID: 20224823; PMCID: PMC2835736.
 
-- [GAMBIT](https://pubmed.ncbi.nlm.nih.gov/35166171/)
+- [GAMBIT](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0277575)
 
-  > Lauer AC, et al. GAMBIT (Genomic Approximation Method for Bacterial Identification and Tracking): A methodology to rapidly leverage whole genome sequencing of bacterial isolates for clinical identification. PLoS One. 2022 Feb 15;17(2):e0277575. doi: 10.1371/journal.pone.0277575. PMID: 35166171.
+  > Lumpe J, Gumbleton L, Gorzalski A, Libuit K, Varghese V, Lloyd T, Tadros F, Arsimendi T, Wagner E, Stephens C, Sevinsky J, Hess D, Pandori M. GAMBIT (Genomic Approximation Method for Bacterial Identification and Tracking): A methodology to rapidly leverage whole genome sequencing of bacterial isolates for clinical identification. PLoS One. 2023 Feb 16;18(2):e0277575. doi: 10.1371/journal.pone.0277575.
 
 - [GATK4](https://pubmed.ncbi.nlm.nih.gov/20644199/)
 
@@ -72,7 +74,7 @@
 
   > Danecek P, Bonfield JK, et al. Twelve years of SAMtools and BCFtools. Gigascience. 2021 Feb 16;10(2):giab008. doi: 10.1093/gigascience/giab008. PMID: 33590861; PMCID: PMC7931819.
 
-- [seqkit](https://pubmed.ncbi.nlm.nih.gov/27706213/)
+- [SeqKit](https://pubmed.ncbi.nlm.nih.gov/27706213/)
 
   > Shen W, Le S, Li Y, Hu F. SeqKit: A Cross-Platform and Ultrafast Toolkit for FASTA/Q File Manipulation. PLoS One. 2016 Oct 5;11(10):e0163962. doi: 10.1371/journal.pone.0163962. PMID: 27706213; PMCID: PMC5051824.
 

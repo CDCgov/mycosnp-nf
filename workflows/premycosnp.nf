@@ -8,24 +8,15 @@
 def checkPathParamList = [
     params.input,
     params.multiqc_config
-    // params.snpeffdb
 ]
 // check for skip_samples_file
+/*
 if (params.skip_samples_file) { checkPathParamList.add(params.skip_samples_file) }
 
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 if (params.input) { samplesheet = Channel.fromPath(params.input, checkIfExists: true) } else { exit 1, 'Input samplesheet file not specified!' }
-
-
-/*
-========================================================================================
-    CONFIG FILES
-========================================================================================
 */
-
-ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
-ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
 
 /*
 ========================================================================================
@@ -77,7 +68,7 @@ workflow PRE_MYCOSNP_WF {
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
     INPUT_CHECK (
-        params.input
+        samplesheet
     )
     ch_versions  = ch_versions.mix(INPUT_CHECK.out.versions)
 
@@ -148,10 +139,6 @@ workflow PRE_MYCOSNP_WF {
     )
     ch_versions = ch_versions.mix(SUBTYPE.out.versions.first())
 
-    //
-    // TODO? --> MODULE: Create line summary for each sample
-    //
-
     // Combine trimmed reads and the QC reference into single channel
     // PRE_MYCOSNP_INDV_SUMMARY needs both the stats.txt file and the debug directory from FAQCS
     ch_faqcs_combined = FAQCS.out.stats
@@ -178,7 +165,7 @@ workflow PRE_MYCOSNP_WF {
         .collectFile(
             name: 'pre-mycosnp-summary.csv',
             storeDir: "${params.outdir}/aggregate_outputs",
-            seed: "Sample,PM_Predicted_Rank,PM_Predicted_Taxon,PM_Subtype_Closest_Match,PM_Subtype_ANI,PM_Closest_GAMBIT_Entry_Description,PM_Closest_GAMBIT_Entry_Distance,PM_Trimmed_Reads,PM_Avg_Read_Quality,PM_Sample_Assembly_Length,PM_Sample_Assembly_GC,PM_Reference_Genome_Length,PM_Avg_Depth_Coverage,PM_Reference_GC\n",
+            seed: "sample,PM_Predicted_Rank,PM_Predicted_Taxon,PM_Subtype_Closest_Match,PM_Subtype_ANI,PM_Closest_GAMBIT_Entry_Description,PM_Closest_GAMBIT_Entry_Distance,PM_Trimmed_Reads,PM_Avg_Read_Quality,PM_Sample_Assembly_Length,PM_Sample_Assembly_GC,PM_Reference_Genome_Length,PM_Avg_Depth_Coverage,PM_Reference_GC\n",
             newLine: false,
             sort: true
         )
@@ -195,6 +182,9 @@ workflow PRE_MYCOSNP_WF {
     //
     // MODULE: MultiQC
     //
+
+    ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
+    ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.map{it[1]})

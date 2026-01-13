@@ -5,7 +5,7 @@ process SPLIT_VCF {
     conda (params.enable_conda ? 'bioconda::bcftools=1.14' : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bcftools:1.14--h88f3f91_0' :
-        'quay.io/biocontainers/bcftools:1.14--h88f3f91_0' }"
+        'biocontainers/bcftools:1.14--h88f3f91_0' }"
 
     input:
     tuple val(meta), path(vcf), path(tbi)

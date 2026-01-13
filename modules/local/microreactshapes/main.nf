@@ -6,12 +6,13 @@ process MICROREACTSHAPES {
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pandas:2.2.1' :
-        'quay.io/biocontainers/pandas:2.2.1' }"
+        'biocontainers/pandas:2.2.1' }"
 
     input:
     tuple val(meta), path(tree)
-    path(MicroreactMetadata)
-    path(GeolocationData)
+    path(microreactmetadata)
+    path(geolocationdata)
+    path(samplesheet)
 
     output:
     tuple val(meta), path('microreact_metadata.csv'), emit: shapes
@@ -24,7 +25,7 @@ process MICROREACTSHAPES {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    update_microreact_shapes.py $MicroreactMetadata -t $params.test_samples -g $GeolocationData
+    update_microreact_shapes.py $microreactmetadata -t $params.test_samples -g $geolocationdata -s $samplesheet
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -2,6 +2,7 @@ process VCF_QC {
     tag "vcf-qc"
     label 'process_low'
 
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gawk:5.3.0' :
         'biocontainers/gawk:5.3.0' }"
@@ -86,7 +87,7 @@ process VCF_QC {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        awk: \$(awk --version 2>&1 | head -n1 | sed 's/GNU Awk //; s/,.*//; s/awk version //')
+        awk: \$(awk --version 2>&1 | head -n1 | sed 's/^GNU Awk //; s/^mawk //; s/,.*//; s/ .*//; s/awk version //')
     END_VERSIONS
     """
 
@@ -97,7 +98,7 @@ process VCF_QC {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        awk: \$(awk --version 2>&1 | head -n1 | sed 's/GNU Awk //; s/,.*//; s/awk version //')
+        awk: \$(awk --version 2>&1 | head -n1 | sed 's/^GNU Awk //; s/^mawk //; s/,.*//; s/ .*//; s/awk version //')
     END_VERSIONS
     """
 }

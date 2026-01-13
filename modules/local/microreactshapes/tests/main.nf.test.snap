@@ -1,0 +1,55 @@
+{
+    "MICROREACTSHAPES - Output Validation": {
+        "content": [
+            [
+                "versions.yml:md5,49a070f42f87b1da7bbe620e951da34e"
+            ],
+            [
+                [
+                    {
+                        "id": "S1"
+                    },
+                    "microreact_metadata.csv:md5,38b135abdaa1fc70057a2009cf8050c8"
+                ]
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-12-18T21:56:29.073881826"
+    },
+    "MICROREACTSHAPES - stub test": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "S1"
+                        },
+                        "microreact_metadata.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,49a070f42f87b1da7bbe620e951da34e"
+                ],
+                "shapes": [
+                    [
+                        {
+                            "id": "S1"
+                        },
+                        "microreact_metadata.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,49a070f42f87b1da7bbe620e951da34e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-12-18T21:56:45.675604655"
+    }
+}

@@ -1,11 +1,9 @@
 process SHOVILL {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_high'
 
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/shovill:1.1.0--0' :
-        'biocontainers/shovill:1.1.0--0' }"
+    conda "bioconda::shovill=1.1.0"
+    container 'staphb/shovill:1.1.0-2022Dec'
 
     input:
     tuple val(meta), path(reads)
@@ -21,13 +19,16 @@ process SHOVILL {
     task.ext.when == null || task.ext.when
 
     script:
+    def gsize = params.genome_size ? "--gsize ${params.genome_size}" : ''
     def args = task.ext.args ?: ''
     def memory = task.memory.toGiga()
     """
+    mkdir -p tmp
     shovill \\
         --R1 ${reads[0]} \\
         --R2 ${reads[1]} \\
         $args \\
+        $gsize \\
         --cpus $task.cpus \\
         --ram $memory \\
         --outdir ./ \\
