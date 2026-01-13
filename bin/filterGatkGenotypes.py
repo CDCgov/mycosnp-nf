@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Filter genotypes of a VCF using Genotype Quality Score (GQ), Depth (DP),
 Allelic Depth (AD) and Allelic ratio via binomial test.

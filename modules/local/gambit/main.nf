@@ -5,7 +5,7 @@ process GAMBIT_QUERY {
     conda (params.enable_conda ? "bioconda::gambit=1.1.0=py312h0fa9677_2" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gambit:1.1.0--py312h0fa9677_2' :
-        'quay.io/biocontainers/gambit:1.1.0--py312h0fa9677_2' }"
+        'biocontainers/gambit:1.1.0--py312h0fa9677_2' }"
 
     input:
     tuple val(meta), path(assembly)

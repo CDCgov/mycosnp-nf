@@ -1,0 +1,50 @@
+name: sratools_prefetch
+description: Download SRA archive files from NCBI
+keywords:
+  - sra
+  - download
+  - ncbi
+  - sequencing data
+tools:
+  - sra-tools:
+      description: The SRA Toolkit and SDK from NCBI is a collection of tools and libraries for using data in the INSDC Sequence Read Archives
+      homepage: https://github.com/ncbi/sra-tools
+      documentation: https://github.com/ncbi/sra-tools/wiki
+      licence: ["Public Domain"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+  - - id:
+        type: string
+        description: SRA accession ID
+        pattern: "SRR*|ERR*|DRR*"
+output:
+  - sra:
+      - "${id}":
+          type: file
+          description: Downloaded SRA archive file
+          pattern: "SRR*|ERR*|DRR*"
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

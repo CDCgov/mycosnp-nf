@@ -38,6 +38,18 @@ output:
         pattern: "qc_report.txt"
         ontologies: []
 authors:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
 maintainers:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

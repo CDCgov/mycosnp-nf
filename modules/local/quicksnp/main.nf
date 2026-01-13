@@ -4,8 +4,8 @@ process QUICKSNP {
 
     // conda (params.enable_conda ? "bioconda::quicksnp=1.0.1" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'quay.io/staphb/quicksnp:1.0.1' :
-        'quay.io/staphb/quicksnp:1.0.1' }"
+        'staphb/quicksnp:1.0.1' :
+        'staphb/quicksnp:1.0.1' }"
 
     input:
     tuple val(meta), path(tsv)

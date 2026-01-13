@@ -1,0 +1,52 @@
+name: vcftools
+description: Filter GATK genotypes from VCF file
+keywords:
+  - vcf
+  - filter
+  - genotypes
+  - gatk
+  - variants
+tools:
+  - scipy:
+      description: Scientific computing tools for Python
+      homepage: https://www.scipy.org/
+      documentation: https://docs.scipy.org/doc/scipy/
+      doi: 10.1038/s41592-019-0686-2
+      licence: ["BSD-3-Clause"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+  - - vcf:
+        type: file
+        description: VCF file with GATK genotypes to filter
+        pattern: "*.{vcf,vcf.gz}"
+output:
+  - vcf:
+      - "*.vcf.gz":
+          type: file
+          description: Filtered VCF file
+          pattern: "*.vcf.gz"
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

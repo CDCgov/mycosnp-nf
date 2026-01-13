@@ -68,6 +68,18 @@ output:
           pattern: "*_linesummary.csv"
           ontologies: []
 authors:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
 maintainers:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

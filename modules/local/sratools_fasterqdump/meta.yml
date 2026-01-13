@@ -1,0 +1,60 @@
+name: sratools_fasterqdump
+description: Extract FASTQ files from SRA archive using fasterq-dump
+keywords:
+  - sra
+  - fastq
+  - download
+  - sequencing data
+tools:
+  - sra-tools:
+      description: The SRA Toolkit and SDK from NCBI is a collection of tools and libraries for using data in the INSDC Sequence Read Archives
+      homepage: https://github.com/ncbi/sra-tools
+      documentation: https://github.com/ncbi/sra-tools/wiki
+      licence: ["Public Domain"]
+  - pigz:
+      description: A parallel implementation of gzip for modern multi-processor, multi-core machines
+      homepage: https://zlib.net/pigz/
+      documentation: https://zlib.net/pigz/pigz.pdf
+      licence: ["zlib"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+  - - sra:
+        type: file
+        description: SRA archive file from prefetch
+        pattern: "*.sra"
+output:
+  - reads:
+      - "*.fastq.gz":
+          type: file
+          description: Compressed FASTQ file(s)
+          pattern: "*.fastq.gz"
+  - md5:
+      - "*.fastq.gz.md5":
+          type: file
+          description: MD5 checksums for FASTQ files
+          pattern: "*.fastq.gz.md5"
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

@@ -84,6 +84,18 @@ output:
         pattern: "*_output.txt"
         ontologies: []
 authors:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
 maintainers:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

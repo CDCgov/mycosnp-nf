@@ -1,4 +1,4 @@
-# python vcf tools
+#!/usr/bin/env python3
 
 from __future__ import division
 

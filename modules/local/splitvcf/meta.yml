@@ -1,0 +1,60 @@
+name: splitvcf
+description: Split multi-sample VCF file into individual sample VCF files
+keywords:
+  - vcf
+  - split
+  - variants
+  - genomics
+tools:
+  - bcftools:
+      description: BCFtools is a set of utilities that manipulate variant calls in VCF and BCF formats
+      homepage: https://samtools.github.io/bcftools/
+      documentation: https://samtools.github.io/bcftools/bcftools.html
+      doi: 10.1093/gigascience/giab008
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+  - - vcf:
+        type: file
+        description: Multi-sample VCF file
+        pattern: "*.{vcf,vcf.gz}"
+  - - tbi:
+        type: file
+        description: VCF index file
+        pattern: "*.tbi"
+output:
+  - vcfs:
+      - "*.vcf.gz":
+          type: file
+          description: Individual sample VCF files
+          pattern: "*.vcf.gz"
+  - txt:
+      - "*.txt":
+          type: file
+          description: List of sample names
+          pattern: "*.txt"
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

@@ -5,7 +5,7 @@ process VCF_CONSENSUS {
     conda (params.enable_conda ? 'bioconda::bcftools=1.14' : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bcftools:1.14--h88f3f91_0' :
-        'quay.io/biocontainers/bcftools:1.14--h88f3f91_0' }"
+        'biocontainers/bcftools:1.14--h88f3f91_0' }"
 
     input:
     tuple val(meta), path(vcf), path(tbi)
@@ -42,8 +42,8 @@ process VCF_CONSENSUS {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch samplesheet.txt
-    touch ${prefix}.fasta.gz
+    echo "sample1" > samplelist.txt
+    echo ">sample1\n" | gzip > sample1.fasta.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

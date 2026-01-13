@@ -3,7 +3,7 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     label 'process_low'
 
     conda (params.enable_conda ? "conda-forge::ncbi-datasets-cli=16.41.0" : null)
-    container 'quay.io/staphb/ncbi-datasets:16.41.0'
+    container 'staphb/ncbi-datasets:16.41.0'
 
     input:
     tuple val(meta), path(assembly), path(stats), path(debug_dir), path(gambit), path(subtype)

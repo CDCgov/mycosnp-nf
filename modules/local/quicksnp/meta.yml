@@ -49,6 +49,18 @@ output:
             - edam: "http://edamontology.org/data_0872" # Phylogenetic tree
             - edam: "http://edamontology.org/format_1910" # Newick format
 authors:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
 maintainers:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

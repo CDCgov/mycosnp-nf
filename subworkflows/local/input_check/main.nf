@@ -13,8 +13,7 @@ workflow INPUT_CHECK {
 
     // "Normalize" each row to triage out into channels
     // for each file type downstream, keep only non-empty strings.
-    rows_ch = Channel
-        .fromPath(samplesheet, checkIfExists: true)
+    rows_ch = samplesheet
         .splitCsv(header:true, sep: ',')
         .map { row ->
             def norm = { col -> col == null ? null : col.toString().trim() }

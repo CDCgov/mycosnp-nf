@@ -1,0 +1,53 @@
+name: snpeffr
+description: Generate SNP effect report using snpEffR
+keywords:
+  - variant annotation
+  - snp effects
+  - vcf
+  - genomics
+tools:
+  - snpeffr:
+      description: R-based tool for SNP effect annotation reporting
+      homepage: https://github.com/cdcgov/snpeffr
+      documentation: https://github.com/cdcgov/snpeffr
+      licence: ["Apache-2.0"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+  - - input:
+        type: file
+        description: VCF file with variant annotations
+        pattern: "*.{vcf,vcf.gz}"
+  - - ref_name:
+        type: string
+        description: Reference genome name
+output:
+  - report:
+      - "*.csv":
+          type: file
+          description: SNP effects report in CSV format
+          pattern: "*.csv"
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

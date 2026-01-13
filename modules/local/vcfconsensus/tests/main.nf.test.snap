@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test.fasta.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "sample1.fasta.gz:md5,3f0097f141d20469e44f55710daf157b"
                     ]
                 ],
                 "1": [
@@ -15,18 +15,18 @@
                         {
                             "id": "test"
                         },
-                        "test.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "samplelist.txt:md5,090a4e14a392f707cf164a20cee76c18"
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,db3f7609f69820a9274ec73ff3d3c75e"
+                    "versions.yml:md5,879752e1776b8ba9d9d6c55900c6dc26"
                 ],
                 "fastas": [
                     [
                         {
                             "id": "test"
                         },
-                        "test.fasta.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "sample1.fasta.gz:md5,3f0097f141d20469e44f55710daf157b"
                     ]
                 ],
                 "txt": [
@@ -34,19 +34,19 @@
                         {
                             "id": "test"
                         },
-                        "test.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "samplelist.txt:md5,090a4e14a392f707cf164a20cee76c18"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,db3f7609f69820a9274ec73ff3d3c75e"
+                    "versions.yml:md5,879752e1776b8ba9d9d6c55900c6dc26"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-21T23:05:02.316926082"
+        "timestamp": "2026-01-13T13:35:35.372911755"
     },
     "test-vcf-consensus": {
         "content": [
@@ -92,9 +92,9 @@
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-21T23:04:46.458742187"
+        "timestamp": "2026-01-13T12:50:26.392303429"
     }
 }

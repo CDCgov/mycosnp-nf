@@ -44,6 +44,18 @@ output:
           pattern: "*.fastq.gz"
           ontologies: []
 authors:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
 maintainers:
-  - "AMD Platform"
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
