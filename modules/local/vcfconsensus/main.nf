@@ -42,8 +42,8 @@ process VCF_CONSENSUS {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch samplesheet.txt
-    touch ${prefix}.fasta.gz
+    echo "sample1" > samplelist.txt
+    echo ">sample1\n" | gzip > sample1.fasta.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

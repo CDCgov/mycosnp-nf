@@ -24,7 +24,7 @@ process SNPEFFR {
 
 	cat <<-END_VERSIONS > versions.yml
 	"${task.process}":
-	snpeffr: \$(snpeffr.R --version | sed 's/v//')
+	    snpeffr: \$(snpeffr.R --version | sed 's/v//')
 	END_VERSIONS
 	"""
 
@@ -35,7 +35,7 @@ process SNPEFFR {
 
 	cat <<-END_VERSIONS > versions.yml
 	"${task.process}":
-	snpeffr: \$(snpeffr.R --version | sed 's/v//')
+	    snpeffr: \$(snpeffr.R --version | sed 's/v//')
 	END_VERSIONS
 	"""
 }

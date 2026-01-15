@@ -10,8 +10,8 @@ process MICROREACTSHAPES {
 
     input:
     tuple val(meta), path(tree)
-    path(microreactmetadata)
-    path(geolocationdata)
+    path(microreact_metadata)
+    path(geolocation_data)
     path(samplesheet)
 
     output:
@@ -25,7 +25,7 @@ process MICROREACTSHAPES {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    update_microreact_shapes.py $microreactmetadata -t $params.test_samples -g $geolocationdata -s $samplesheet
+    update_microreact_shapes.py $microreact_metadata -t $params.test_samples -g $geolocation_data -s $samplesheet
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

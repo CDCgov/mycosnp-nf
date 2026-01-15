@@ -7,13 +7,11 @@
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { SRA_FASTQ_SRATOOLS       } from '../subworkflows/local/sra_fastq_sratools/main'
-include { INPUT_CHECK              } from '../subworkflows/local/input_check/main'
-include { SEQKIT_PAIR              } from '../modules/nf-core/seqkit/pair/main'
-include { FAQCS                    } from '../modules/nf-core/faqcs/main'
-include { GAMBIT_QUERY             } from '../modules/local/gambit/main'
-include { SUBTYPE                  } from '../modules/local/subtype/main'
-include { PRE_MYCOSNP_INDV_SUMMARY } from '../modules/local/pre_mycosnp_indv_summary/main'
+include { SRA_FASTQ_SRATOOLS          } from '../subworkflows/local/sra_fastq_sratools/main'
+include { INPUT_CHECK                 } from '../subworkflows/local/input_check/main'
+include { GAMBIT_QUERY                } from '../modules/local/gambit/main'
+include { SUBTYPE                     } from '../modules/local/subtype/main'
+include { PRE_MYCOSNP_INDV_SUMMARY    } from '../modules/local/pre_mycosnp_indv_summary/main'
 include { SHOVILL as SHOVILL          } from '../modules/local/shovill/main'
 
 /*
@@ -25,11 +23,11 @@ include { SHOVILL as SHOVILL          } from '../modules/local/shovill/main'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-
+include { SEQKIT_PAIR                 } from '../modules/nf-core/seqkit/pair/main'
+include { FAQCS                       } from '../modules/nf-core/faqcs/main'
 
 /*
 ========================================================================================

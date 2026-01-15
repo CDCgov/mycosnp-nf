@@ -62,7 +62,7 @@ process LANE_MERGE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(python --version | sed 's/Python //g')
+        pigz: \$(pigz --version 2>&1 | head -n1 | sed 's/pigz //g')
     END_VERSIONS
     """
 
@@ -84,7 +84,7 @@ process LANE_MERGE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(python --version | sed 's/Python //g')
+        pigz: \$(pigz --version 2>&1 | head -n1 | sed 's/pigz //g')
     END_VERSIONS
     """
 }
