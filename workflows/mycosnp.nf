@@ -17,8 +17,8 @@ include { CREATE_PHYLOGENY     } from '../subworkflows/local/phylogeny/main'
 include { SNPEFF               } from '../subworkflows/local/snpeff/main'
 include { paramsSummaryMultiqc } from '../subworkflows/nf-core/utils_nfcore_pipeline/main'
 include { paramsSummaryMap     } from 'plugin/nf-schema'
-include { QC_PARSER                   } from '../modules/local/qc_parser/main'
-include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet/main'
+include { QC_PARSER            } from '../modules/local/qc_parser/main'
+include { QC_REPORTSHEET       } from '../modules/local/qc_reportsheet/main'
 
 /*
 ========================================================================================
@@ -275,10 +275,11 @@ workflow MYCOSNP {
         ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
         if(params.snpeff != false) {
+            ch_snpeff_cache = Channel.fromPath(params.snpeffcache, checkIfExists: true)
             SNPEFF (
                 GATK_VARIANTS.out.filtered_vcf,
                 params.species,
-                params.snpeffcache,
+                ch_snpeff_cache,
                 params.ref_name
             )
             ch_versions = ch_versions.mix(SNPEFF.out.versions)

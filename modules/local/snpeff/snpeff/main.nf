@@ -2,10 +2,10 @@ process SNPEFF_SNPEFF {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::snpeff=4.3" : null)
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/snpeff:4.3.1t--hdfd78af_5' :
-        'quay.io/biocontainers/snpeff:4.3.1t--hdfd78af_5' }"
+        'biocontainers/snpeff:4.3.1t--hdfd78af_5' }"
 
     input:
     tuple val(meta), path(vcf)
@@ -32,10 +32,12 @@ process SNPEFF_SNPEFF {
     }
     def prefix = task.ext.prefix ?: "${meta.id}"
     def cache_command = cache ? "-dataDir \${PWD}/${cache}" : ""
+    def config_command = cache ? "-config \${PWD}/${cache}/snpEff.config" : ""
     """
     snpEff \\
         -Xmx${avail_mem}M \\
         $db \\
+        $config_command \\
         $args \\
         -csvStats ${prefix}.csv \\
         $cache_command \\
