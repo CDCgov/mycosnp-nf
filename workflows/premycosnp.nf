@@ -1,25 +1,5 @@
 /*
 ========================================================================================
-    VALIDATE INPUTS
-========================================================================================
-*/
-
-// Check input path parameters to see if they exist
-def checkPathParamList = [
-    params.input,
-    params.multiqc_config
-]
-// check for skip_samples_file
-/*
-if (params.skip_samples_file) { checkPathParamList.add(params.skip_samples_file) }
-
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-if (params.input) { samplesheet = Channel.fromPath(params.input, checkIfExists: true) } else { exit 1, 'Input samplesheet file not specified!' }
-*/
-
-/*
-========================================================================================
     IMPORT LOCAL MODULES/SUBWORKFLOWS
 ========================================================================================
 */
@@ -34,6 +14,7 @@ include { FAQCS                    } from '../modules/nf-core/faqcs/main'
 include { GAMBIT_QUERY             } from '../modules/local/gambit/main'
 include { SUBTYPE                  } from '../modules/local/subtype/main'
 include { PRE_MYCOSNP_INDV_SUMMARY } from '../modules/local/pre_mycosnp_indv_summary/main'
+include { SHOVILL as SHOVILL          } from '../modules/local/shovill/main'
 
 /*
 ========================================================================================
@@ -44,8 +25,8 @@ include { PRE_MYCOSNP_INDV_SUMMARY } from '../modules/local/pre_mycosnp_indv_sum
 //
 // MODULE: Installed directly from nf-core/modules
 //
+
 include { FASTQC as FASTQC_RAW        } from '../modules/nf-core/fastqc/main'
-include { SHOVILL as SHOVILL          } from '../modules/local/shovill/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 

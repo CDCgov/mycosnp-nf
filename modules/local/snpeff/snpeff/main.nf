@@ -2,10 +2,10 @@ process SNPEFF_SNPEFF {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "${moduleDir}/environment.yml"
+    conda (params.enable_conda ? "bioconda::snpeff=4.3" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/snpeff:5.1--hdfd78af_2' :
-        'biocontainers/snpeff:5.1--hdfd78af_2' }"
+        'https://depot.galaxyproject.org/singularity/snpeff:4.3.1t--hdfd78af_5' :
+        'quay.io/biocontainers/snpeff:4.3.1t--hdfd78af_5' }"
 
     input:
     tuple val(meta), path(vcf)

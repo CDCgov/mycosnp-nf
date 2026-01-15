@@ -1,27 +1,5 @@
 /*
 ========================================================================================
-    VALIDATE MYCOSNP WORKFLOW SPECIFIC INPUTS
-========================================================================================
-*/
-
-// Check input path parameters to see if they exist
-def checkPathParamList = [
-    params.input,
-    params.multiqc_config,
-    params.fasta
-]
-
-// check for skip_samples_file
-/*
-if (params.skip_samples_file) { checkPathParamList.add(params.skip_samples_file) }
-
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet file not specified!' }
-*/
-
-/*
-========================================================================================
     IMPORT LOCAL MODULES/SUBWORKFLOWS
 ========================================================================================
 */
