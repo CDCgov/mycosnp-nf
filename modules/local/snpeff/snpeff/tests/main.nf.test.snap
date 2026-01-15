@@ -88,7 +88,7 @@
                         {
                             "id": "test"
                         },
-                        "test.ann.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.ann.vcf:md5,0a5cdd39e2366177117df8e4084489ec"
                     ]
                 ],
                 "1": [
@@ -96,7 +96,7 @@
                         {
                             "id": "test"
                         },
-                        "test.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.csv:md5,e340f062d70b25547de7cc1616bb3909"
                     ]
                 ],
                 "2": [
@@ -104,7 +104,7 @@
                         {
                             "id": "test"
                         },
-                        "test.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "snpEff_summary.html:md5,27c12f07fd312a02fd0d04cc789c5433"
                     ]
                 ],
                 "3": [
@@ -112,7 +112,7 @@
                         {
                             "id": "test"
                         },
-                        "test.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.genes.txt:md5,6ed9fe3aaa2cd1b7a6fe38c2917e005f"
                     ]
                 ],
                 "4": [
@@ -123,7 +123,7 @@
                         {
                             "id": "test"
                         },
-                        "test.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.genes.txt:md5,6ed9fe3aaa2cd1b7a6fe38c2917e005f"
                     ]
                 ],
                 "report": [
@@ -131,7 +131,7 @@
                         {
                             "id": "test"
                         },
-                        "test.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.csv:md5,e340f062d70b25547de7cc1616bb3909"
                     ]
                 ],
                 "summary_html": [
@@ -139,7 +139,7 @@
                         {
                             "id": "test"
                         },
-                        "test.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "snpEff_summary.html:md5,27c12f07fd312a02fd0d04cc789c5433"
                     ]
                 ],
                 "vcf": [
@@ -147,7 +147,7 @@
                         {
                             "id": "test"
                         },
-                        "test.ann.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.ann.vcf:md5,0a5cdd39e2366177117df8e4084489ec"
                     ]
                 ],
                 "versions": [
