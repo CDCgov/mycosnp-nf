@@ -5,12 +5,13 @@
 */
 
 // Check input path parameters to see if they exist
+/*
 def checkPathParamList = [
     params.input,
     params.multiqc_config,
     params.fasta
 ]
-
+*/
 /*
 ========================================================================================
     IMPORT LOCAL MODULES/SUBWORKFLOWS
