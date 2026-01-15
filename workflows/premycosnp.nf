@@ -12,7 +12,7 @@ include { INPUT_CHECK                 } from '../subworkflows/local/input_check/
 include { GAMBIT_QUERY                } from '../modules/local/gambit/main'
 include { SUBTYPE                     } from '../modules/local/subtype/main'
 include { PRE_MYCOSNP_INDV_SUMMARY    } from '../modules/local/pre_mycosnp_indv_summary/main'
-include { SHOVILL as SHOVILL          } from '../modules/local/shovill/main'
+include { SHOVILL                     } from '../modules/local/shovill/main'
 
 /*
 ========================================================================================
