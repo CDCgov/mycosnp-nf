@@ -1,164 +1,26 @@
 {
     "test_SNPEFF_SNPEFF -stub": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.ann.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "1": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "2": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.html:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "3": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "4": [
-                    "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
-                ],
-                "genes_txt": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "report": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "summary_html": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.html:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "vcf": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.ann.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
-                ]
-            }
+            [
+                "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
+            ]
         ],
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-15T12:06:44.658805719"
+        "timestamp": "2026-01-15T13:11:42.935818232"
     },
     "test_SNPEFF_SNPEFF": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.ann.vcf:md5,0a5cdd39e2366177117df8e4084489ec"
-                    ]
-                ],
-                "1": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.csv:md5,e340f062d70b25547de7cc1616bb3909"
-                    ]
-                ],
-                "2": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "snpEff_summary.html:md5,27c12f07fd312a02fd0d04cc789c5433"
-                    ]
-                ],
-                "3": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.genes.txt:md5,6ed9fe3aaa2cd1b7a6fe38c2917e005f"
-                    ]
-                ],
-                "4": [
-                    "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
-                ],
-                "genes_txt": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.genes.txt:md5,6ed9fe3aaa2cd1b7a6fe38c2917e005f"
-                    ]
-                ],
-                "report": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.csv:md5,e340f062d70b25547de7cc1616bb3909"
-                    ]
-                ],
-                "summary_html": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "snpEff_summary.html:md5,27c12f07fd312a02fd0d04cc789c5433"
-                    ]
-                ],
-                "vcf": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.ann.vcf:md5,0a5cdd39e2366177117df8e4084489ec"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
-                ]
-            }
+            [
+                "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
+            ]
         ],
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-15T12:05:42.887772546"
+        "timestamp": "2026-01-15T13:10:37.876237986"
     }
 }
