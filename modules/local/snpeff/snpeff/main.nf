@@ -44,7 +44,7 @@ process SNPEFF_SNPEFF {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        snpeff: \$(echo \$(snpEff -version 2>&1) | cut -f 2 -d ' ')
+        snpeff: \$(snpEff -noLog -version 2>&1 | grep "^SnpEff" | cut -f 2)
     END_VERSIONS
     """
 
@@ -58,7 +58,7 @@ process SNPEFF_SNPEFF {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        snpeff: \$(echo \$(snpEff -version 2>&1) | cut -f 2 -d ' ')
+        snpeff: \$(snpEff -noLog -version 2>&1 | grep "^SnpEff" | cut -f 2)
     END_VERSIONS
     """
 
