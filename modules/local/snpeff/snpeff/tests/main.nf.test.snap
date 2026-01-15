@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/test.ann.vcf"
+                        "test.ann.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -15,7 +15,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/test.csv"
+                        "test.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -23,7 +23,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/test.html"
+                        "test.html:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
@@ -31,18 +31,18 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/test.genes.txt"
+                        "test.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "4": [
-                    "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/versions.yml"
+                    "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
                 ],
                 "genes_txt": [
                     [
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/test.genes.txt"
+                        "test.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "report": [
@@ -50,7 +50,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/test.csv"
+                        "test.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "summary_html": [
@@ -58,7 +58,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/test.html"
+                        "test.html:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "vcf": [
@@ -66,11 +66,11 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/test.ann.vcf"
+                        "test.ann.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
-                    "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/60/4e5f66232b56fc06659769a1c2bcb7/versions.yml"
+                    "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
                 ]
             }
         ],
@@ -78,7 +78,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-15T11:49:29.365092088"
+        "timestamp": "2026-01-15T12:06:44.658805719"
     },
     "test_SNPEFF_SNPEFF": {
         "content": [
@@ -88,7 +88,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/test.ann.vcf"
+                        "test.ann.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -96,7 +96,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/test.csv"
+                        "test.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -104,7 +104,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/snpEff_summary.html"
+                        "test.html:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
@@ -112,18 +112,18 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/test.genes.txt"
+                        "test.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "4": [
-                    "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/versions.yml"
+                    "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
                 ],
                 "genes_txt": [
                     [
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/test.genes.txt"
+                        "test.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "report": [
@@ -131,7 +131,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/test.csv"
+                        "test.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "summary_html": [
@@ -139,7 +139,7 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/snpEff_summary.html"
+                        "test.html:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "vcf": [
@@ -147,11 +147,11 @@
                         {
                             "id": "test"
                         },
-                        "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/test.ann.vcf"
+                        "test.ann.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
-                    "/amdp-dev-bio-development-work/oamd-bio-fungal-mycosnp/a1/dde22a9ee3d78c87eca2a8e9b4ca38/versions.yml"
+                    "versions.yml:md5,31455ec3cd593e97780029ffaa09d80e"
                 ]
             }
         ],
@@ -159,6 +159,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-15T11:48:28.648337789"
+        "timestamp": "2026-01-15T12:05:42.887772546"
     }
 }
