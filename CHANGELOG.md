@@ -3,6 +3,29 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### `Changed`
+
+- Updated GATK4 modules from v4.6.1.0 to v4.6.2.0
+  - `gatk4/combinegvcfs`
+  - `gatk4/genotypegvcfs`
+  - `gatk4/haplotypecaller`
+  - `gatk4/indexfeaturefile`
+  - `gatk4/selectvariants`
+  - `gatk4/variantfiltration`
+- Migrated `SNPEFF_SNPEFF` from nf-core module to local module with snpeff v4.3.1t for compatibility with existing snpeffdb
+- Improved code formatting to follow Nextflow DSL2 best practices (string interpolation `${var}`, ternary operator formatting)
+- Fixed `publish_dir_mode` configuration in `modules.config` - replaced hardcoded `'copy'` with `${params.publish_dir_mode}`
+- Updated `LANE_MERGE` to report pigz version instead of python in versions.yml
+- Removed unused `checkPathParamList` validation code from workflows (now handled by nf-schema plugin)
+
+### `Fixed`
+
+- SNPEFF subworkflow channel handling for snpeffcache parameter - now properly wraps cache in channel with meta map
+- snpeffcache path configuration in `nextflow.config` - removed trailing slash
+- SNPEFF module now includes `-config` parameter for proper database configuration
+
 ## v1.6.4 - [2025-12-22]
 
 This release represents the AMD-P (Advanced Molecular Detection Platform) enhancement of the CDCgov/mycosnp-nf pipeline with public health-specific enhancements and workflow improvements.
