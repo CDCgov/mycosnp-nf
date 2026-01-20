@@ -8,14 +8,14 @@ keywords:
   - concatenate
   - reads
 tools:
-  - python:
+  - pigz:
       description: |
-        Python is a high-level, interpreted programming language with dynamic semantics.
-        This module uses basic bash commands (cat, zcat, gzip) for file operations.
-      homepage: https://www.python.org/
-      documentation: https://docs.python.org/
-      licence: ["Python Software Foundation License"]
-      identifier: biotools:python
+        pigz is a parallel implementation of gzip for modern multi-processor, multi-core machines.
+        This module uses pigz for parallel compression and basic bash commands (cat, zcat) for file operations.
+      homepage: https://zlib.net/pigz/
+      documentation: https://zlib.net/pigz/pigz.pdf
+      licence: ["zlib License"]
+      identifier: biotools:pigz
 input:
   - - meta:
         type: map
