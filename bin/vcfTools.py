@@ -180,18 +180,57 @@ class VcfRecord:
 			pass
 		return gq
 
-	def get_percent_AD(self,index=0): #### currently works only on biallelic sites
+	def get_percent_AD(self,index=0):
+		"""
+		Calculate percent of reads supporting the called allele.
+		Handles multi-allelic sites by using the actual called allele from GT.
+		"""
 		percent_AD = 'Undefined'
 		fields = self.genotypes[index]
 		gt_fields = fields.split(':')
 		try:
+			# Get the genotype (e.g., "0", "1", "2", "0/1", "1/1", etc.)
+			gt = gt_fields[0]
+			# Extract the called allele number(s) - take the last digit for haploid or homozygous
+			# For diploid, handle both alleles
+			gt_alleles = re.split(r'[/|]', gt)
+			# Filter out missing genotypes
+			gt_alleles = [a for a in gt_alleles if a != '.']
+			if not gt_alleles:
+				return percent_AD
+
 			ad_index = self.get_AD_index()
 			ad = gt_fields[ad_index]
 			split_ad = ad.split(',')
-			if split_ad[0] != '0':
-				percent_AD = float(split_ad[1])/(float(split_ad[0])+float(split_ad[1]))
-			elif split_ad[1] != '0':
+
+			# Calculate total depth across all alleles
+			total_depth = sum(float(x) for x in split_ad if x != '.')
+
+			if total_depth == 0:
+				return percent_AD
+
+			# For homozygous calls (e.g., "2" or "2/2"), use the called allele
+			# For heterozygous calls (e.g., "0/1"), sum both allele depths
+			called_depth = 0
+			for allele in gt_alleles:
+				allele_idx = int(allele)
+				if allele_idx < len(split_ad) and split_ad[allele_idx] != '.':
+					called_depth += float(split_ad[allele_idx])
+
+			# For ref calls (GT=0), return undefined to skip AD filtering
+			# (ref filtering is handled separately with keep_all_ref)
+			if all(a == '0' for a in gt_alleles):
+				return percent_AD
+
+			# Calculate percent of non-ref allele reads
+			ref_depth = float(split_ad[0]) if split_ad[0] != '.' else 0
+			alt_depth = called_depth - ref_depth if '0' in gt_alleles else called_depth
+
+			if ref_depth + alt_depth > 0:
+				percent_AD = alt_depth / (ref_depth + alt_depth)
+			elif alt_depth > 0:
 				percent_AD = float(1)
+
 		except:
 			pass
 		return percent_AD

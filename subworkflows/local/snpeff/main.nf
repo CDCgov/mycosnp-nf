@@ -2,7 +2,7 @@
 // Run Snpeff
 //
 
-include { SNPEFF_SNPEFF as SNPEFF_ANN      } from '../../../modules/local/snpeff/snpeff/main'
+include { SNPEFF_SNPEFF as SNPEFF_ANN      } from '../../../modules/nf-core/snpeff/snpeff/main'
 include { TABIX_BGZIPTABIX                 } from '../../../modules/nf-core/tabix/bgziptabix/main'
 include { SNPEFFR			               } from '../../../modules/local/snpeffr/main'
 
