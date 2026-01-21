@@ -4,7 +4,7 @@ from __future__ import division
 
 import re, sys
 
-from scipy.stats import binom_test
+from scipy.stats import binomtest as binom_test
 
 class VcfRecord:
 	"""
