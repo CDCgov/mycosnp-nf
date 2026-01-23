@@ -1,7 +1,7 @@
 process QC_PARSER {
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::pandas=1.5.2" : null)
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pandas:1.5.2' :
         'biocontainers/pandas:1.5.2' }"

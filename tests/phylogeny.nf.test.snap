@@ -115,21 +115,21 @@
             [
                 "fasttree_phylogeny.nh:md5,fe2c05a349e53495babfa57e2dc601ab",
                 "quicksnp_phylogeny.nwk:md5,2b6670b336bf8c5ca63a5026da99dac0",
-                "alignment.sth:md5,ad2787968772af26a1b188206aad1442",
+                "alignment.sth:md5,4e005969fab8feb3956e0d9d5062b81f",
                 "rapidnj_phylogeny.nh:md5,1de0290d2a59f1c784d70db0e6d1db4f",
                 "combined.tsv:md5,cd1729a47fccfb17c743419643c4c34e",
                 "samplelist.txt:md5,0a68476d8b93680bbdc57dbca3e12d78",
-                "vcf-qc-report.txt:md5,f06671d835478a3f380eea92fcfd1d42",
+                "vcf-qc-report.txt:md5,c9d3971482db296ddc72b4dde80a144e",
                 "vcfqc_passed_samples.txt:md5,0a68476d8b93680bbdc57dbca3e12d78",
-                "vcf-to-fasta.fasta:md5,d42a1a4cee24d59fd60ff222789e62ca",
+                "vcf-to-fasta.fasta:md5,78b316e9ac197ee1c90cd1f1b957cc83",
                 "microreact_metadata.csv:md5,ed90aa35339743148253c05d6a15eeda",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-13T00:05:37.349047306"
+        "timestamp": "2026-01-22T22:58:33.390340669"
     }
 }

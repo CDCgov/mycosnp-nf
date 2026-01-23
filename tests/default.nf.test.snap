@@ -95,7 +95,7 @@
                     "snpeffr": 1.0
                 },
                 "SNPEFF_ANN": {
-                    "snpeff": "4.3t"
+                    "snpeff": "5.2f"
                 },
                 "SPLIT_VCF": {
                     "bcftools": 1.14
@@ -333,6 +333,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-14T23:05:46.309955538"
+        "timestamp": "2026-01-23T13:47:56.506989648"
     }
 }
