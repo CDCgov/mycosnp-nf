@@ -3,13 +3,13 @@
         "content": [
             {
                 "0": [
-                    "combined_QC_results.csv:md5,5db17677df23b4fbf79b1257a7d313a8"
+                    "combined_QC_results.csv:md5,06f517652f1f7cd79c287159adb741ad"
                 ],
                 "1": [
                     "versions.yml:md5,176da8fd7d230c88b6aa943c505a5c27"
                 ],
                 "qc_fail_pass": [
-                    "combined_QC_results.csv:md5,5db17677df23b4fbf79b1257a7d313a8"
+                    "combined_QC_results.csv:md5,06f517652f1f7cd79c287159adb741ad"
                 ],
                 "versions": [
                     "versions.yml:md5,176da8fd7d230c88b6aa943c505a5c27"
@@ -20,7 +20,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.7"
         },
-        "timestamp": "2026-01-26T08:20:15.983105292"
+        "timestamp": "2026-01-26T09:03:27.555416702"
     },
     "QC_PARSER - stub test": {
         "content": [

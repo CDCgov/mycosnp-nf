@@ -41,7 +41,7 @@ def evaluate_qc(row, gc_range, coverage_threshold, depth_threshold, qscore_thres
     print(f"Evaluating QC for sample {row['Sample Name']}")
     if not gc_range[0] <= row['GC After Trimming'] <= gc_range[1]:
         print(f"GC After Trimming {row['GC After Trimming']} is out of range {gc_range}")
-        return 'fail'
+        return 'FAIL'
     if (
         row['Reference Length Coverage After Trimming'] >= coverage_threshold
         and row['Mean Coverage Depth'] >= depth_threshold
@@ -92,10 +92,29 @@ def main():
         sys.exit(1)
 
     try:
-        data_frame = data_frame.replace('%', '', regex=True).apply(
-            pd.to_numeric, errors='coerce'
+        # Identify the sample id column (do this before any type conversion)
+        if 'Sample Name' in data_frame.columns:
+            sample_col = 'Sample Name'
+        elif 'sample_id' in data_frame.columns:
+            sample_col = 'sample_id'
+        else:
+            print("Error: Could not find a sample id column ('Sample Name' or 'sample_id').")
+            sys.exit(1)
+
+        # Preserve sample identifiers as strings, removing any float artifacts like '.0'
+        data_frame[sample_col] = (
+            data_frame[sample_col]
+            .astype('string')
+            .str.strip()
+            .str.replace(r'\.0$', '', regex=True)
         )
-        print("Successfully converted columns to numeric")
+
+        # Convert only metric columns to numeric; keep sample identifiers untouched
+        metric_cols = [col for col in data_frame.columns if col != sample_col]
+        data_frame[metric_cols] = data_frame[metric_cols].replace('%', '', regex=True)
+        data_frame[metric_cols] = data_frame[metric_cols].apply(pd.to_numeric, errors='coerce')
+
+        print("Successfully converted metric columns to numeric")
     except (ValueError, TypeError) as conversion_error:
         print(f"Error during data conversion: {conversion_error}")
         sys.exit(1)
