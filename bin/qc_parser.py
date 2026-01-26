@@ -93,7 +93,7 @@ def main():
 
     try:
         data_frame = data_frame.replace('%', '', regex=True).apply(
-            pd.to_numeric, errors='ignore'
+            pd.to_numeric, errors='coerce'
         )
         print("Successfully converted columns to numeric")
     except (ValueError, TypeError) as conversion_error:
