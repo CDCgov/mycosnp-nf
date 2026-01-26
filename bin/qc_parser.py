@@ -10,6 +10,21 @@ import sys
 import argparse
 import pandas as pd
 
+
+def _extract_leading_number_as_numeric(series: pd.Series) -> pd.Series:
+        """Extract the leading numeric token from each cell and convert to float.
+
+        Examples:
+            "44.69" -> 44.69
+            "3459405 (99.99 )" -> 3459405
+            "3230111 (93.71)" -> 3230111
+        """
+        extracted = series.astype('string').str.extract(
+                r'^\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)',
+                expand=False,
+        )
+        return pd.to_numeric(extracted, errors='coerce')
+
 def parse_thresholds(threshold_str):
     """Parse and validate the QC thresholds provided as a string."""
     try:
@@ -19,8 +34,16 @@ def parse_thresholds(threshold_str):
                 "Thresholds must be 'GCrangePct:min-max,AvgQscore:#,RefLenCov:#,MeanCovDepth:#'"
             )
 
-        # Extract the numbers for each threshold
-        gc_range_str, coverage_str, depth_str, qscore_str = [part.split(':')[1] for part in parts]
+        thresholds = {}
+        for part in parts:
+            key, value = part.split(':', 1)
+            thresholds[key.strip()] = value.strip()
+
+        # Extract by name to avoid relying on positional order
+        gc_range_str = thresholds['GCrangePct']
+        qscore_str = thresholds['AvgQscore']
+        coverage_str = thresholds['RefLenCov']
+        depth_str = thresholds['MeanCovDepth']
 
         # Parse the GC range
         gc_range = list(map(float, gc_range_str.split('-')))
@@ -36,9 +59,9 @@ def parse_thresholds(threshold_str):
         sys.exit(1)
 
 
-def evaluate_qc(row, gc_range, coverage_threshold, depth_threshold, qscore_threshold):
+def evaluate_qc(row, sample_col, gc_range, coverage_threshold, depth_threshold, qscore_threshold):
     """Evaluate QC metrics for a single sample against the qc thresholds."""
-    print(f"Evaluating QC for sample {row['Sample Name']}")
+    print(f"Evaluating QC for sample {row[sample_col]}")
     if not gc_range[0] <= row['GC After Trimming'] <= gc_range[1]:
         print(f"GC After Trimming {row['GC After Trimming']} is out of range {gc_range}")
         return 'FAIL'
@@ -109,10 +132,29 @@ def main():
             .str.replace(r'\.0$', '', regex=True)
         )
 
-        # Convert only metric columns to numeric; keep sample identifiers untouched
+        # Keep the original string content for "count (percent)" columns (e.g. reads_after_trimming)
+        # so they don't get coerced to NaN and written as blanks.
         metric_cols = [col for col in data_frame.columns if col != sample_col]
         data_frame[metric_cols] = data_frame[metric_cols].replace('%', '', regex=True)
-        data_frame[metric_cols] = data_frame[metric_cols].apply(pd.to_numeric, errors='coerce')
+
+        # Build a numeric view for threshold evaluation only.
+        eval_frame = data_frame.copy()
+        eval_cols = [
+            'GC After Trimming',
+            'Reference Length Coverage After Trimming',
+            'Mean Coverage Depth',
+            'Average Q Score After Trimming',
+        ]
+        for col in eval_cols:
+            if col not in eval_frame.columns:
+                raise ValueError(f"Missing required QC metric column: '{col}'")
+            eval_frame[col] = _extract_leading_number_as_numeric(eval_frame[col])
+
+        # Optionally coerce columns that are numeric-only (no parentheses) for cleaner output.
+        for col in metric_cols:
+            if eval_frame[col].astype('string').str.contains(r'\(', regex=True).any():
+                continue
+            eval_frame[col] = pd.to_numeric(eval_frame[col], errors='coerce')
 
         print("Successfully converted metric columns to numeric")
     except (ValueError, TypeError) as conversion_error:
@@ -120,9 +162,10 @@ def main():
         sys.exit(1)
 
     try:
-        data_frame['outcome'] = data_frame.apply(
+        data_frame['outcome'] = eval_frame.apply(
             evaluate_qc,
             axis=1,
+            sample_col=sample_col,
             gc_range=gc_range,
             coverage_threshold=coverage_threshold,
             depth_threshold=depth_threshold,
