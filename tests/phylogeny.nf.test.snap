@@ -125,8 +125,6 @@
                 "vcfqc_passed_samples.txt:md5,0a68476d8b93680bbdc57dbca3e12d78",
                 "vcf-to-fasta.fasta:md5,78b316e9ac197ee1c90cd1f1b957cc83",
                 "microreact_metadata.csv:md5,ed90aa35339743148253c05d6a15eeda",
-                "llms-full.txt:md5,396ca62d63d9ae10720c616ff420fac0",
-                "multiqc.parquet:md5,fc953725414ecfb2428cbfda24319a28",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ]
         ],
@@ -134,6 +132,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-27T10:55:23.12517612"
+        "timestamp": "2026-01-27T12:50:16.915047391"
     }
 }
