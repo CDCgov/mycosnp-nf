@@ -71,7 +71,7 @@ workflow PIPELINE_INITIALISATION {
         System.exit(1)
     }
 
-    if (params.workflow == 'NFCORE_MYCOSNP') {
+    if (params.mode == 'NFCORE_MYCOSNP') {
         params.snpeffcache = getGenomeAttribute(params, 'snpeffcache')
         // params.snpeffdb = WorkflowMain.getGenomeAttribute(params, 'snpeffdb')
     }

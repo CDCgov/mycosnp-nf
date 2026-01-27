@@ -17,8 +17,8 @@ include { CREATE_PHYLOGENY     } from '../subworkflows/local/phylogeny/main'
 include { SNPEFF               } from '../subworkflows/local/snpeff/main'
 include { paramsSummaryMultiqc } from '../subworkflows/nf-core/utils_nfcore_pipeline/main'
 include { paramsSummaryMap     } from 'plugin/nf-schema'
-include { QC_PARSER                   } from '../modules/local/qc_parser/main'
-include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet/main'
+include { QC_PARSER            } from '../modules/local/qc_parser/main'
+include { QC_REPORTSHEET       } from '../modules/local/qc_reportsheet/main'
 
 /*
 ========================================================================================
@@ -156,9 +156,9 @@ workflow MYCOSNP {
     }
 
     // Derive path-only channels for modules that expect plain file inputs
-    ref_fasta_only = ch_ref_fasta.map{ meta1, fa1 -> fa1 }.first()
-    ref_fai_only   = ch_ref_fai.map{ meta1, fai -> fai }.first()
-    ref_dict_only  = ch_ref_dict.map{ meta1, dict -> dict }.first()
+    ref_fasta_only = ch_ref_fasta.map{ meta1, fa1 -> fa1 }
+    ref_fai_only   = ch_ref_fai.map{ meta1, fai -> fai }
+    ref_dict_only  = ch_ref_dict.map{ meta1, dict -> dict }
 
 /*
 ========================================================================================
@@ -264,7 +264,7 @@ workflow MYCOSNP {
         GATK_VARIANTS (
             ref_fasta_only,
             ref_fai_only,
-            ch_ref_bwa.map { m, b -> b }.first(),
+            ch_ref_bwa.map { m, b -> b },
             ref_dict_only,
             ch_gatk_variants,
             params.max_amb_samples,
@@ -275,10 +275,11 @@ workflow MYCOSNP {
         ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
         if(params.snpeff != false) {
+            ch_snpeff_cache = Channel.fromPath(params.snpeffcache, checkIfExists: true)
             SNPEFF (
                 GATK_VARIANTS.out.filtered_vcf,
                 params.species,
-                params.snpeffcache,
+                ch_snpeff_cache,
                 params.ref_name
             )
             ch_versions = ch_versions.mix(SNPEFF.out.versions)

@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.6.4 - [2025-12-22]
+## v1.6.4-oamd.1.0.0 - [2026-01-27]
 
 This release represents the AMD-P (Advanced Molecular Detection Platform) enhancement of the CDCgov/mycosnp-nf pipeline with public health-specific enhancements and workflow improvements.
 
@@ -36,6 +36,12 @@ This release represents the AMD-P (Advanced Molecular Detection Platform) enhanc
   - Profile-specific tests added for `singleSample` and `vcfs` execution profiles
 
 ### `Changed`
+
+- **SnpEff Version Upgrade**
+  - Upgraded SnpEff from version 4.3.1t to 5.2f
+  - Eliminates 11 security vulnerabilities (3 CRITICAL, 5 HIGH, 3 MEDIUM severity)
+  - Maintains 100% annotation accuracy - produces identical variant annotations to 4.3.1t
+  - Removes critical Log4j 1.2.15 vulnerabilities and other outdated dependencies
 
 - **Parameter Validation Configuration**
   - Updated validation block to nf-schema-compliant syntax

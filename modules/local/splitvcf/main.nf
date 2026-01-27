@@ -2,7 +2,7 @@ process SPLIT_VCF {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? 'bioconda::bcftools=1.14' : null)
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bcftools:1.14--h88f3f91_0' :
         'biocontainers/bcftools:1.14--h88f3f91_0' }"

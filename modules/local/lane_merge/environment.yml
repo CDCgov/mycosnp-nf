@@ -3,4 +3,4 @@
 channels:
   - conda-forge
 dependencies:
-  - conda-forge::python=3.8.3
+  - conda-forge::pigz=2.8

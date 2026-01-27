@@ -19,9 +19,9 @@ workflow SNPEFF {
     SNPEFF_ANN (
         vcf,
         species,
-        [[], snpeffcache]
+        snpeffcache.map{ cache -> [[:], cache] }.first()
     )
-    ch_versions = ch_versions.mix(SNPEFF_ANN.out.versions.first())
+    ch_versions = ch_versions.mix(SNPEFF_ANN.out.versions)
 
     //ZIP & INDEXING VCF
     TABIX_BGZIPTABIX (
