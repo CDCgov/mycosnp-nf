@@ -15,7 +15,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ],
                 "reads": [
                     [
@@ -30,15 +30,15 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T12:21:09.84648663"
+        "timestamp": "2026-01-28T10:43:40.217742509"
     },
     "LANE_MERGE - multiple lane files": {
         "content": [
@@ -56,7 +56,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ],
                 "reads": [
                     [
@@ -71,15 +71,15 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T12:21:43.701553274"
+        "timestamp": "2026-01-28T10:45:04.191031378"
     },
     "LANE_MERGE - stub - single end": {
         "content": [
@@ -94,7 +94,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ],
                 "reads": [
                     [
@@ -106,15 +106,15 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T12:22:20.325495429"
+        "timestamp": "2026-01-28T10:46:54.005288173"
     },
     "LANE_MERGE - stub - paired-end": {
         "content": [
@@ -132,7 +132,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ],
                 "reads": [
                     [
@@ -147,15 +147,15 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T12:22:59.114806924"
+        "timestamp": "2026-01-28T10:48:49.066540462"
     },
     "LANE_MERGE - single file": {
         "content": [
@@ -173,7 +173,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ],
                 "reads": [
                     [
@@ -188,14 +188,14 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,789344445bb1d718bf6ab68d794464fb"
+                    "versions.yml:md5,c92152baded909106e2d3ec323a78fe4"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T12:20:38.189909181"
+        "timestamp": "2026-01-28T10:41:41.016206266"
     }
 }

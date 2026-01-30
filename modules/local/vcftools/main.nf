@@ -2,7 +2,7 @@ process FILTER_GATK_GENOTYPES {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::scipy=1.1.0" : null)
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/scipy%3A1.1.0' :
         'biocontainers/scipy:1.1.0' }"

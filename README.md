@@ -5,7 +5,7 @@ Exemption: exemptByLaw
 Exemption Justification: Contains code developed by a third party with license restrictions that prevent distribution
 Status: Maintained
 Keywords: bioinformatics
-Version: 1.6.4
+Version: 1.6.4-oamd.1.0.0
 Contract#: 47QFCA23F0058
 ```
 

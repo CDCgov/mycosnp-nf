@@ -2,7 +2,7 @@ process PRE_MYCOSNP_INDV_SUMMARY {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? "conda-forge::ncbi-datasets-cli=16.41.0" : null)
+    conda "${moduleDir}/environment.yml"
     container 'staphb/ncbi-datasets:16.41.0'
 
     input:

@@ -14,10 +14,10 @@
             ]
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-12-18T21:56:29.073881826"
+        "timestamp": "2026-01-29T08:33:19.756194033"
     },
     "MICROREACTSHAPES - stub test": {
         "content": [
@@ -47,9 +47,9 @@
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-12-18T21:56:45.675604655"
+        "timestamp": "2026-01-29T08:33:34.339448842"
     }
 }

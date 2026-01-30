@@ -1,18 +1,5 @@
 /*
 ========================================================================================
-    VALIDATE MYCOSNP WORKFLOW SPECIFIC INPUTS
-========================================================================================
-*/
-
-// Check input path parameters to see if they exist
-def checkPathParamList = [
-    params.input,
-    params.multiqc_config,
-    params.fasta
-]
-
-/*
-========================================================================================
     IMPORT LOCAL MODULES/SUBWORKFLOWS
 ========================================================================================
 */
@@ -30,8 +17,8 @@ include { CREATE_PHYLOGENY     } from '../subworkflows/local/phylogeny/main'
 include { SNPEFF               } from '../subworkflows/local/snpeff/main'
 include { paramsSummaryMultiqc } from '../subworkflows/nf-core/utils_nfcore_pipeline/main'
 include { paramsSummaryMap     } from 'plugin/nf-schema'
-include { QC_PARSER                   } from '../modules/local/qc_parser/main'
-include { QC_REPORTSHEET              } from '../modules/local/qc_reportsheet/main'
+include { QC_PARSER            } from '../modules/local/qc_parser/main'
+include { QC_REPORTSHEET       } from '../modules/local/qc_reportsheet/main'
 
 /*
 ========================================================================================
@@ -169,9 +156,9 @@ workflow MYCOSNP {
     }
 
     // Derive path-only channels for modules that expect plain file inputs
-    ref_fasta_only = ch_ref_fasta.map{ meta1, fa1 -> fa1 }.first()
-    ref_fai_only   = ch_ref_fai.map{ meta1, fai -> fai }.first()
-    ref_dict_only  = ch_ref_dict.map{ meta1, dict -> dict }.first()
+    ref_fasta_only = ch_ref_fasta.map{ meta1, fa1 -> fa1 }
+    ref_fai_only   = ch_ref_fai.map{ meta1, fai -> fai }
+    ref_dict_only  = ch_ref_dict.map{ meta1, dict -> dict }
 
 /*
 ========================================================================================
@@ -277,7 +264,7 @@ workflow MYCOSNP {
         GATK_VARIANTS (
             ref_fasta_only,
             ref_fai_only,
-            ch_ref_bwa.map { m, b -> b }.first(),
+            ch_ref_bwa.map { m, b -> b },
             ref_dict_only,
             ch_gatk_variants,
             params.max_amb_samples,
@@ -288,10 +275,11 @@ workflow MYCOSNP {
         ch_versions = ch_versions.mix(GATK_VARIANTS.out.versions)
 
         if(params.snpeff != false) {
+            ch_snpeff_cache = Channel.fromPath(params.snpeffcache, checkIfExists: true)
             SNPEFF (
                 GATK_VARIANTS.out.filtered_vcf,
                 params.species,
-                params.snpeffcache,
+                ch_snpeff_cache,
                 params.ref_name
             )
             ch_versions = ch_versions.mix(SNPEFF.out.versions)
@@ -322,8 +310,47 @@ workflow MYCOSNP {
         ch_versions = ch_versions.mix(SNPDISTS.out.versions)
 
         if(!params.skip_phylogeny) {
+            // Validate fasta file before phylogeny: check sequence count and content
+            ch_filtered_fasta = SEQKIT_REPLACE.out.fastx
+                .filter { meta, fas ->
+                    def count = 0
+                    def hasContent = false
+
+                    try {
+                        //stop early when conditions are met
+                        fas.splitFasta(record: [seqString: true]).find { record ->
+                            count += 1
+                            if (record.seqString && record.seqString.trim().length() > 0) {
+                                hasContent = true
+                            }
+                            // Stop early if we have enough samples and content
+                            return count >= 3 && hasContent
+                        }
+
+                        if (count < 3) {
+                            log.warn "Sample ${meta.id}: Phylogeny analysis requires at least 3 samples, but only ${count} found. Skipping phylogeny tools."
+                            return false
+                        } else if (!hasContent) {
+                            log.warn "Sample ${meta.id}: Alignment file contains only empty sequences. Skipping phylogeny tools."
+                            return false
+                        }
+
+                        return true
+
+                    } catch (Exception e) {
+                        log.error "Sample ${meta.id}: Error validating FASTA file: ${e.message}. Skipping phylogeny tools."
+                        return false
+                    }
+                }
+                .map { meta, fas -> [fas] }
+
+            // Only proceed if we have valid sequences
+            ch_filtered_fasta.ifEmpty {
+                log.warn "No valid samples found for phylogeny analysis. Skipping all phylogeny tools."
+            }
+
             CREATE_PHYLOGENY (
-                SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]},
+                ch_filtered_fasta,
                 '',
                 SNPDISTS.out.tsv,
                 params.rapidnj,

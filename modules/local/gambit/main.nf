@@ -2,7 +2,7 @@ process GAMBIT_QUERY {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::gambit=1.1.0=py312h0fa9677_2" : null)
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gambit:1.1.0--py312h0fa9677_2' :
         'biocontainers/gambit:1.1.0--py312h0fa9677_2' }"

@@ -2,6 +2,7 @@ process SNPEFFR {
 	tag "$meta.id"
 	label 'process_medium'
 
+	conda "${moduleDir}/environment.yml"
 	container "ghcr.io/cdcgov/snpeffr:v1.1.1"
 
 	input:

@@ -12,7 +12,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,6ea5577c3432f6cc4bae6a779dba01ca"
+                    "versions.yml:md5,941aff4a9c0ccf1ddd6bad6a2fbd9019"
                 ],
                 "result": [
                     [
@@ -24,15 +24,15 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,6ea5577c3432f6cc4bae6a779dba01ca"
+                    "versions.yml:md5,941aff4a9c0ccf1ddd6bad6a2fbd9019"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T15:19:27.848376928"
+        "timestamp": "2026-01-28T10:59:25.939511926"
     },
     "PRE_MYCOSNP_INDV_SUMMARY - stub test": {
         "content": [
@@ -47,7 +47,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,6ea5577c3432f6cc4bae6a779dba01ca"
+                    "versions.yml:md5,941aff4a9c0ccf1ddd6bad6a2fbd9019"
                 ],
                 "result": [
                     [
@@ -59,14 +59,14 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,6ea5577c3432f6cc4bae6a779dba01ca"
+                    "versions.yml:md5,941aff4a9c0ccf1ddd6bad6a2fbd9019"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T15:19:48.525224186"
+        "timestamp": "2026-01-28T11:00:59.861247892"
     }
 }

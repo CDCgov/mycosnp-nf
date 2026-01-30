@@ -4,13 +4,13 @@
             19,
             {
                 "BCFTOOLS_INDEX": {
-                    "bcftools": 1.14
+                    "bcftools": 1.22
                 },
                 "BCFTOOLS_VIEW_CONVERT": {
-                    "bcftools": 1.14
+                    "bcftools": 1.22
                 },
                 "FASTTREE": {
-                    "fasttree": "2.1.10"
+                    "fasttree": "2.2.0"
                 },
                 "FILTER_GATK_GENOTYPES": {
                     "python": "3.12.3"
@@ -34,23 +34,23 @@
                     "python": "3.12.3"
                 },
                 "QUICKSNP": {
-                    "python": "3.8.10"
+                    "python": "3.12.3"
                 },
                 "RAPIDNJ": {
                     "rapidnj": "2.3.2",
-                    "biopython": 1.78
+                    "biopython": 1.86
                 },
                 "SEQKIT_REPLACE": {
-                    "seqkit": "2.1.0"
+                    "seqkit": "2.12.0"
                 },
                 "SNPDISTS": {
                     "snpdists": "0.8.2"
                 },
                 "SPLIT_VCF": {
-                    "bcftools": 1.14
+                    "bcftools": 1.22
                 },
                 "VCF_CONSENSUS": {
-                    "bcftools": 1.14
+                    "bcftools": 1.22
                 },
                 "VCF_QC": {
                     "awk": "1.3.4"
@@ -59,7 +59,7 @@
                     "python": "3.12.3"
                 },
                 "Workflow": {
-                    "CDCgov/mycosnp-nf": "v1.6.4"
+                    "CDCgov/mycosnp-nf": "v1.6.4-oamd.1.0.0"
                 }
             },
             [
@@ -92,8 +92,9 @@
                 "combined/snpdists",
                 "combined/snpdists/combined.tsv",
                 "combined/splitvcf",
-                "combined/splitvcf/B11842.vcf.gz",
                 "combined/splitvcf/B11858.vcf.gz",
+                "combined/splitvcf/B12360.vcf.gz",
+                "combined/splitvcf/B13519.vcf.gz",
                 "combined/splitvcf/samplelist.txt",
                 "combined/vcf-qc-report",
                 "combined/vcf-qc-report/vcf-qc-report.txt",
@@ -104,7 +105,9 @@
                 "microreactshapes/microreact_metadata.csv",
                 "multiqc",
                 "multiqc/multiqc_data",
+                "multiqc/multiqc_data/llms-full.txt",
                 "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_sources.txt",
@@ -113,23 +116,23 @@
                 "pipeline_info/mycosnp_software_versions.yml"
             ],
             [
-                "fasttree_phylogeny.nh:md5,fe2c05a349e53495babfa57e2dc601ab",
-                "quicksnp_phylogeny.nwk:md5,2b6670b336bf8c5ca63a5026da99dac0",
-                "alignment.sth:md5,ad2787968772af26a1b188206aad1442",
-                "rapidnj_phylogeny.nh:md5,1de0290d2a59f1c784d70db0e6d1db4f",
-                "combined.tsv:md5,cd1729a47fccfb17c743419643c4c34e",
-                "samplelist.txt:md5,0a68476d8b93680bbdc57dbca3e12d78",
-                "vcf-qc-report.txt:md5,f06671d835478a3f380eea92fcfd1d42",
-                "vcfqc_passed_samples.txt:md5,0a68476d8b93680bbdc57dbca3e12d78",
-                "vcf-to-fasta.fasta:md5,d42a1a4cee24d59fd60ff222789e62ca",
-                "microreact_metadata.csv:md5,ed90aa35339743148253c05d6a15eeda",
+                "fasttree_phylogeny.nh:md5,79743e795074dbb64854cfa5669cde53",
+                "quicksnp_phylogeny.nwk:md5,e22e4583f89f592eecac824b6af34d7d",
+                "alignment.sth:md5,d639c9bc224134cb9b3cfa8aa553147a",
+                "rapidnj_phylogeny.nh:md5,1674d216dcf24796dfe521bd34e9a0cb",
+                "combined.tsv:md5,b7216735d035345d7b318652453b3ca9",
+                "samplelist.txt:md5,1e5702cbb2a3e8b0076cc372edf7385a",
+                "vcf-qc-report.txt:md5,5d3fd68cd581851f6eb14ff2ae2e6474",
+                "vcfqc_passed_samples.txt:md5,1e5702cbb2a3e8b0076cc372edf7385a",
+                "vcf-to-fasta.fasta:md5,4fd29cd74e0408c14e96a7182a7ea552",
+                "microreact_metadata.csv:md5,39fd40217d482e5c8bcfa04c85600084",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-13T00:05:37.349047306"
+        "timestamp": "2026-01-28T15:55:43.898583647"
     }
 }

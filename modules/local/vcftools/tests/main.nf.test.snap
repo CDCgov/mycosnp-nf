@@ -30,7 +30,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-13T13:15:38.838891457"
+        "timestamp": "2026-01-28T12:28:44.680742252"
     },
     "test-filter-gatk-genotypes-stub": {
         "content": [
@@ -63,6 +63,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-13T13:32:20.512891692"
+        "timestamp": "2026-01-28T12:29:45.138736346"
     }
 }
