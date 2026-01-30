@@ -1,0 +1,53 @@
+nextflow_process {
+
+    name "Test Process INPUT_PROC"
+    script "../main.nf"
+    process "INPUT_PROC"
+
+    tag "modules"
+    tag "input_proc"
+
+    test("INPUT_PROC") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.nfcore_modules_testdata_base_path + '/genomics/sarscov2/genome/genome.fasta', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("INPUT_PROC - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.nfcore_modules_testdata_base_path + '/genomics/sarscov2/genome/genome.fasta', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}

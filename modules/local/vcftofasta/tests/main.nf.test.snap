@@ -1,0 +1,68 @@
+{
+    "test-vcf-to-fasta": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_vcf-to-fasta.fasta:md5,f2d830a9b13431c7111d6658d8c94a09"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,ad4ad88c75c659973934e02832a5cb09"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_vcf-to-fasta.fasta:md5,f2d830a9b13431c7111d6658d8c94a09"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,ad4ad88c75c659973934e02832a5cb09"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T12:23:19.157023429"
+    },
+    "test-vcf-to-fasta-stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_vcf-to-fasta.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,ad4ad88c75c659973934e02832a5cb09"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_vcf-to-fasta.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,ad4ad88c75c659973934e02832a5cb09"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T12:24:31.048786416"
+    }
+}

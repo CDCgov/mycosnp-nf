@@ -1,0 +1,48 @@
+nextflow_process {
+    name "Test Process SRATOOLS_PREFETCH"
+    script "../main.nf"
+    process "SRATOOLS_PREFETCH"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "sratools"
+    tag "sratools/prefetch"
+
+    test("sratools/prefetch") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([ [ id:'test' ], 'DRR000774' ])
+                """
+            }
+        }
+
+        then {
+            assertAll (
+            { assert process.success },
+            { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("sratools/prefetch/stub") {
+
+        options '-stub'
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([ [ id:'test', single_end:false ], 'DRR000774' ])
+                """
+            }
+        }
+
+        then {
+            assertAll (
+            { assert process.success },
+            { assert snapshot(process.out.versions).match() }
+            )
+        }
+    }
+}

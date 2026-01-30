@@ -1,0 +1,60 @@
+{
+    "VCF_QC - Output Validation": {
+        "content": [
+            {
+                "0": [
+                    "vcf-qc-report.txt:md5,d43816fc9a346596160f03feed3f21a9"
+                ],
+                "1": [
+                    "vcfqc_passed_samples.txt:md5,2ead01412dad2c354411d2b33a990c03"
+                ],
+                "2": [
+                    "versions.yml:md5,7b73c8eef20c39d8ef14e84dcb4cea1e"
+                ],
+                "vcf_qc_passed": [
+                    "vcfqc_passed_samples.txt:md5,2ead01412dad2c354411d2b33a990c03"
+                ],
+                "vcf_qc_report": [
+                    "vcf-qc-report.txt:md5,d43816fc9a346596160f03feed3f21a9"
+                ],
+                "versions": [
+                    "versions.yml:md5,7b73c8eef20c39d8ef14e84dcb4cea1e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2026-01-29T08:21:03.292930869"
+    },
+    "VCF_QC - stub test": {
+        "content": [
+            {
+                "0": [
+                    "vcf-qc-report.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "vcfqc_passed_samples.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "versions.yml:md5,7b73c8eef20c39d8ef14e84dcb4cea1e"
+                ],
+                "vcf_qc_passed": [
+                    "vcfqc_passed_samples.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "vcf_qc_report": [
+                    "vcf-qc-report.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,7b73c8eef20c39d8ef14e84dcb4cea1e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2026-01-29T08:21:12.949732458"
+    }
+}

@@ -1,0 +1,72 @@
+{
+    "PRE_MYCOSNP_INDV_SUMMARY - create line summary file for single sample": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "SRR30604805",
+                            "single_end": false
+                        },
+                        "SRR30604805_linesummary.csv:md5,dc2f2876f596533044855065f2828bdb"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,941aff4a9c0ccf1ddd6bad6a2fbd9019"
+                ],
+                "result": [
+                    [
+                        {
+                            "id": "SRR30604805",
+                            "single_end": false
+                        },
+                        "SRR30604805_linesummary.csv:md5,dc2f2876f596533044855065f2828bdb"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,941aff4a9c0ccf1ddd6bad6a2fbd9019"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T10:59:25.939511926"
+    },
+    "PRE_MYCOSNP_INDV_SUMMARY - stub test": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "SRR30604805",
+                            "single_end": false
+                        },
+                        "SRR30604805_linesummary.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,941aff4a9c0ccf1ddd6bad6a2fbd9019"
+                ],
+                "result": [
+                    [
+                        {
+                            "id": "SRR30604805",
+                            "single_end": false
+                        },
+                        "SRR30604805_linesummary.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,941aff4a9c0ccf1ddd6bad6a2fbd9019"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T11:00:59.861247892"
+    }
+}

@@ -10,8 +10,10 @@
 
 include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
+include { paramsSummaryLog          } from 'plugin/nf-schema'
 include { samplesheetToList         } from 'plugin/nf-schema'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
+include { logColours                } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipeline'
 
@@ -46,20 +48,33 @@ workflow PIPELINE_INITIALISATION {
     )
 
     //
-    // Validate parameters and generate parameter summary to stdout
-    //
-    UTILS_NFSCHEMA_PLUGIN (
-        workflow,
-        validate_params,
-        null
-    )
-
-    //
     // Check config provided to the pipeline
     //
     UTILS_NFCORE_PIPELINE (
         nextflow_cli_args
     )
+
+    log.info logo(workflow, monochrome_logs)
+
+    //
+    // Validate parameters and generate parameter summary to stdout
+    //
+    UTILS_NFSCHEMA_PLUGIN (
+        workflow,
+        validate_params,
+        "${projectDir}/nextflow_schema.json"
+    )
+
+    // Check input has been provided
+    if (! (params.input || params.add_sra_file || params.add_vcf_file) ) {
+        log.error "Please provide an input samplesheet, list of vcf files, or list of sra ids to the pipeline e.g. '--input samplesheet.csv --add_sra_file sralist.csv --add_vcf_file vcflist.csv'"
+        System.exit(1)
+    }
+
+    if (params.mode == 'NFCORE_MYCOSNP') {
+        params.snpeffcache = getGenomeAttribute(params, 'snpeffcache')
+        // params.snpeffdb = WorkflowMain.getGenomeAttribute(params, 'snpeffdb')
+    }
 
     //
     // Create channel from input file provided through params.input
@@ -68,22 +83,27 @@ workflow PIPELINE_INITIALISATION {
     Channel
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map {
-            meta, fastq_1, fastq_2 ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
+            meta, fastq_1, fastq_2, sra, vcf ->
+                if (fastq_1 && !fastq_2) {
+                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ], sra, vcf ]
+                } else if (fastq_1 && fastq_2) {
+                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ], sra, vcf ]
                 } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+                    return [ meta.id, meta + [ single_end:false ], [], sra, vcf ]        // No fastq files provided, assume paired-end
                 }
         }
         .groupTuple()
         .map { samplesheet ->
-            validateInputSamplesheet(samplesheet)
+             validateInputSamplesheet(samplesheet)
         }
         .map {
-            meta, fastqs ->
-                return [ meta, fastqs.flatten() ]
+             meta, fastqs, sra, vcf ->
+                 return [ meta, fastqs.flatten(), sra.flatten(), vcf.flatten() ]
         }
         .set { ch_samplesheet }
+
+    log.info citation(workflow)
+    log.info dashedLine(monochrome_logs)
 
     emit:
     samplesheet = ch_samplesheet
@@ -130,7 +150,7 @@ workflow PIPELINE_COMPLETION {
 // Validate channels from input samplesheet
 //
 def validateInputSamplesheet(input) {
-    def (metas, fastqs) = input[1..2]
+    def (metas, fastqs, sra, vcf) = input[1..4]
 
     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
     def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
@@ -138,7 +158,7 @@ def validateInputSamplesheet(input) {
         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
     }
 
-    return [ metas[0], fastqs ]
+    return [ metas[0], fastqs, sra, vcf ]
 }
 //
 // Generate methods description for MultiQC
@@ -206,3 +226,65 @@ def methodsDescriptionText(mqc_methods_yaml) {
     return description_html.toString()
 }
 
+def dashedLine(monochrome_logs) {
+    def colors = logColours(monochrome_logs) as Map
+    return "-${colors.dim}--------------------------------------------------------------------------------------------------${colors.reset}-"
+}
+
+//
+// nf-core logo
+//
+def logo(workflow, monochrome_logs) {
+    def colors = logColours(monochrome_logs)
+    String.format(
+            """\n
+            ${dashedLine(monochrome_logs)}
+                                                                                        ___..._
+                                                                                   _,--'       "`-.
+            ${colors.blue}  ███╗   ███╗██╗   ██╗ ██████╗ ██████╗ ███████╗███╗   ██╗██████╗ ${colors.reset}     ,'.  .            \\
+            ${colors.blue}  ████╗ ████║╚██╗ ██╔╝██╔════╝██╔═══██╗██╔════╝████╗  ██║██╔══██╗${colors.reset}   ,/:. .     .       .'
+            ${colors.blue}  ██╔████╔██║ ╚████╔╝ ██║     ██║   ██║███████╗██╔██╗ ██║██████╔╝${colors.reset}   |;..  .      _..--'
+            ${colors.blue}  ██║╚██╔╝██║  ╚██╔╝  ██║     ██║   ██║╚════██║██║╚██╗██║██╔═══╝ ${colors.reset}   `--:...-,-'""\\
+            ${colors.blue}  ██║ ╚═╝ ██║   ██║   ╚██████╗╚██████╔╝███████║██║ ╚████║██║     ${colors.reset}           |:.  `.\\
+            ${colors.blue}  ╚═╝     ╚═╝   ╚═╝    ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝╚═╝     ${colors.reset}           |;.   |
+            ${colors.purple}  ${workflow.manifest.name} v${workflow.manifest.version}${colors.reset}                                                  `;:.
+                                                                                           `;,|
+            ${dashedLine(monochrome_logs)}
+            """.stripIndent()
+    )
+}
+
+def getGenomeAttribute(params, attribute) {
+    def val = ''
+    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
+        if (params.genomes[ params.genome ].containsKey(attribute)) {
+            val = params.genomes[ params.genome ][ attribute ]
+        }
+    }
+    return val
+}
+
+//
+// Citation string for pipeline
+//
+def citation(workflow) {
+    return "If you use ${workflow.manifest.name} for your analysis please cite:\n\n" +
+        "* The nf-core framework\n" +
+        "  https://doi.org/10.1038/s41587-020-0439-x\n\n" +
+        "* Software dependencies\n" +
+        "  https://github.com/${workflow.manifest.name}/blob/master/CITATIONS.md"
+}
+
+//
+// Exit pipeline if incorrect --genome key provided
+//
+def genomeExistsError(params, log) {
+    if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
+        log.error "=============================================================================\n" +
+            "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" +
+            "  Currently, the available genome keys are:\n" +
+            "  ${params.genomes.keySet().join(", ")}\n" +
+            "==================================================================================="
+        System.exit(1)
+    }
+}

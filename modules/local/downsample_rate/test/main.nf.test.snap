@@ -1,0 +1,84 @@
+{
+    "DOWNSAMPLE_RATE - down sample reads from a fastq file": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "1",
+                        "1000"
+                    ]
+                ],
+                "1": [
+                    "1000"
+                ],
+                "2": [
+                    "versions.yml:md5,008ee68fe0829d6d465b2843a89c530b"
+                ],
+                "downsampled_rate": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "1",
+                        "1000"
+                    ]
+                ],
+                "number_to_sample": [
+                    "1000"
+                ],
+                "versions": [
+                    "versions.yml:md5,008ee68fe0829d6d465b2843a89c530b"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T10:18:39.021603632"
+    },
+    "DOWNSAMPLE_RATE - stub test": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "1",
+                        "1000"
+                    ]
+                ],
+                "1": [
+                    "1000"
+                ],
+                "2": [
+                    "versions.yml:md5,008ee68fe0829d6d465b2843a89c530b"
+                ],
+                "downsampled_rate": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "1",
+                        "1000"
+                    ]
+                ],
+                "number_to_sample": [
+                    "1000"
+                ],
+                "versions": [
+                    "versions.yml:md5,008ee68fe0829d6d465b2843a89c530b"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T10:19:47.807666629"
+    }
+}

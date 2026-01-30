@@ -1,0 +1,100 @@
+{
+    "test-vcf-consensus-stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "sample1.fasta.gz:md5,3f0097f141d20469e44f55710daf157b"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "samplelist.txt:md5,090a4e14a392f707cf164a20cee76c18"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,0ceceafb578d54a3459326079bce1251"
+                ],
+                "fastas": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "sample1.fasta.gz:md5,3f0097f141d20469e44f55710daf157b"
+                    ]
+                ],
+                "txt": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "samplelist.txt:md5,090a4e14a392f707cf164a20cee76c18"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0ceceafb578d54a3459326079bce1251"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T12:19:45.888594043"
+    },
+    "test-vcf-consensus": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta.gz:md5,fce2c39479beaa2f501342ab6812987f"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "samplelist.txt:md5,d8e8fca2dc0f896fd7cb4cb0031ba249"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,7a6551f89015f79869380323123866c2"
+                ],
+                "fastas": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta.gz:md5,fce2c39479beaa2f501342ab6812987f"
+                    ]
+                ],
+                "txt": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "samplelist.txt:md5,d8e8fca2dc0f896fd7cb4cb0031ba249"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,7a6551f89015f79869380323123866c2"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T12:15:11.214927511"
+    }
+}

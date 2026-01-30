@@ -1,0 +1,72 @@
+{
+    "test-subtype": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_subtype.csv:md5,0917b89fe49a74c27ef115ff84c40b22"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,aad39aca992bc537f7e3463e1e769430"
+                ],
+                "subtype": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_subtype.csv:md5,0917b89fe49a74c27ef115ff84c40b22"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,aad39aca992bc537f7e3463e1e769430"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T13:01:04.52126926"
+    },
+    "test-subtype-stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_subtype.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,aad39aca992bc537f7e3463e1e769430"
+                ],
+                "subtype": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_subtype.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,aad39aca992bc537f7e3463e1e769430"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T13:06:28.393481369"
+    }
+}

@@ -1,0 +1,44 @@
+{
+    "test-split-vcf": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "samplelist.txt:md5,640a474d6f73b01524287f50ca538c04"
+                ]
+            ],
+            [
+                "versions.yml:md5,efc03ece2bef422fff96596159091210"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T11:52:50.912299752"
+    },
+    "test-split-vcf-stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "samplelist.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "versions.yml:md5,efc03ece2bef422fff96596159091210"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T11:53:48.869369562"
+    }
+}

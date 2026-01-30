@@ -1,0 +1,51 @@
+{
+    "sratools/prefetch/stub": {
+        "content": [
+            [
+                "versions.yml:md5,dca1ee1f791394e133cecee3a7db33fc"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2026-01-29T09:04:23.436507443"
+    },
+    "sratools/prefetch": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "DRR000774.sra:md5,7647dba20c89c0e3d7ad13842f060eb0"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,dca1ee1f791394e133cecee3a7db33fc"
+                ],
+                "sra": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "DRR000774.sra:md5,7647dba20c89c0e3d7ad13842f060eb0"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,dca1ee1f791394e133cecee3a7db33fc"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2026-01-29T09:04:11.765222569"
+    }
+}

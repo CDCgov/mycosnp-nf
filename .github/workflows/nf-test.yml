@@ -1,0 +1,73 @@
+name: Run nf-test CI/CD
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - dev
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      run_on_batch:
+        description: "Run tests on AWS Batch"
+        required: false
+        default: false
+        type: boolean
+      max_parallel:
+        description: "Maximum number of parallel test runs"
+        required: false
+        default: 2
+        type: number
+      only_changed:
+        description: "Run tests only for changed modules"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  AWS_REGION: "us-east-1" # Set the AWS region for the workflow
+  NF_PIPELINE_REPO: ${{ github.repository.name }}
+
+# This concurrency group ensures that only one workflow run is active at a time for the same pull request or branch.
+# If a new run is triggered, the previous one will be cancelled.
+# This is useful to avoid multiple runs of the same workflow for the same pull request or branch.
+# It also helps to save resources and time by not running multiple instances of the same workflow in parallel.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  nf-test:
+    strategy:
+      matrix:
+        NXF_VER: ["24.10.4"]
+    uses: cdcent/oamd-bio-gh-actions/.github/workflows/nf-test.yml@main
+    with:
+      run_on_aws: true
+      aws_s3_bucket: ${{ inputs.run_on_batch && 'amdp-dev-bio-development-work' || '' }}
+      max_parallel: ${{ inputs.max_parallel || 2 }}
+      only_changed: ${{ inputs.only_changed && 'true' || github.event_name != 'push' || github.event_name == 'pull_request' }}
+      nft_profile: "${{ inputs.run_on_batch && 'dev' || 'standard,dev_reg' }}"
+      nxf_version: ${{ matrix.NXF_VER }}
+      exclude_tests: "modules/local/gambit"
+    secrets: inherit
+
+  nf-test-aws:
+    strategy:
+      matrix:
+        NXF_VER: ["24.10.4"]
+    uses: cdcent/oamd-bio-gh-actions/.github/workflows/nf-test.yml@main
+    with:
+      run_on_aws: true
+      aws_s3_bucket: "amdp-dev-bio-development-work"
+      max_parallel: ${{ inputs.max_parallel || 2 }}
+      only_changed: ${{ !inputs.full_test }}
+      nft_profile: "dev"
+      nxf_version: ${{ matrix.NXF_VER }}
+      run_tests: "modules/local/gambit"
+      skip_coverage: true
+    secrets: inherit

@@ -1,0 +1,48 @@
+{
+    "QC_REPORT - qc report for a single sample": {
+        "content": [
+            {
+                "0": [
+                    "SRR30604805_output.txt:md5,6a7c76a089ecb734aa8301c312e70c03"
+                ],
+                "1": [
+                    "versions.yml:md5,2736fecf6820c03e77e197812cf5ec7b"
+                ],
+                "qc_line": [
+                    "SRR30604805_output.txt:md5,6a7c76a089ecb734aa8301c312e70c03"
+                ],
+                "versions": [
+                    "versions.yml:md5,2736fecf6820c03e77e197812cf5ec7b"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2026-01-29T08:41:05.158529574"
+    },
+    "QC_REPORT - stub test": {
+        "content": [
+            {
+                "0": [
+                    "SRR30604805_output.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "versions.yml:md5,2736fecf6820c03e77e197812cf5ec7b"
+                ],
+                "qc_line": [
+                    "SRR30604805_output.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,2736fecf6820c03e77e197812cf5ec7b"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2026-01-28T11:19:21.691323893"
+    }
+}

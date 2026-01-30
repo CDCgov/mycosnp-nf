@@ -1,0 +1,65 @@
+name: coordstobed
+description: Convert mummer delta coordinates to BED format for masked regions
+keywords:
+  - coordinates
+  - bed
+  - mummer
+  - delta
+  - alignment
+  - masking
+tools:
+  - mummer:
+      description: |
+        MUMmer is a system for rapidly aligning entire genomes, whether in complete
+        or draft form. It can align complete genomes in a matter of seconds, and can
+        find extensive local alignments for incomplete genomes.
+      homepage: http://mummer.sourceforge.net/
+      documentation: http://mummer.sourceforge.net/manual/
+      licence: ["Artistic License"]
+      identifier: biotools:mummer
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - delta:
+        type: file
+        description: Delta file from mummer/nucmer alignment containing coordinate information
+        pattern: "*.delta"
+        ontologies: []
+output:
+  bed:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.bed":
+          type: file
+          description: BED format file containing masked reference coordinates
+          pattern: "*.bed"
+          ontologies: []
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

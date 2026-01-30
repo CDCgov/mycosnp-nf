@@ -1,0 +1,42 @@
+process QUICKSNP {
+    tag "$meta.id"
+    label 'process_low'
+
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'staphb/quicksnp:1.0.1' :
+        'staphb/quicksnp:1.0.1' }"
+
+    input:
+    tuple val(meta), path(tsv)
+
+    output:
+    tuple val(meta), path("*.nwk"), emit: quicksnp_tree
+    path "versions.yml",            emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
+
+    script:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    QuickSNP.py \\
+        --dm ${tsv} \\
+        --outtree quicksnp_tree.nwk
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python3 --version | sed 's/Python //g')
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch quicksnp_tree.nwk
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python3 --version | sed 's/Python //g')
+    END_VERSIONS
+    """
+}

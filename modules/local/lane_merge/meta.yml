@@ -1,0 +1,61 @@
+name: lane_merge
+description: Merge FASTQ files from multiple lanes for the same sample
+keywords:
+  - fastq
+  - merge
+  - lane
+  - combine
+  - concatenate
+  - reads
+tools:
+  - pigz:
+      description: |
+        pigz is a parallel implementation of gzip for modern multi-processor, multi-core machines.
+        This module uses pigz for parallel compression and basic bash commands (cat, zcat) for file operations.
+      homepage: https://zlib.net/pigz/
+      documentation: https://zlib.net/pigz/pigz.pdf
+      licence: ["zlib License"]
+      identifier: biotools:pigz
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - reads:
+        type: file
+        description: |
+          List of gzipped/uncompressed FASTQ files from multiple lanes for the same sample.
+          For paired-end data, files should be provided in alternating R1/R2 order.
+        pattern: "*.{fastq,fastq.gz,fq,fq.gz}"
+        ontologies: []
+output:
+  reads:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.fastq.gz":
+          type: file
+          description: |
+            Merged FASTQ file(s). Single-end data produces one file named {sample_id}.fastq.gz.
+            Paired-end data produces two files named {sample_id}_R1.fastq.gz and {sample_id}_R2.fastq.gz.
+          pattern: "*.fastq.gz"
+          ontologies: []
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

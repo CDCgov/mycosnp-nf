@@ -1,0 +1,85 @@
+name: pre_mycosnp_indv_summary
+description: Generate individual sample pre-mycosnp summary statistics
+keywords:
+  - summary
+  - statistics
+  - mycosnp
+  - gambit
+  - qc
+  - assembly
+  - coverage
+  - taxonomy
+  - subtype
+tools:
+  - ncbi-datasets-cli:
+      description: |
+        NCBI Datasets is a resource that lets users easily gather data
+        from across NCBI databases. Find and download sequence, annotation,
+        and metadata for genes and genomes across taxonomy.
+      homepage: https://www.ncbi.nlm.nih.gov/datasets/
+      documentation: https://www.ncbi.nlm.nih.gov/datasets/docs/
+      licence: ["Public Domain"]
+      identifier: "biotools:ncbi-datasets"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - assembly:
+        type: file
+        description: |
+          Genome assembly file in FASTA format for the sample
+        pattern: "*.{fasta,fa,fna}"
+        ontologies:
+          - edam: "http://edamontology.org/data_2044" # Sequence
+          - edam: "http://edamontology.org/format_1929" # FASTA
+    - faqcs:
+        type: file
+        description: |
+          FAQCS quality control output file containing read statistics
+        pattern: "*.txt"
+        ontologies: []
+    - gambit:
+        type: file
+        description: |
+          GAMBIT taxonomic identification output file in CSV format
+        pattern: "*_gambit.csv"
+        ontologies: []
+    - subtype:
+        type: file
+        description: |
+          Subtyping analysis results file containing closest match and ANI information
+        pattern: "*_subtype.csv"
+        ontologies: []
+output:
+  result:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*_linesummary.csv":
+          type: file
+          description: |
+            Individual sample line summary CSV file containing pre-mycosnp statistics
+            including predicted taxonomy, subtyping results, GAMBIT identification,
+            read quality metrics, assembly statistics, and coverage information.
+          pattern: "*_linesummary.csv"
+          ontologies: []
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

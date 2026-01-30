@@ -1,0 +1,51 @@
+process FILTER_GATK_GENOTYPES {
+    tag "$meta.id"
+    label 'process_low'
+
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/scipy%3A1.1.0' :
+        'biocontainers/scipy:1.1.0' }"
+
+    input:
+    tuple val(meta), path(vcf)
+
+    output:
+    tuple val(meta), path("*.vcf.gz"), emit: vcf
+    path "versions.yml",               emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
+
+    script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def is_compressed_vcf = vcf.getName().endsWith(".gz") ? true : false
+    def vcf_name = vcf.getName().replace(".gz", "")
+    """
+    if [ "$is_compressed_vcf" == "true" ]; then
+        gzip -c -d $vcf > $vcf_name
+    fi
+
+    filterGatkGenotypes.py  $vcf_name \\
+                            $args \\
+                           > ${prefix}.vcf
+    gzip ${prefix}.vcf
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo "##fileformat=VCFv4.2\n" | gzip > ${prefix}.vcf.gz
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
+    """
+}

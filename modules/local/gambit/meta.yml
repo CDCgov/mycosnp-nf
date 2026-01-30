@@ -1,0 +1,78 @@
+name: gambit_query
+description: Performs taxonomic identification of microbial genomes using GAMBIT
+keywords:
+  - taxonomy
+  - identification
+  - microbial
+  - genome
+  - gambit
+  - classification
+  - species
+tools:
+  - gambit:
+      description: |
+        GAMBIT (Genomic Approximation Method for Bacterial Identification and Tracking)
+        is a tool for rapid taxonomic identification of microbial pathogens using
+        genomic signatures derived from k-mer analysis.
+      homepage: https://github.com/jlumpe/gambit
+      documentation: https://gambit-genomics.readthedocs.io/
+      licence: ["AGPL-3.0"]
+      identifier: "biotools:gambit"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - assembly:
+        type: file
+        description: Genome assembly file in FASTA format
+        pattern: "*.{fasta,fa,fna}"
+        ontologies:
+          - edam: "http://edamontology.org/data_2044" # Sequence
+          - edam: "http://edamontology.org/format_1929" # FASTA
+    - db_file:
+        type: file
+        description: GAMBIT database file
+        pattern: "*.gdb"
+        ontologies: []
+    - h5_files_dir:
+        type: directory
+        description: Directory containing GAMBIT signature files (H5 format)
+        ontologies: []
+output:
+  taxa:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*_gambit.csv":
+          type: file
+          description: Taxonomic identification results in CSV format
+          pattern: "*_gambit.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752" # CSV
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

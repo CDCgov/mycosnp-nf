@@ -1,0 +1,51 @@
+name: vcf_qc
+description: Simple FASTA (VCF-derived consensus) ambiguity (N content) quality control producing pass list and report.
+keywords:
+  - qc
+  - fasta
+  - ambiguity
+  - consensus
+tools:
+  - gawk:
+      description: GNU Awk pattern scanning and processing language used for per-sequence statistics.
+      homepage: https://www.gnu.org/software/gawk/
+      documentation: https://www.gnu.org/software/gawk/manual/
+      tool_dev_url: https://git.savannah.gnu.org/cgit/gawk.git
+      licence: ["GPL-3.0-or-later"]
+  - coreutils:
+      description: GNU core utilities (printf, touch, cat) used for shell operations.
+      homepage: https://www.gnu.org/software/coreutils/
+      documentation: https://www.gnu.org/software/coreutils/manual/
+      licence: ["GPL-3.0-or-later"]
+input:
+  - - vcffasta:
+        type: file
+        description: FASTA containing consensus sequences (e.g. from VCF consensus step).
+        pattern: "*.{fa,fasta}"
+output:
+  - vcf_qc_report:
+      - "vcf-qc-report.txt":
+          type: file
+          description: Ambiguity (N) statistics per sequence.
+          pattern: "vcf-qc-report.txt"
+  - vcf_qc_passed:
+      - "vcfqc_passed_samples.txt":
+          type: file
+          description: Samples passing ambiguity threshold.
+          pattern: "vcfqc_passed_samples.txt"
+authors:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"
+maintainers:
+  - "@arunbodd"
+  - "@djfeistel"
+  - "@ghuelgasmorales"
+  - "@rouzbahani"
+  - "@Slucking"
+  - "@tjaensch"
+  - "@yyr4"

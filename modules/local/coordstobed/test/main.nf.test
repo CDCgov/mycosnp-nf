@@ -1,0 +1,53 @@
+nextflow_process {
+
+    name "Test Process COORDSTOBED"
+    script "../main.nf"
+    process "COORDSTOBED"
+
+    tag "modules"
+    tag "coordstobed"
+
+    test("COORDSTOBED - convert detla to bed file") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'reference'],
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/genome/alignment/nucmer/test.delta', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("COORDSTOBED - stub test") {
+
+        options "-stub"
+
+        when {
+            process {
+                 """
+                input[0] = [
+                    [ id:'reference'],
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/genome/alignment/nucmer/test.delta', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

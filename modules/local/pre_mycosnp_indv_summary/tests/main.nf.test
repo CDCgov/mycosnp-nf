@@ -1,0 +1,77 @@
+nextflow_process {
+
+    name "Test Process PRE_MYCOSNP_INDV_SUMMARY"
+    script "../main.nf"
+    process "PRE_MYCOSNP_INDV_SUMMARY"
+
+    tag "modules"
+    tag "pre_mycosnp_indv_summary"
+
+    test("PRE_MYCOSNP_INDV_SUMMARY - create line summary file for single sample") {
+
+        when {
+            process {
+                """
+                def debug_dir = file("\$PWD/debug")
+                debug_dir.mkdirs()
+
+                // Copy debug files
+                def debug_source = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_dest = file("\$PWD/debug/SRR30604805.for_qual_histogram.txt")
+                debug_source.copyTo(debug_dest)
+
+                input[0] = [
+                    [id:"SRR30604805", single_end: false],
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805.fa', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805.stats.txt', checkIfExists: true),
+                    debug_dir,
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805_gambit.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805_subtype.csv', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("PRE_MYCOSNP_INDV_SUMMARY - stub test") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                def debug_dir = file("\$PWD/debug")
+                debug_dir.mkdirs()
+
+                // Copy debug files
+                def debug_source = file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805.for_qual_histogram.txt', checkIfExists: true)
+                def debug_dest = file("\$PWD/debug/SRR30604805.for_qual_histogram.txt")
+                debug_source.copyTo(debug_dest)
+
+                input[0] = [
+                    [id:"SRR30604805", single_end: false],
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805.fa', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805.stats.txt', checkIfExists: true),
+                    debug_dir,
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805_gambit.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/genomics/eukaryotes/candida_auris/premycosnp_indv_comb_summary/SRR30604805_subtype.csv', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}
