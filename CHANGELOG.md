@@ -39,9 +39,8 @@ This release represents the AMD-P (Advanced Molecular Detection Platform) enhanc
 
 - **SnpEff Version Upgrade**
   - Upgraded SnpEff from version 4.3.1t to 5.2f
-  - Eliminates 11 security vulnerabilities (3 CRITICAL, 5 HIGH, 3 MEDIUM severity)
   - Maintains 100% annotation accuracy - produces identical variant annotations to 4.3.1t
-  - Removes critical Log4j 1.2.15 vulnerabilities and other outdated dependencies
+  - Additional tool version upgrades improve long-term maintainability of the workflow
 
 - **Parameter Validation Configuration**
   - Updated validation block to nf-schema-compliant syntax

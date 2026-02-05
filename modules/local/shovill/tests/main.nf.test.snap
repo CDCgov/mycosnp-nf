@@ -4,39 +4,39 @@
             "versions.yml:md5,aa657c335ef793da97b3d627140e7fb2"
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2024-03-24T15:16:42.97261"
+        "timestamp": "2026-01-28T11:42:10.649900076"
     },
     "shovill with spades": {
         "content": [
             "versions.yml:md5,aa657c335ef793da97b3d627140e7fb2"
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2024-03-20T11:02:08.833292"
+        "timestamp": "2026-01-28T11:34:39.326962962"
     },
     "shovill with skesa": {
         "content": [
             "versions.yml:md5,aa657c335ef793da97b3d627140e7fb2"
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2024-03-20T11:11:44.99499"
+        "timestamp": "2026-01-28T11:39:33.694627535"
     },
     "shovill with megahit": {
         "content": [
             "versions.yml:md5,aa657c335ef793da97b3d627140e7fb2"
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2024-03-20T11:16:28.050292"
+        "timestamp": "2026-01-28T11:40:56.428825796"
     }
 }

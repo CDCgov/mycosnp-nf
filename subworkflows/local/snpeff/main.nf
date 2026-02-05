@@ -33,8 +33,32 @@ workflow SNPEFF {
         .mix( TABIX_BGZIPTABIX.out.gz_csi )
         .map { meta, gz, idx -> [ meta, gz ] }
 
+    // Filter VCFs to ensure they contain at least one variant record before running SNPEFFR
+    // SNPEFFR fails on empty VCFs (header-only files with no variant data)
+    ch_has_variants = ch_tabix_vcf
+        .splitText()
+        .filter { meta, line -> !line.startsWith('#') }
+        .map { meta, line -> [ meta.id, true ] }
+        .unique { it[0] }
+
+    ch_tabix_vcf_with_variants = ch_tabix_vcf
+        .map { meta, gz -> [ meta.id, meta, gz ] }
+        .join( ch_has_variants, by: 0, remainder: true )
+        .filter { id, meta, gz, hasVariants ->
+            if( !hasVariants ) {
+                log.warn "SNPEFFR: Skipping VCF '${meta.id}' - no variant records found. SNPEFFR requires at least one variant."
+                return false
+            }
+            return true
+        }
+        .map { id, meta, gz, hasVariants -> [ meta, gz ] }
+
+    ch_tabix_vcf_with_variants.ifEmpty {
+        log.warn "SNPEFFR: No VCF files with variant records found. Skipping SNPEFFR analysis."
+    }
+
     SNPEFFR (
-        ch_tabix_vcf,
+        ch_tabix_vcf_with_variants,
         ref_name
     )
     ch_versions = ch_versions.mix(SNPEFFR.out.versions)

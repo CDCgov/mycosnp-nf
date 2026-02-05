@@ -11,14 +11,14 @@
                 ]
             ],
             [
-                "versions.yml:md5,3f1b13c048433d99f0891d0203fe3116"
+                "versions.yml:md5,efc03ece2bef422fff96596159091210"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-30T16:44:56.595588556"
+        "timestamp": "2026-01-28T11:52:50.912299752"
     },
     "test-split-vcf-stub": {
         "content": [
@@ -32,13 +32,13 @@
                 ]
             ],
             [
-                "versions.yml:md5,3f1b13c048433d99f0891d0203fe3116"
+                "versions.yml:md5,efc03ece2bef422fff96596159091210"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-30T16:45:21.082848815"
+        "timestamp": "2026-01-28T11:53:48.869369562"
     }
 }

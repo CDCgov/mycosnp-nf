@@ -310,8 +310,47 @@ workflow MYCOSNP {
         ch_versions = ch_versions.mix(SNPDISTS.out.versions)
 
         if(!params.skip_phylogeny) {
+            // Validate fasta file before phylogeny: check sequence count and content
+            ch_filtered_fasta = SEQKIT_REPLACE.out.fastx
+                .filter { meta, fas ->
+                    def count = 0
+                    def hasContent = false
+
+                    try {
+                        //stop early when conditions are met
+                        fas.splitFasta(record: [seqString: true]).find { record ->
+                            count += 1
+                            if (record.seqString && record.seqString.trim().length() > 0) {
+                                hasContent = true
+                            }
+                            // Stop early if we have enough samples and content
+                            return count >= 3 && hasContent
+                        }
+
+                        if (count < 3) {
+                            log.warn "Sample ${meta.id}: Phylogeny analysis requires at least 3 samples, but only ${count} found. Skipping phylogeny tools."
+                            return false
+                        } else if (!hasContent) {
+                            log.warn "Sample ${meta.id}: Alignment file contains only empty sequences. Skipping phylogeny tools."
+                            return false
+                        }
+
+                        return true
+
+                    } catch (Exception e) {
+                        log.error "Sample ${meta.id}: Error validating FASTA file: ${e.message}. Skipping phylogeny tools."
+                        return false
+                    }
+                }
+                .map { meta, fas -> [fas] }
+
+            // Only proceed if we have valid sequences
+            ch_filtered_fasta.ifEmpty {
+                log.warn "No valid samples found for phylogeny analysis. Skipping all phylogeny tools."
+            }
+
             CREATE_PHYLOGENY (
-                SEQKIT_REPLACE.out.fastx.map{meta, fas->[fas]},
+                ch_filtered_fasta,
                 '',
                 SNPDISTS.out.tsv,
                 params.rapidnj,

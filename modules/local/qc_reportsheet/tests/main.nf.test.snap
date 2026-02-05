@@ -17,10 +17,10 @@
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T12:39:33.071790716"
+        "timestamp": "2026-01-28T11:22:15.065941786"
     },
     "QC_REPORTSHEET - combine qc reports from mutiple samples into a single output file": {
         "content": [
@@ -40,9 +40,9 @@
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-11-13T12:39:09.213513467"
+        "timestamp": "2026-01-29T08:25:02.3012946"
     }
 }

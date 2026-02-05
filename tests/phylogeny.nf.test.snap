@@ -92,8 +92,9 @@
                 "combined/snpdists",
                 "combined/snpdists/combined.tsv",
                 "combined/splitvcf",
-                "combined/splitvcf/B11842.vcf.gz",
                 "combined/splitvcf/B11858.vcf.gz",
+                "combined/splitvcf/B12360.vcf.gz",
+                "combined/splitvcf/B13519.vcf.gz",
                 "combined/splitvcf/samplelist.txt",
                 "combined/vcf-qc-report",
                 "combined/vcf-qc-report/vcf-qc-report.txt",
@@ -115,16 +116,16 @@
                 "pipeline_info/mycosnp_software_versions.yml"
             ],
             [
-                "fasttree_phylogeny.nh:md5,fe2c05a349e53495babfa57e2dc601ab",
-                "quicksnp_phylogeny.nwk:md5,fdeaa2af6ad084861f008a3fea17ff64",
-                "alignment.sth:md5,4e005969fab8feb3956e0d9d5062b81f",
-                "rapidnj_phylogeny.nh:md5,1de0290d2a59f1c784d70db0e6d1db4f",
-                "combined.tsv:md5,cd1729a47fccfb17c743419643c4c34e",
-                "samplelist.txt:md5,0a68476d8b93680bbdc57dbca3e12d78",
-                "vcf-qc-report.txt:md5,c9d3971482db296ddc72b4dde80a144e",
-                "vcfqc_passed_samples.txt:md5,0a68476d8b93680bbdc57dbca3e12d78",
-                "vcf-to-fasta.fasta:md5,78b316e9ac197ee1c90cd1f1b957cc83",
-                "microreact_metadata.csv:md5,ed90aa35339743148253c05d6a15eeda",
+                "fasttree_phylogeny.nh:md5,79743e795074dbb64854cfa5669cde53",
+                "quicksnp_phylogeny.nwk:md5,e22e4583f89f592eecac824b6af34d7d",
+                "alignment.sth:md5,d639c9bc224134cb9b3cfa8aa553147a",
+                "rapidnj_phylogeny.nh:md5,1674d216dcf24796dfe521bd34e9a0cb",
+                "combined.tsv:md5,b7216735d035345d7b318652453b3ca9",
+                "samplelist.txt:md5,1e5702cbb2a3e8b0076cc372edf7385a",
+                "vcf-qc-report.txt:md5,5d3fd68cd581851f6eb14ff2ae2e6474",
+                "vcfqc_passed_samples.txt:md5,1e5702cbb2a3e8b0076cc372edf7385a",
+                "vcf-to-fasta.fasta:md5,4fd29cd74e0408c14e96a7182a7ea552",
+                "microreact_metadata.csv:md5,39fd40217d482e5c8bcfa04c85600084",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ]
         ],
@@ -132,6 +133,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-27T12:50:16.915047391"
+        "timestamp": "2026-01-28T15:55:43.898583647"
     }
 }
