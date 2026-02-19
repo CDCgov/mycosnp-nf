@@ -3,10 +3,10 @@ process SRATOOLS_PREFETCH {
     label 'process_low'
     label 'error_retry'
 
-    conda (params.enable_conda ? 'bioconda::sra-tools=2.11.0' : null)
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/sra-tools:2.11.0--pl5262h314213e_0' :
-        'quay.io/biocontainers/sra-tools:2.11.0--pl5262h314213e_0' }"
+        'https://depot.galaxyproject.org/singularity/sra-tools:3.0.8--h9f5acd7_0' :
+        'biocontainers/sra-tools:3.0.8--h9f5acd7_0' }"
 
     input:
     tuple val(meta), val(id)
