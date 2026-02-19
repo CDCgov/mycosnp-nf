@@ -3,7 +3,7 @@ process SRATOOLS_PREFETCH {
     label 'process_low'
     label 'error_retry'
 
-    conda "${moduleDir}/environment.yml"
+    conda "${moduleDir}/sratools.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/sra-tools:3.0.8--h9f5acd7_0' :
         'biocontainers/sra-tools:3.0.8--h9f5acd7_0' }"
