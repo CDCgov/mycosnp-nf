@@ -72,6 +72,11 @@ filtered = {}
 for sample in samples:
 	filtered[sample] = 0
 
+#Collect multiallelic site stats
+max_multiallelic=1
+multiall_stats={}
+for sample in samples:
+	multiall_stats[sample]={}
 
 # process vcf and apply genotype filters
 with open(infile, 'r') as vcf_file:
@@ -128,8 +133,39 @@ with open(infile, 'r') as vcf_file:
 						filtered[sample] += 1
 				print("\t".join(["", str(":".join(split_genotype))]), end="")
 
+				#Aggregate multiallelic statistics:
+				try:
+					num_gt=int(split_genotype[0])
+					if num_gt in multiall_stats[sample]:
+						multiall_stats[sample][num_gt]+=1
+					else:
+						multiall_stats[sample][num_gt]=1
+
+					#Keep track of the highest gt recorded.
+					if num_gt > max_multiallelic:
+						max_multiallelic=num_gt
+				except:
+					pass
 			# output end of VCFs
 			print("")
+
+#Output genotype stats
+output_multalelle_stats='vcf.multiallelic.txt'
+with open(output_multalelle_stats, 'w') as muti_output:
+	muti_output.write("Sample\t")
+	muti_output.write("\t".join(samples) + '\t')
+	muti_output.write("Total\n")
+	for i in range(max_multiallelic+1):
+		muti_output.write('GT_'+str(i)+'\t')
+		new_line=[]
+		for sample in samples:
+			if i in multiall_stats[sample]:
+				new_line.append(str(multiall_stats[sample][i]))
+			else:
+				new_line.append('0')
+		muti_output.write("\t".join(new_line)+'\t')
+		total_multi=sum([int(x) for x in new_line])
+		muti_output.write(str(total_multi)+'\n')
 
 # output summary statistics
 print("Sample", file=sys.stderr, end="\t")
