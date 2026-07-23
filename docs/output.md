@@ -99,7 +99,7 @@ Output files: `combined/pre-mycosnp_summary/pre-mycosnp-summary.csv`
 | Sample_Assembly_GC               | GC percentage of Shovill assembly                                                           |                                                      |
 | Reference_Genome_Length          | Length of the reference genome of the closest GAMBIT entry (if a prediction is made)        |                                                      |
 | Avg_Depth_Coverage               | (Total trimmed bases / `Reference_Genome_Length`)                                           |                                                      |
-| Reference_GC                     | GC percentage of the reference genome of the closest GAMBIT entry (if a prediction is made). Includes soft-masked bases i.e. lowercase "g" and "c". | |
+| Reference_GC                     | GC percentage of the reference genome of the closest GAMBIT entry (if a prediction is made) |                                                      |
 
 ### MultiQC
 - Outputs follow the same [pattern described for the main MycoSNP workflow](#multiqc-1).

@@ -7,7 +7,7 @@
   |\ | |__  __ /  ` /  \ |__) |__         }  {
   | \| |       \__, \__/ |  \ |___     \`-._,-`-,
                                         `._,._,'
-  CDCgov/mycosnp-nf v1.6.3
+  CDCgov/mycosnp-nf v1.6.2
 ------------------------------------------------------
 Typical pipeline command:
 
@@ -85,7 +85,7 @@ Main MycoSNP workflow: run params
                                          coverage [default: 0] 
   --gvcfs_filter               [string]  Filter criteria for variants (GATK) [default: QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 10]
   --gatkgenotypes_filter       [string]  Filter criteria for script filterGatkGenotypes [default: --min_GQ "50" --keep_GQ_0_refs --min_percent_alt_in_AD 
-                                         "0.8" --min_total_DP "10" --keep_all_ref] 
+                                         "0.3" --min_total_DP "10" --keep_all_ref] 
   --max_amb_samples            [integer] Max number of samples with ambiguous calls for inclusion (GATK) [default: 10000000]
   --max_perc_amb_samples       [integer] Max percent of samples with ambiguous calls for inclusion (GATK) [default: 10]
   --min_depth                  [integer] Min depth for a base to be called as the consensus sequence, otherwise it will be called as an N. Set to 0 to 
