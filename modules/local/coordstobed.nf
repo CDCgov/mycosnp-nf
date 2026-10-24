@@ -17,7 +17,8 @@ process COORDSTOBED {
     script:
     """
     show-coords -r -T -H $delta > masked_ref_BEFORE_ORDER.bed
-    awk '{if (\$1 != \$3 && \$2 != \$4) print \$0}' masked_ref_BEFORE_ORDER.bed > masked_ref_BEFORE_ORDER2.bed
-    awk '{print \$8\"\\t\"\$1\"\\t\"\$2}' masked_ref_BEFORE_ORDER2.bed > masked_ref.bed
+    awk '{if (\$8 != \$9 || (\$1 != \$3 && \$2 != \$4)) print \$0}' masked_ref_BEFORE_ORDER.bed > masked_ref_BEFORE_ORDER2.bed
+    awk '{print \$8\"\\t\"\$1\"\\t\"\$2}' masked_ref_BEFORE_ORDER2.bed > masked_ref_1indexed.bed
+    awk '{print \$1"\t"(\$2 - 1)"\t"\$3}' masked_ref_1indexed.bed > masked_ref.bed
     """
 }
